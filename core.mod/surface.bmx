@@ -8,7 +8,6 @@ Type TSurface
 	Field _brush:TBrush=New TBrush
 	
 	Field _vertexcnt,_trianglecnt
-	Field _addvertexcnt,_addtrianglecnt
 	Field _vertexpos#[]
 	Field _vertexnml#[]
 	Field _vertexclr#[]
@@ -23,7 +22,6 @@ Type TSurface
 		Local surface:TSurface=New TSurface
 		surface._brush.Load(_brush)
 		surface._vertexcnt=_vertexcnt;surface._trianglecnt=_trianglecnt
-		surface._addvertexcnt=_addvertexcnt;surface._addtrianglecnt=_addtrianglecnt
 		surface._vertexpos=_vertexpos[..];surface._vertexnml=_vertexnml[..];surface._vertexclr=_vertexclr[..]
 		surface._vertextex=_vertextex[..];surface._texcoordsize=_texcoordsize
 		surface._triangle=_triangle[..]
@@ -38,6 +36,9 @@ Type TSurface
 			For Local i=_vertexcnt*4 To vertexcount*4-1
 				_vertexclr[i]=1.0
 			Next
+			For Local i=0 To _texcoordsize-1
+				_vertextex[i]=_vertextex[i][..vertexcount*2]
+			Next
 			_vertexcnt=vertexcount
 		EndIf
 		
@@ -48,10 +49,10 @@ Type TSurface
 	End Method
 	
 	Method AddVertex(x#,y#,z#,u#,v#)
-		SetCoord(_addvertexcnt,x,y,z)
-		SetTexCoord(_addvertexcnt,u,v)
-		_addvertexcnt:+1
-		Return _addvertexcnt-1
+		Resize(_vertexcnt+1,-1)
+		SetCoord(_vertexcnt-1,x,y,z)
+		SetTexCoord(_vertexcnt-1,u,v)
+		Return _vertexcnt-1
 	End Method
 	
 	Method GetCoord(index,x# Var,y# Var,z# Var)
@@ -108,7 +109,7 @@ Type TSurface
 		If set+1>_texcoordsize
 			Local size=_vertextex.length
 			_vertextex=_vertextex[..set+1]			
-			For Local i=0 To set
+			For Local i=size To set
 				_vertextex[i]=New Float[_vertexcnt*2]
 			Next	
 			_texcoordsize=set+1		
@@ -116,9 +117,9 @@ Type TSurface
 	End Method
 	
 	Method AddTriangle(v0,v1,v2)
-		SetTriangle _addtrianglecnt,v0,v1,v2
-		_addtrianglecnt:+1
-		Return _addtrianglecnt-1
+		Resize(-1,_trianglecnt+1)
+		SetTriangle _trianglecnt-1,v0,v1,v2
+		Return _trianglecnt-1
 	End Method
 	
 	Method GetTriangle(index,v0 Var,v1 Var,v2 Var)

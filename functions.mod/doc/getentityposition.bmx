@@ -3,12 +3,12 @@ Strict
 
 Import MaxB3D.Drivers
 
-Graphics 640, 480
+Graphics 800,600
 SetAmbientLight 50, 50, 50
 
 Local camera:TCamera=CreateCamera()
 SetEntityPosition camera,0,2,-50
-SetCameraZoom cam,4
+SetCameraZoom camera,4
 
 Local light:TLight=CreateLight()
 TurnEntity light,30,40,0
@@ -22,13 +22,13 @@ SetEntityPosition pCone,8,0,0
 SetEntityColor pCone,255,255,0
 
 Local cSphere:TMesh=CreateSphere(8,pCone)
-EntityColor cSphere,150,150,0
-ScaleEntity cSphere,.4/.8,.4/2.0,.4/.8
+SetEntityColor cSphere,150,150,0
+SetEntityScale cSphere,.4/.8,.4/2.0,.4/.8
 SetEntityPosition cSphere,0,2,0
 
 Local ismoving=False,count=0
 
-While Not KeyDown( KEY_ESCAPE ) 
+While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 
 	If GetChar() Then isMoving = Not isMoving
 	
@@ -49,16 +49,16 @@ While Not KeyDown( KEY_ESCAPE )
 	DrawText "Local",495,20
 	
 	SetColor 250, 50, 0
-	DrawText 20, 50, "oSphere: " + XYZ( oSphere, True )
-	DrawText 400, 50, XYZ( oSphere, False )
+	DrawText "oSphere: "+XYZ(oSphere,True),20,50
+	DrawText XYZ(oSphere,False),400,50
 	
 	SetColor 255, 255, 0
-	DrawText 20, 75, " pCone: " + XYZ( pCone, True )
-	DrawText 400, 75, XYZ( pCone, False )
+	DrawText " pCone: "+XYZ(pCone,True),20,75
+	DrawText XYZ(pCone,False),400,75
 	
 	SetColor 150, 150, 0
-	DrawText 20, 100, "cSphere: " + XYZ( cSphere, True )
-	DrawText 400, 100, XYZ( cSphere, False )
+	DrawText "cSphere: " + XYZ( cSphere, True ),20,100
+	DrawText XYZ( cSphere, False ),400,100
 	
 	EndMax2D
 	
@@ -66,9 +66,9 @@ While Not KeyDown( KEY_ESCAPE )
 Wend
 
 Function Round#(x#,m#)
-	Local s=Sgn(x)
-	x=Abs(s);m=Abs(m)
-	diff# = x Mod m
+	Local s#=Sgn(x)
+	x=Abs(x);m=Abs(m)
+	Local diff# = x Mod m
 	If diff < .5 * m
 		Return ( x - diff ) * s
 	Else
@@ -76,9 +76,9 @@ Function Round#(x#,m#)
 	End If
 End Function
 
-Function XYZ$( entity, globalFlag )
+Function XYZ$( entity:TEntity, globalFlag )
 	Local x#,y#,z#	
 	GetEntityPosition entity,x#,y#,z#,globalFlag	
 	x=Round(x,0.001);y=Round(y,0.001);z=Round(z,0.001)	
-	Return RSet( Round(x,0.001), 8 ) + RSet( Round(y,0.001), 8 ) + RSet( Round(z,0.001), 8 )
+	Return RSet(Round(x,0.001),8) + RSet(Round(y,0.001),8) + RSet(Round(z,0.001),8)
 End Function

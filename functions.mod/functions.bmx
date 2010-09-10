@@ -272,6 +272,9 @@ End Function
 Function LoadMesh:TMesh(url:Object,parent:TEntity=Null)
 	Return _currentworld.AddMesh(url,parent)
 End Function
+Function AddMeshSurface:TSurface(mesh:TMesh,vertexcount=0,trianglecount=0)
+	Return mesh.AddSurface(vertexcount,trianglecount)
+End Function
 Function CloneMesh:TMesh(mesh:TMesh,parent:TEntity=Null)
 	Return mesh.Clone(parent)
 End Function
@@ -300,6 +303,9 @@ End Function
 Function CountSurfaceTriangles(surface:TSurface)
 	Return surface.CountTriangles()
 End Function
+Function AddSurfaceVertex(surface:TSurface,x#,y#,z#,u#=0.0,v#=0.0)
+	Return surface.AddVertex(x,y,z,u,v)
+End Function
 Function GetSurfaceCoord(surface:TSurface,index,x# Var,y# Var,z# Var)
 	Return surface.GetCoord(index,x,y,z)
 End Function
@@ -317,6 +323,15 @@ Function GetSurfaceNormal(surface:TSurface,index,nx# Var,ny# Var,nz# Var)
 End Function
 Function SetSurfaceNormal(surface:TSurface,index,nx#,ny#,nz#)
 	Return surface.SetNormal(index,nx,ny,nz)
+End Function
+Function AddSurfaceTriangle(surface:TSurface,v0,v1,v2)
+	Return surface.AddTriangle(v0,v1,v2)
+End Function
+Function GetSurfaceTriangle(surface:TSurface,index,v0 Var,v1 Var,v2 Var)
+	Return surface.GetTriangle(index,v0,v1,v2)
+End Function
+Function SetSurfaceTriangle(surface:TSurface,index,v0,v1,v2)
+	Return surface.SetTriangle(index,v0,v1,v2)
 End Function
 Function GetSurfaceBrush:TBrush(surface:TSurface)
 	Return surface.GetBrush()
