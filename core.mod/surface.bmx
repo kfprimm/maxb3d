@@ -1,0 +1,175 @@
+
+Strict
+
+Import MaxB3D.MathEx
+Import "brush.bmx"
+
+Type TSurface
+	Field _brush:TBrush=New TBrush
+	
+	Field _vertexcnt,_trianglecnt
+	Field _addvertexcnt,_addtrianglecnt
+	Field _vertexpos#[]
+	Field _vertexnml#[]
+	Field _vertexclr#[]
+	
+	Field _vertextex#[][],_texcoordsize=-1
+	
+	Field _triangle[]
+	
+	Field _res:TSurfaceRes,_reset=-1
+	
+	Method Copy:TSurface()
+		Local surface:TSurface=New TSurface
+		surface._brush.Load(_brush)
+		surface._vertexcnt=_vertexcnt;surface._trianglecnt=_trianglecnt
+		surface._addvertexcnt=_addvertexcnt;surface._addtrianglecnt=_addtrianglecnt
+		surface._vertexpos=_vertexpos[..];surface._vertexnml=_vertexnml[..];surface._vertexclr=_vertexclr[..]
+		surface._vertextex=_vertextex[..];surface._texcoordsize=_texcoordsize
+		surface._triangle=_triangle[..]
+		Return surface
+	End Method
+	
+	Method Resize(vertexcount,trianglecount)
+		If vertexcount>-1
+			_vertexpos=_vertexpos[..vertexcount*3]
+			_vertexnml=_vertexnml[..vertexcount*3]
+			_vertexclr=_vertexclr[..vertexcount*4]
+			For Local i=_vertexcnt*4 To vertexcount*4-1
+				_vertexclr[i]=1.0
+			Next
+			_vertexcnt=vertexcount
+		EndIf
+		
+		If trianglecount>-1
+			_triangle=_triangle[..trianglecount*3]
+			_trianglecnt=trianglecount
+		EndIf
+	End Method
+	
+	Method AddVertex(x#,y#,z#,u#,v#)
+		SetCoord(_addvertexcnt,x,y,z)
+		SetTexCoord(_addvertexcnt,u,v)
+		_addvertexcnt:+1
+		Return _addvertexcnt-1
+	End Method
+	
+	Method GetCoord(index,x# Var,y# Var,z# Var)
+		x=_vertexpos[index*3+0]
+		y=_vertexpos[index*3+1]
+		z=_vertexpos[index*3+2]
+	End Method
+	Method SetCoord(index,x#,y#,z#)
+		_vertexpos[index*3+0]=x
+		_vertexpos[index*3+1]=y
+		_vertexpos[index*3+2]=z		
+		_reset:|1
+	End Method
+	
+	Method GetNormal(index,nx# Var,ny# Var,nz# Var)
+		nx=_vertexnml[index*3+0]
+		ny=_vertexnml[index*3+1]
+		nz=_vertexnml[index*3+2]
+	End Method
+	Method SetNormal(index,nx#,ny#,nz#)
+		_vertexnml[index*3+0]=nx
+		_vertexnml[index*3+1]=ny
+		_vertexnml[index*3+2]=nz
+		_reset:|2
+	End Method
+	
+	Method GetColor(index,red Var,green Var,blue Var,alpha# Var)
+		red=_vertexclr[index*4+0]*255.0
+		green=_vertexclr[index*4+1]*255.0
+		blue=_vertexclr[index*4+2]*255.0
+		alpha=_vertexclr[index*4+3]
+	End Method
+	Method SetColor(index,red,green,blue,alpha#)
+		_vertexclr[index*4+0]=red/255.0
+		_vertexclr[index*4+1]=green/255.0
+		_vertexclr[index*4+2]=blue/255.0
+		_vertexclr[index*4+3]=alpha
+		_reset:|4
+	End Method
+	
+	Method GetTexCoord(index,u# Var,v# Var,set=0)
+		ResizeTexSets set
+		u=_vertextex[set][index*2+0]
+		v=_vertextex[set][index*2+0]
+	End Method
+	Method SetTexCoord(index,u#,v#,set=0)
+		ResizeTexSets set
+		_vertextex[set][index*2+0]=u
+		_vertextex[set][index*2+1]=v
+		_reset:|Int(2^(4+set))
+	End Method
+	
+	Method ResizeTexSets(set)
+		If set+1>_texcoordsize
+			Local size=_vertextex.length
+			_vertextex=_vertextex[..set+1]			
+			For Local i=0 To set
+				_vertextex[i]=New Float[_vertexcnt*2]
+			Next	
+			_texcoordsize=set+1		
+		EndIf
+	End Method
+	
+	Method AddTriangle(v0,v1,v2)
+		SetTriangle _addtrianglecnt,v0,v1,v2
+		_addtrianglecnt:+1
+		Return _addtrianglecnt-1
+	End Method
+	
+	Method GetTriangle(index,v0 Var,v1 Var,v2 Var)
+		v0=_triangle[index*3+0]
+		v1=_triangle[index*3+1]
+		v2=_triangle[index*3+2]
+	End Method
+	Method SetTriangle(index,v0,v1,v2)
+		_triangle[index*3+0]=v0
+		_triangle[index*3+1]=v1
+		_triangle[index*3+2]=v2
+	End Method
+	
+	Method Flip()
+		For Local t=0 To _trianglecnt-1
+			Local v2=_triangle[t*3+2]
+			_triangle[t*3+2]=_triangle[t*3+0]
+			_triangle[t*3+0]=v2			
+		Next
+		For Local v=0 To _vertexcnt-1
+			_vertexnml[(v*3)+0]:*-1
+			_vertexnml[(v*3)+1]:*-1
+			_vertexnml[(v*3)+2]:*-1
+		Next
+		_reset:|2|8
+	End Method
+	
+	Method UpdateNormals()
+		C_UpdateNormals(_trianglecnt,_vertexcnt,_triangle,_vertexpos,_vertexnml)
+		_reset:|2
+	End Method
+	
+	Method GetBrush:TBrush()
+		Return _brush.Copy()
+	End Method	
+	Method SetBrush(brush:TBrush)
+		_brush.Load(brush)
+	End Method
+	
+	Method CountVertices()
+		Return _vertexcnt
+	End Method
+	Method CountTriangles()
+		Return _trianglecnt
+	End Method
+	
+	Method HasAlpha()
+		Return _brush._a<>1 Or _brush._fx&FX_FORCEALPHA
+	End Method	
+End Type
+
+Type TSurfaceRes
+
+End Type
