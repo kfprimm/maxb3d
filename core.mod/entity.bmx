@@ -168,6 +168,28 @@ Type TEntity
 		RefreshMatrix()
 	End Method
 	
+	Method Point(target:Object,roll#=0.0)
+		Local x#,y#,z#
+		GetPosition x,y,z,True
+		
+		Local tx#,ty#,tz#
+		If TEntity(target) TEntity(target).GetPosition tx,ty,tz,True
+		If Float[](target)
+			Local coords#[]=Float[](target)
+			If coords.length>0 tx=coords[0]
+			If coords.length>1 ty=coords[1]
+			If coords.length>2 tz=coords[2]
+		EndIf
+
+		Local xdiff#=x-tx,ydiff#=y-ty,zdiff#=z-tz
+
+		Local dist22#=Sqr((xdiff*xdiff)+(zdiff*zdiff))
+		Local pitch#=-ATan2(ydiff,dist22)
+		Local yaw#=ATan2(xdiff,-zdiff)
+
+		SetRotation pitch,yaw,roll,True
+	End Method
+	
 	Method GetRotation(pitch# Var,yaw# Var,roll# Var,glob=False)
 		If glob
 			_matrix.GetRotation pitch,yaw,roll
@@ -176,10 +198,11 @@ Type TEntity
 		EndIf
 	End Method
 	Method SetRotation(pitch#,yaw#,roll#,glob=False)
-		If glob
-		
-		Else
-			_rx=pitch;_ry=yaw;_rz=roll
+		_rx=pitch;_ry=yaw;_rz=roll
+		If glob And _parent<>Null
+			Local rx#,ry#,rz#
+			_parent.GetRotation rx,ry,rz
+			_rx:+rx;_ry:+ry;_rz:+rz			
 		EndIf
 		RefreshMatrix()
 	End Method

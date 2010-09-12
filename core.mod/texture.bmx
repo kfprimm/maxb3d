@@ -24,7 +24,7 @@ Const BLEND_ADD			= 3
 
 Type TTexture
 	Field _blend,_coords,_flags
-	Field _px#,_py#,_r#,_sx#,_sy#
+	Field _px#,_py#,_r#,_sx#=1.0,_sy#=1.0
 	Field _width,_height
 	Field _name$
 	
@@ -70,10 +70,10 @@ Type TTexture
 	End Method
 	
 	Method GetScale(x# Var,y# Var)
-		x=_sx;y=_sy
+		x=1.0/_sx;y=1.0/_sy
 	End Method
 	Method SetScale(x#,y#)
-		_sx=x;_sy=y
+		_sx=1.0/x;_sy=1.0/y
 	End Method
 	
 	Method GetPosition(x# Var,y# Var)

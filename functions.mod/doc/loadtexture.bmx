@@ -3,7 +3,7 @@ Strict
 
 Import MaxB3D.Drivers
 
-Graphics 640,480
+Graphics 800,600
 
 Local camera:TCamera=CreateCamera()
 
@@ -32,20 +32,5 @@ While Not KeyDown(KEY_ESCAPE)
 	TurnEntity cube,pitch,yaw,roll
 	
 	RenderWorld
-	BeginMax2D
-	
-	glEnable GL_TEXTURE_2D
-	glBindTexture GL_TEXTURE_2D,TGLTextureRes(texture._res)._id
-	glBegin GL_QUADS
-		glTexCoord2f 0,0
-		glVertex2f 10,10
-		glTexCoord2f 1,0
-		glVertex2f 60,10
-		glTexCoord2f 1,1
-		glVertex2f 60,60
-		glTexCoord2f 0,1
-		glVertex2f 10,60
-	glEnd	
-	EndMax2D
 	Flip
 Wend

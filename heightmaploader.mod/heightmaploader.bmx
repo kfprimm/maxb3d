@@ -23,8 +23,9 @@ Type TMeshLoaderHMAP Extends TMeshLoader
 			Local x#=stx,v#=a/Float(height)
 			For Local b=0 To width-1
 				Local u#=b/Float(width)
-				Local vert=surface.AddVertex(x,pixmap.pixels[a*height+b]/255.0,y,u,v)
-				surface.SetColor vert,255,255,255,0
+				Local vert=width*a+b
+				surface.SetCoord vert,x,pixmap.pixels[a*height+b]/255.0,y
+				surface.SetTexCoord vert,u,v
 				x:+2.0/width
 			Next
 			y:+2.0/height
@@ -32,10 +33,10 @@ Type TMeshLoaderHMAP Extends TMeshLoader
 		
 		For Local a=0 To height-2
 			For Local b=0 To width-2
-				Local v0=a*height+b,v1=v0+1
-				Local v2=(a+1)*height+(b+1),v3=v2-1
-				surface.AddTriangle( v1,v2,v0 )
-				surface.AddTriangle( v2,v3,v0 )
+				Local v0=a*width+b,v1=v0+1
+				Local v2=(a+1)*width+(b+1),v3=v2-1
+				surface.SetTriangle(2*(a*(width-2)+b)+0,v0,v2,v1)
+				surface.SetTriangle(2*(a*(width-2)+b)+1,v0,v3,v2)
 			Next
 		Next
 		

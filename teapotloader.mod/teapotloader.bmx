@@ -1,6 +1,9 @@
 
 Strict
 
+'Rem
+'	bbdoc: Utah teapot mesh loader For MaxB3D
+'End Rem
 Module MaxB3D.TeapotLoader
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: LGPL"
@@ -10,6 +13,9 @@ Import BRL.RamStream
 
 Incbin "data.dat"
 
+Rem
+	bbdoc: Creates a teapot mesh.
+End Rem
 Function CreateTeapot:TMesh(parent:TEntity=Null)
 	Return _currentworld.AddMesh("*teapot*",parent)
 End Function
@@ -17,7 +23,7 @@ End Function
 Type TMeshLoaderTeapot Extends TMeshLoader
 	Method Run(url:Object,mesh:TMesh)
 		If String(url)="*teapot*"
-			Local stream:TStream=ReadStream("incbin::teapot.dat")
+			Local stream:TStream=ReadStream("incbin::data.dat")
 			Local vertexcount=ReadInt(stream),trianglecount=ReadInt(stream)
 
 			Local surface:TSurface=mesh.AddSurface(vertexcount,trianglecount)			
@@ -25,12 +31,13 @@ Type TMeshLoaderTeapot Extends TMeshLoader
 			For Local i=0 To vertexcount-1
 				Local x#=ReadFloat(stream),y#=ReadFloat(stream),z#=ReadFloat(stream)
 				Local u#=ReadFloat(stream),v#=ReadFloat(stream)
-				surface.AddVertex(x,y,z,u,v)
+				surface.SetCoord(i,x,y,z)
+				surface.SetTexCoord(i,u,v)
 			Next
 			
 			For Local i=0 To trianglecount-1
 				Local v0=ReadInt(stream),v1=ReadInt(stream),v2=ReadInt(stream)
-				surface.AddTriangle v0,v1,v2
+				surface.SetTriangle i,v0,v1,v2
 			Next
 			CloseStream stream
 			
@@ -41,4 +48,3 @@ Type TMeshLoaderTeapot Extends TMeshLoader
 End Type
 
 New TMeshLoaderTeapot
-

@@ -56,32 +56,45 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			
 			If segments=2
 				For Local i=1 To (segments*2)
-					Local np=surface.AddVertex(0.0,height,0.0,upos#-(udiv#/2.0),0)'northpole
-					Local sp=surface.AddVertex(0.0,-height,0.0,upos#-(udiv#/2.0),1)'southpole
+					Local np=(i-1)*4+0,sp=np+1
+					surface.SetCoord(np,0.0,height,0.0);surface.SetTexCoord(np,upos#-(udiv#/2.0),0) 'northpole					
+					surface.SetCoord(sp,0.0,-height,0.0);surface.SetTexCoord(sp,upos#-(udiv#/2.0),1) 'southpole
 					Local XPos#=-Cos(RotAngle#)
 					Local ZPos#=Sin(RotAngle#)
-					Local v0=surface.AddVertex(XPos#,0,ZPos#,upos#,0.5)
+					Local v0=sp+1
+					surface.SetCoord(v0,XPos#,0,ZPos#)
+					surface.SetTexCoord(v0,upos#,0.5)
 					RotAngle#=RotAngle#+div#
 					If RotAngle#>=360.0 Then RotAngle#=RotAngle#-360.0
 					XPos#=-Cos(RotAngle#)
 					ZPos#=Sin(RotAngle#)
 					upos#=upos#-udiv#
-					Local v1=surface.AddVertex(XPos#,0,ZPos#,upos#,0.5)
-					surface.AddTriangle(v1,v0,np)
-					surface.AddTriangle(sp,v0,v1)	
+					Local v1=v0+1
+					surface.SetCoord(v1,XPos#,0,ZPos#)
+					surface.SetTexCoord(v1,upos#,0.5)
+					
+					surface.SetTriangle((i-1)*2+0,np,v0,v1)
+					surface.SetTriangle((i-1)*2+1,v1,v0,sp)	
 				Next	
 			Else
 				For Local i=1 To (segments*2)	
-					Local np=surface.AddVertex(0.0,height,0.0,upos#-(udiv#/2.0),0)'northpole
-					Local sp=surface.AddVertex(0.0,-height,0.0,upos#-(udiv#/2.0),1)'southpole
+					Local np=(i-1)*6+0,sp=np+1
+					surface.SetCoord(np,0.0,height,0.0)
+					surface.SetTexCoord(np,upos#-(udiv#/2.0),0)'northpole
+					surface.SetCoord(sp,0.0,-height,0.0)
+					surface.SetTexCoord(sp,upos#-(udiv#/2.0),1)'southpole
 					
 					Local YPos#=Cos(div#)
 					
 					Local XPos#=-Cos(RotAngle#)*(Sin(div#))
 					Local ZPos#=Sin(RotAngle#)*(Sin(div#))
 					
-					Local v0t=surface.AddVertex(XPos#,YPos#,ZPos#,upos#,vdiv#)
-					Local v0b=surface.AddVertex(XPos#,-YPos#,ZPos#,upos#,1-vdiv#)
+					Local v0t=sp+1
+					surface.SetCoord(v0t,XPos#,YPos#,ZPos#)
+					surface.SetTexCoord(v0t,upos#,vdiv#)
+					Local v0b=v0t+1
+					surface.SetCoord(v0b,XPos#,-YPos#,ZPos#)
+					surface.SetTexCoord(v0b,upos#,1-vdiv#)
 					
 					RotAngle#=RotAngle#+div#
 					
@@ -90,12 +103,16 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 					
 					upos#=upos#-udiv#
 			
-					Local v1t=surface.AddVertex(XPos#,YPos#,ZPos#,upos#,vdiv#)
-					Local v1b=surface.AddVertex(XPos#,-YPos#,ZPos#,upos#,1-vdiv#)
+					Local v1t=v0b+1
+					surface.SetCoord(v1t,XPos#,YPos#,ZPos#)
+					surface.SetTexCoord(v1t,upos#,vdiv#)
+					Local v1b=v1t+1
+					surface.SetCoord(v1b,XPos#,-YPos#,ZPos#)
+					surface.SetTexCoord(v1b,upos#,1-vdiv#)
 					
-					surface.AddTriangle(v1t,v0t,np)
-					surface.AddTriangle(sp,v0b,v1b)
 					
+					surface.SetTriangle((i-1)*2+0,np,v0t,v1t)
+					surface.SetTriangle((i-1)*2+1,v1b,v0b,sp)					
 				Next
 			
 				upos#=1.0
@@ -113,10 +130,10 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 						Local XPos2#=-Cos(RotAngle#)*(Sin(div#*(mult#+1.0)))
 						Local ZPos2#=Sin(RotAngle#)*(Sin(div#*(mult#+1.0)))
 									
-						Local v0t=surface.AddVertex(XPos#,YPos#,ZPos#,upos#,Thisvdiv#)
-						Local v0b=surface.AddVertex(XPos2#,YPos2#,ZPos2#,upos#,Thisvdiv#+vdiv#)
-					
+						Local v0t=(segments*2)*6+((i-1)*(segments-2)*4)+((j-1)*4),v0b=v0t+1
+						surface.SetCoord(v0t,XPos#,YPos#,ZPos#)
 						surface.SetTexCoord(v0t,upos#,Thisvdiv#,0.0)
+						surface.SetCoord(v0b,XPos2#,YPos2#,ZPos2#)						
 						surface.SetTexCoord(v0b,upos#,Thisvdiv#+vdiv#,0.0)
 					
 						Local tempRotAngle#=RotAngle#+div#
@@ -129,14 +146,14 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 					
 						Local temp_upos#=upos-udiv
 			
-						Local v1t=surface.AddVertex(XPos,YPos,ZPos,temp_upos,Thisvdiv)
-						Local v1b=surface.AddVertex(XPos2,YPos2,ZPos2,temp_upos,Thisvdiv+vdiv)
-						
+						Local v1t=v0b+1,v1b=v1t+1
+						surface.SetCoord(v1t,XPos,YPos,ZPos)
 						surface.SetTexCoord(v1t,temp_upos,Thisvdiv,0.0)
+						surface.SetCoord(v1b,XPos2,YPos2,ZPos2)
 						surface.SetTexCoord(v1b,temp_upos,Thisvdiv+vdiv,0.0)
 						
-						surface.AddTriangle(v0b,v0t,v1t)
-						surface.AddTriangle(v0b,v1t,v1b)
+						surface.SetTriangle((segments*2)*2+((i-1)*(segments-2)*2)+((j-1)*2)+0,v1t,v0t,v0b)
+						surface.SetTriangle((segments*2)*2+((i-1)*(segments-2)*2)+((j-1)*2)+1,v1b,v1t,v0b)
 						
 						Thisvdiv#=Thisvdiv#+vdiv#			
 						mult#=mult#+1
@@ -360,8 +377,8 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			surface.SetCoord( 1,-1.0, 1.0,-1.0);surface.SetTexCoord( 1, 0.0, 1.0)
 			surface.SetCoord( 2,-1.0, 1.0, 1.0);surface.SetTexCoord( 2, 1.0, 1.0)
 			surface.SetCoord( 3, 1.0, 1.0, 1.0);surface.SetTexCoord( 3, 1.0, 0.0)
-			surface.SetTriangle( 0, 2, 1, 0)
-			surface.SetTriangle( 1, 2, 0, 3)			
+			surface.SetTriangle( 0, 0, 1, 2)
+			surface.SetTriangle( 1, 3, 0, 2)			
 			
 			For Local i=4 To 7
 				surface.SetNormal(i,0,-1,0)
@@ -370,8 +387,8 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			surface.SetCoord( 5,-1.0,-1.0, 1.0);surface.SetTexCoord( 5, 0.0, 1.0)
 			surface.SetCoord( 6,-1.0,-1.0,-1.0);surface.SetTexCoord( 6, 1.0, 1.0)
 			surface.SetCoord( 7, 1.0,-1.0,-1.0);surface.SetTexCoord( 7, 1.0, 0.0)
-			surface.SetTriangle( 2, 6, 5, 4)
-			surface.SetTriangle( 3, 6, 4, 7)	
+			surface.SetTriangle( 2, 4, 5, 6)
+			surface.SetTriangle( 3, 7, 4, 6)	
 			
 			For Local i=8 To 11
 				surface.SetNormal(i,0,0,1)
@@ -380,8 +397,8 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			surface.SetCoord( 9,-1.0, 1.0, 1.0);surface.SetTexCoord( 9, 0.0, 0.0)
 			surface.SetCoord(10,-1.0,-1.0, 1.0);surface.SetTexCoord(10, 0.0, 1.0)
 			surface.SetCoord(11, 1.0,-1.0, 1.0);surface.SetTexCoord(11, 1.0, 1.0)
-			surface.SetTriangle( 4,10, 9, 8)
-			surface.SetTriangle( 5,10, 8,11)	
+			surface.SetTriangle( 4,8 , 9,10)
+			surface.SetTriangle( 5,11, 8,10)	
 	
 			For Local i=12 To 15
 				surface.SetNormal(i,0,0,-1)
@@ -390,8 +407,8 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			surface.SetCoord(13,-1.0,-1.0,-1.0);surface.SetTexCoord(13, 1.0, 1.0)
 			surface.SetCoord(14,-1.0, 1.0,-1.0);surface.SetTexCoord(14, 1.0, 0.0)
 			surface.SetCoord(15, 1.0, 1.0,-1.0);surface.SetTexCoord(15, 0.0, 0.0)
-			surface.SetTriangle( 6,14,13,12)
-			surface.SetTriangle( 7,14,12,15)	
+			surface.SetTriangle( 6,12,13,14)
+			surface.SetTriangle( 7,15,12,14)	
 			
 			For Local i=16 To 19
 				surface.SetNormal(i,-1,0,0)
@@ -400,8 +417,8 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			surface.SetCoord(17,-1.0, 1.0,-1.0);surface.SetTexCoord(17, 0.0, 0.0)
 			surface.SetCoord(18,-1.0,-1.0,-1.0);surface.SetTexCoord(18, 0.0, 1.0)
 			surface.SetCoord(19,-1.0,-1.0, 1.0);surface.SetTexCoord(19, 1.0, 1.0)
-			surface.SetTriangle( 8,18,17,16)
-			surface.SetTriangle( 9,18,16,19)	
+			surface.SetTriangle( 8,16,17,18)
+			surface.SetTriangle( 9,19,16,18)	
 			
 			For Local i=20 To 23
 				surface.SetNormal(i,1,0,0)
@@ -410,8 +427,8 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			surface.SetCoord(21, 1.0, 1.0, 1.0);surface.SetTexCoord(21, 0.0, 0.0)
 			surface.SetCoord(22, 1.0,-1.0, 1.0);surface.SetTexCoord(22, 0.0, 1.0)
 			surface.SetCoord(23, 1.0,-1.0,-1.0);surface.SetTexCoord(23, 1.0, 1.0)
-			surface.SetTriangle(10,22,21,20)
-			surface.SetTriangle(11,22,20,23)	
+			surface.SetTriangle(10,20,21,22)
+			surface.SetTriangle(11,23,20,22)	
 			Return True
 		Default
 			Return False

@@ -25,9 +25,9 @@ void C_UpdateNormals(int no_tris,int no_verts,int *tris,float *vert_coords,float
 
 		int tri_no=(t+1)*3;
 		
-		int v0=tris[tri_no-1];
+		int v0=tris[tri_no-3];
 		int v1=tris[tri_no-2];
-		int v2=tris[tri_no-3];
+		int v2=tris[tri_no-1];
 
 		float ax=vert_coords[v1*3+0]-vert_coords[v0*3+0];
 		float ay=vert_coords[v1*3+1]-vert_coords[v0*3+1];
@@ -49,9 +49,9 @@ void C_UpdateNormals(int no_tris,int no_verts,int *tris,float *vert_coords,float
 
 			int v=TriangleVertex(t,c,tris);
 			
-			float vx=vert_coords[v*3]; // surf.VertexX(v) 
+			float vx=vert_coords[(v*3)+2]; // surf.VertexX(v) 
 			float vy=vert_coords[(v*3)+1]; // surf.VertexY(v)
-			float vz=vert_coords[(v*3)+2]; // surf.VertexZ(v)
+			float vz=vert_coords[(v*3)+0]; // surf.VertexZ(v)
 		
 			Vector vex;
 			vex.x=vx;
@@ -67,9 +67,9 @@ void C_UpdateNormals(int no_tris,int no_verts,int *tris,float *vert_coords,float
 	int v;
 	for( v=0;v<no_verts;++v ){
 	
-		float vx=vert_coords[v*3]; // surf.VertexX(v)
+		float vx=vert_coords[(v*3)+2]; // surf.VertexX(v)
 		float vy=vert_coords[(v*3)+1]; // surf.VertexY(v)
-		float vz=vert_coords[(v*3)+2]; // surf.VertexZ(v)
+		float vz=vert_coords[(v*3)+0]; // surf.VertexZ(v)
 		
 		Vector vert(vx,vy,vz);
 		//vert.x=vx;

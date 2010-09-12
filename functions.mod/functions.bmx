@@ -16,6 +16,11 @@ End Function
 Function GetWireFrame()
 	Return _currentworld.GetWireFrame()
 End Function
+Rem
+	bbdoc: Enable/disable global wireframe rendering.
+	about: @SetWireframe can enable wireframe rendering for the entire scene. Alternatively, calling #SetEntityFX with @FX_WIREFRAME will cause only 
+			a single entity's wireframe to be rendered.
+End Rem
 Function SetWireFrame(enable)
 	Return _currentworld.SetWireFrame(enable)
 End Function
@@ -61,8 +66,8 @@ Function SetTextureScale(texture:TTexture,x#,y#)
 End Function
 
 'Brushes
-Function CreateBrush:TBrush()
-	Return _currentworld.AddBrush()
+Function CreateBrush:TBrush(url:Object=Null)
+	Return _currentworld.AddBrush(url)
 End Function
 Function GetBrushColor(brush:TBrush,red Var,green Var,blue Var)
 	Return brush.GetColor(red,green,blue)
@@ -97,6 +102,10 @@ End Function
 Function GetBrushFX(brush:TBrush)
 	Return brush.GetFX()
 End Function
+Rem
+	bbdoc: Set various rendering effects for a brush.
+	about:
+End Rem
 Function SetBrushFX(brush:TBrush,fx)
 	Return brush.SetFX(fx)
 End Function
@@ -164,6 +173,9 @@ Function SetEntityFX(entity:TEntity,fx)
 End Function
 Function TurnEntity(entity:TEntity,pitch#,yaw#,roll#,glob=False)
 	Return entity.Turn(pitch,yaw,roll,glob)
+End Function
+Function PointEntity(entity:TEntity,target:Object,roll#=0.0)
+	Return entity.Point(target,roll)
 End Function
 Function MoveEntity(entity:TEntity,x#,y#,z#)
 	Return entity.Move(x,y,z)
@@ -272,6 +284,9 @@ End Function
 Function LoadMesh:TMesh(url:Object,parent:TEntity=Null)
 	Return _currentworld.AddMesh(url,parent)
 End Function
+Function GetMeshSurface:TSurface(mesh:TMesh,index)
+	Return mesh.GetSurface(index)
+End Function
 Function AddMeshSurface:TSurface(mesh:TMesh,vertexcount=0,trianglecount=0)
 	Return mesh.AddSurface(vertexcount,trianglecount)
 End Function
@@ -290,6 +305,9 @@ End Function
 Function FlipMesh(mesh:TMesh)
 	Return mesh.Flip()
 End Function
+Function UpdateMeshNormals(mesh:TMesh)
+	Return mesh.UpdateNormals()
+End Function
 
 'Planes
 Function CreatePlane:TPlane(parent:TEntity=Null)
@@ -302,6 +320,9 @@ Function CountSurfaceVertices(surface:TSurface)
 End Function
 Function CountSurfaceTriangles(surface:TSurface)
 	Return surface.CountTriangles()
+End Function
+Function UpdateSurfaceNormals(surface:TSurface)
+	Return surface.UpdateNormals()
 End Function
 Function AddSurfaceVertex(surface:TSurface,x#,y#,z#,u#=0.0,v#=0.0)
 	Return surface.AddVertex(x,y,z,u,v)

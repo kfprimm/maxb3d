@@ -37,7 +37,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glEnableClientState(GL_COLOR_ARRAY)
 		glEnableClientState(GL_NORMAL_ARRAY)
 		
-		glFrontFace(GL_CW)	
+		'glFrontFace(GL_CW)	
 		
 		glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL,GL_SEPARATE_SPECULAR_COLOR)
 		glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER,GL_TRUE)
@@ -147,7 +147,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		EndIf
 		
 		Local rgba#[]=[light._brush._r,light._brush._g,light._brush._b,1.0]
-		Local pos#[]=[0.0,0.0,z,w]
+		Local pos#[]=[0.0,0.0,-z,w]
 		
 		glLightfv(GL_LIGHT[index],GL_POSITION,pos#)
 		glLightfv(GL_LIGHT[index],GL_DIFFUSE,rgba#)
@@ -167,7 +167,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glPopMatrix()
 	End Method
 	
-	Method SetBrush(brush:TBrush,hasalpha)
+	Method SetBrush(brush:TBrush,hasalpha,surface:TSurface=Null)
 		glDisable(GL_ALPHA_TEST)
 		
 		Local ambient#[]=[WorldConfig.AmbientRed/255.0,WorldConfig.AmbientGreen/255.0,WorldConfig.AmbientBlue/255.0]			
@@ -243,7 +243,6 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			Local texres:TGLTextureRes=TGLTextureRes(UpdateTextureRes(texture))
 			
 			glActiveTextureARB(GL_TEXTURE0+i)
-			glClientActiveTextureARB(GL_TEXTURE0+i)
 						
 			glEnable GL_TEXTURE_2D
 			BindTexture texres._id	
@@ -286,27 +285,21 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			Else
 				glDisable(GL_TEXTURE_GEN_S)
 				glDisable(GL_TEXTURE_GEN_T)
-			EndIf	
-				
-			'glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-			'glBindBufferARB(GL_ARRAY_BUFFER_ARB,res._vbo[4+texture._coords])
-			'glTexCoordPointer(2,GL_FLOAT,0,Null)			
+			EndIf						
 		Next		
 	End Method
 	
 	Method RenderSurface(surface:TSurface,brush:TBrush)
 		Local res:TGLSurfaceRes=UpdateSurfaceRes(surface)	
-
-		'glDisableClientState(GL_TEXTURE_COORD_ARRAY)
+		
+		glDisableClientState GL_TEXTURE_COORD_ARRAY
 		For Local i=0 To 7
 			Local texture:TTexture=brush._texture[i]
 			If texture=Null Continue
-			Local texres:TGLTextureRes=TGLTextureRes(UpdateTextureRes(texture))
-			glActiveTextureARB(GL_TEXTURE0+i)
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 			glClientActiveTextureARB(GL_TEXTURE0+i)
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY)		
 			glBindBufferARB(GL_ARRAY_BUFFER_ARB,res._vbo[4+texture._coords])
-			glTexCoordPointer(2,GL_FLOAT,0,Null)	
+			glTexCoordPointer(2,GL_FLOAT,0,Null)
 		Next
 		
 		glBindBufferARB(GL_ARRAY_BUFFER_ARB,res._vbo[0])
@@ -349,13 +342,13 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glBegin(GL_QUADS)	
 			glNormal3f 0,1,0
 			glTexCoord2f 0,0
-			glVertex3f(-1,0, -1)	
+			glVertex3f(-1,0, 1)				
 			glTexCoord2f 1,0	
-			glVertex3f(1, 0, -1)
+			glVertex3f(1, 0, 1)			
 			glTexCoord2f 1,1
-			glVertex3f(1, 0, 1)
+			glVertex3f(1, 0, -1)
 			glTexCoord2f 0,1
-			glVertex3f(-1,0, 1)			
+			glVertex3f(-1,0, -1)			
 		glEnd()
 		EndRender plane
 		Return 2

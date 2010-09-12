@@ -42,7 +42,7 @@ Type TWorld
 		_config.Wireframe=enable
 	End Method
 	
-	Method AddTexture:TTexture(url:Object,flags)
+	Method AddTexture:TTexture(url:Object,flags=TEXTURE_DEFAULT)
 		Local texture:TTexture=New TTexture,pixmap:TPixmap
 		If Int[](url)
 			Local arr[]=Int[](url),width,height
@@ -63,8 +63,26 @@ Type TWorld
 		Return texture
 	End Method
 	
-	Method AddBrush:TBrush()
+	Method AddBrush:TBrush(url:Object=Null)
 		Local brush:TBrush=New TBrush
+		Local red=255,green=255,blue=255,texture:TTexture
+		If Int[](url)
+			Local clr[]=Int[](url)
+			If clr.length>0 red=clr[0]
+			If clr.length>1 green=clr[1]
+			If clr.length>2 blue=clr[2]
+		ElseIf Float[](url)
+			Local clr[]=Int[](url)
+			If clr.length>0 red=clr[0]*255
+			If clr.length>1 green=clr[1]*255
+			If clr.length>2 blue=clr[2]*255
+		ElseIf TTexture(url)
+			texture=TTexture(url)
+		ElseIf url<>Null
+			texture=_currentworld.AddTexture(url)
+		EndIf
+		brush.SetTexture texture,0
+		brush.SetColor red,green,blue
 		_config.AddObject brush,WORLDLIST_BRUSH
 		Return brush
 	End Method
@@ -118,6 +136,7 @@ Type TWorld
 	Method RenderCamera(camera:TCamera)
 		Local driver:TMaxB3DDriver=TMaxB3DDriver(GetGraphicsDriver())
 		Assert driver,"MaxB3D driver not set!"
+		Assert driver._current,"Graphics not set!"
 		driver.SetCamera camera
 		Local index
 		For Local light:TLight=EachIn _config.List[WORLDLIST_LIGHT]
@@ -135,7 +154,7 @@ Type TWorld
 				For Local surface:TSurface=EachIn mesh._surfaces	
 					If surface._brush._a=0 Continue				
 					Local brush:TBrush=driver.MakeBrush(surface._brush,mesh._brush)
-					driver.SetBrush brush,surface.HasAlpha()
+					driver.SetBrush brush,surface.HasAlpha(),surface
 					tricount:+driver.RenderSurface(surface,brush)
 				Next
 				driver.EndRender mesh
@@ -151,7 +170,7 @@ End Type
 Type TMaxB3DDriver Extends TMax2DDriver
 	Global _parent:TMax2DDriver
 	
-	Field _texture:TTexture[8]
+	Field _texture:TTexture[8],_current:TGraphics
 	
 	Method CreateFrameFromPixmap:TImageFrame(pixmap:TPixmap,flags) 
 		Return _parent.CreateFrameFromPixmap(pixmap,flags)
@@ -227,6 +246,7 @@ Type TMaxB3DDriver Extends TMax2DDriver
 		_parent.SetGraphics(g)
 		WorldConfig.Width=GraphicsWidth()
 		WorldConfig.Height=GraphicsHeight()
+		_current=g
 	End Method
 	
 	Method Flip( sync )
@@ -236,7 +256,7 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	Method BeginMax2D() Abstract
 	Method EndMax2D() Abstract
 	
-	Method SetBrush(brush:TBrush,hasalpha) Abstract
+	Method SetBrush(brush:TBrush,hasalpha,surface:TSurface=Null) Abstract
 	Method SetCamera(camera:TCamera) Abstract
 	Method SetLight(light:TLight,index) Abstract	
 	

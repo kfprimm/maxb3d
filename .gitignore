@@ -2,3 +2,5 @@
 *.x86.i
 *.debug
 .bmx/
+*.bak
+.*.bmx

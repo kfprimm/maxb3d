@@ -3,19 +3,19 @@ Strict
 
 Import MaxB3D.Drivers
 
-Graphics 640,480,0
+Graphics 800,600,0
 
 Local camera:TCamera=CreateCamera()
 
 Local light:TLight=CreateLight()
 SetEntityRotation light,90,0,0
 
-Local sphere:TMesh=CreateSphere( 32 )
+Local sphere:TMesh=CreateSphere(32)
 SetEntityPosition sphere,0,0,2
 
 Local enable
-While Not KeyDown( KEY_ESCAPE )
-	If KeyHit( KEY_SPACE ) Then enable=Not enable
+While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
+	If KeyHit(KEY_SPACE) Then enable=Not enable
 	SetWireFrame enable
 	
 	RenderWorld
