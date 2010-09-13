@@ -233,7 +233,10 @@ Function SetEntityType(entity:TEntity,typ,recursive=False)
 End Function
 Function ResetEntity(entity:TEntity)
 	Return entity.Reset()
-End function
+End Function
+Function GetEntityDistance(entity:TEntity,target:Object)
+	Return entity.GetDistance(target)
+End Function
 
 'Lights
 Function CreateLight:TLight(typ=LIGHT_DIRECTIONAL,parent:TEntity=Null)

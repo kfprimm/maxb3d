@@ -169,45 +169,57 @@ Type TEntity
 	End Method
 	
 	Method Turn(pitch#,yaw#,roll#,glob=False)
-		_rx:+pitch;_ry:+yaw;_rz:+roll
+		_rx:-pitch;_ry:+yaw;_rz:+roll
 		RefreshMatrix()
 	End Method
 	
 	Method Point(target:Object,roll#=0.0)
-		Local x#,y#,z#
+		Local x#,y#,z#,tx#,ty#,tz#
 		GetPosition x,y,z,True
-		
-		Local tx#,ty#,tz#
-		If TEntity(target) TEntity(target).GetPosition tx,ty,tz,True
-		If Float[](target)
-			Local coords#[]=Float[](target)
-			If coords.length>0 tx=coords[0]
-			If coords.length>1 ty=coords[1]
-			If coords.length>2 tz=coords[2]
-		EndIf
+		GetTargetPosition target,tx,ty,tz 
 
 		Local xdiff#=x-tx,ydiff#=y-ty,zdiff#=z-tz
 
 		Local dist22#=Sqr((xdiff*xdiff)+(zdiff*zdiff))
-		Local pitch#=-ATan2(ydiff,dist22)
+		Local pitch#=ATan2(ydiff,dist22)
 		Local yaw#=ATan2(xdiff,-zdiff)
 
 		SetRotation pitch,yaw,roll,True
 	End Method
 	
+	Method GetDistance#(target:Object)
+		Local x#,y#,z#,tx#,ty#,tz#
+		GetPosition x,y,z,True
+		GetTargetPosition target,tx,ty,tz		
+		Return Sqr((x-tx)*(x-tx)+(y-ty)*(y-ty)+(z-tz)*(z-tz))
+	End Method
+	
+	Function GetTargetPosition(target:Object,x# Var,y# Var,z# Var)
+		Assert target,"Null target given."
+		If TEntity(target) TEntity(target).GetPosition x,y,z,True
+		If Float[](target)
+			Local coords#[]=Float[](target)
+			If coords.length>0 x=coords[0]
+			If coords.length>1 y=coords[1]
+			If coords.length>2 z=coords[2]
+		EndIf
+		Assert "Invalid target given."
+	End Function	
+	
 	Method GetRotation(pitch# Var,yaw# Var,roll# Var,glob=False)
 		If glob
 			_matrix.GetRotation pitch,yaw,roll
+			pitch:*-1
 		Else
-			pitch=_rx;yaw=_ry;roll=_rz
+			pitch=-_rx;yaw=_ry;roll=_rz
 		EndIf
 	End Method
 	Method SetRotation(pitch#,yaw#,roll#,glob=False)
-		_rx=pitch;_ry=yaw;_rz=roll
+		_rx=-pitch;_ry=yaw;_rz=roll
 		If glob And _parent<>Null
 			Local rx#,ry#,rz#
 			_parent.GetRotation rx,ry,rz
-			_rx:+rx;_ry:+ry;_rz:+rz			
+			_rx:-rx;_ry:+ry;_rz:+rz			
 		EndIf
 		RefreshMatrix()
 	End Method
@@ -320,6 +332,7 @@ Type TEntity
 			Next
 		EndIf
 	End Method
+	
 	
 	Method RefreshMatrix()
 		If _parent<>Null
