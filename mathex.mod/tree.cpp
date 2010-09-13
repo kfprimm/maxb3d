@@ -218,7 +218,7 @@ extern "C"
 		delete mesh_info;
 	}
 
-	void C_AddSurface(MeshInfo &mesh_info,int no_tris,int no_verts,short tris[],float verts[],int surface)
+	void C_AddSurface(MeshInfo &mesh_info,int no_tris,int no_verts,int tris[],float verts[],int surface)
 	{
 
 		int t;

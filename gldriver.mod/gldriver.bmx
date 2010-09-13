@@ -141,7 +141,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		
 		Local z#=1.0
 		Local w#=0.0
-		If light._type>LIGHT_DIRECTIONAL
+		If light._mode>LIGHT_DIRECTIONAL
 			z=0.0
 			w=1.0
 		EndIf
@@ -152,12 +152,12 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glLightfv(GL_LIGHT[index],GL_POSITION,pos#)
 		glLightfv(GL_LIGHT[index],GL_DIFFUSE,rgba#)
 
-		If light._type>LIGHT_DIRECTIONAL		
+		If light._mode>LIGHT_DIRECTIONAL		
 			Local range#[]=[light._range]			
 			glLightfv(GL_LIGHT[index],GL_LINEAR_ATTENUATION,range)
 		EndIf
 
-		If light._type=LIGHT_SPOT		
+		If light._mode=LIGHT_SPOT		
 			Local dir#[]=[0.0,0.0,-1.0]
 			Local outer#[]=[light._outer]		
 			glLightfv(GL_LIGHT[index],GL_SPOT_DIRECTION,dir)

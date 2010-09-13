@@ -7,6 +7,15 @@ ModuleInfo "License: LGPL"
 
 Import MaxB3D.Core
 
+Function RenderWorld(tween#=1.0)
+	Return _currentworld.Render(tween)
+End Function
+Function UpdateWorld()
+	Return _currentworld.Update()
+End Function
+Function SetCollisions(src,dest,methd,response)
+	Return _currentworld.SetCollisions(src,dest,methd,response)
+End Function
 Function GetAmbientLight(red Var,green Var,blue Var)
 	Return _currentworld.GetAmbientLight(red,green,blue)
 End Function
@@ -201,6 +210,30 @@ End Function
 Function SetEntityPosition(entity:TEntity,x#,y#,z#,glob=False)
 	Return entity.SetPosition(x,y,z,glob)
 End Function
+Function GetEntityCollisions:TCollision[](entity:TEntity)
+	Return entity.GetCollisions()
+End Function
+Function GetEntityBox(entity:TEntity,x# Var,y# Var,z# Var,width# Var,height# Var,depth# Var)
+	Return entity.GetBox(x,y,z,width,height,depth)
+End Function
+Function SetEntityBox(entity:TEntity,x#,y#,z#,width#,height#,depth#)
+	Return entity.SetBox(x,y,z,width,height,depth)
+End Function
+Function GetEntityRadius(entity:TEntity,x# Var,y# Var)
+	Return entity.GetRadius(x,y)
+End Function
+Function SetEntityRadius(entity:TEntity,x#,y#=-1)
+	Return entity.SetRadius(x,y)
+End Function
+Function GetEntityType(entity:TEntity)
+	Return entity.GetType()
+End Function
+Function SetEntityType(entity:TEntity,typ,recursive=False)
+	Return entity.SetType(typ,recursive)
+End Function
+Function ResetEntity(entity:TEntity)
+	Return entity.Reset()
+End function
 
 'Lights
 Function CreateLight:TLight(typ=LIGHT_DIRECTIONAL,parent:TEntity=Null)

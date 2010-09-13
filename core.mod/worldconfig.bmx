@@ -16,12 +16,16 @@ Const WORLDLIST_BRUSH	= 7
 Const WORLDLIST_RENDER	= 8
 Const WORLDLIST_ARRAYSIZE = 9
 
+Const MAX_COLLISION_TYPES=100
+
 Type TWorldConfig
 	Field Width,Height
 	Field AmbientRed,AmbientGreen,AmbientBlue
 	Field Wireframe
 	
 	Field List:TList[WORLDLIST_ARRAYSIZE]
+	Field CollisionType:TList[MAX_COLLISION_TYPES]
+	Field CollisionPairs:TList=CreateList()
 	
 	Method New()
 		For Local i=0 To WORLDLIST_ARRAYSIZE-1

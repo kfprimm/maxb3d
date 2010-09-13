@@ -9,6 +9,9 @@ Type TMesh Extends TRenderEntity
 	Field _surfaces:TList=CreateList()
 	Field _resetbounds,_minx#,_miny#,_minz#,_maxx#,_maxy#,_maxz#
 	
+	Field _tree:Byte Ptr
+	Field _resettree
+	
 	Method HasAlpha()
 		If _brush._a<>1 Or _brush._fx&FX_FORCEALPHA Return True
 		For Local surface:TSurface=EachIn _surfaces
@@ -165,6 +168,48 @@ Type TMesh Extends TRenderEntity
 		For Local surface:TSurface=EachIn _surfaces
 			func surface,data
 		Next
+	End Method
+	
+	Method TreeCheck:Byte Ptr()
+		If _resettree=True
+			If _tree<>Null C_DeleteColTree(_tree);_tree=Null
+			_resettree=False				
+		EndIf
+
+		If _tree=Null
+			Local vertextotal,info:Byte Ptr=C_NewMeshInfo(),count
+			
+			For Local surface:TSurface=EachIn _surfaces
+				count:+1				
+				Local triangles[]=surface._triangle[..]
+				Local vertices:Float[]=surface._vertexpos[..]
+										
+				If surface._trianglecnt<>0 And surface._vertexcnt<>0
+					For Local i=0 To surface._trianglecnt-1
+						triangles[i*3+0]:+vertextotal
+						triangles[i*3+1]:+vertextotal
+						triangles[i*3+2]:+vertextotal
+					Next
+				
+					For Local i=0 To surface._trianglecnt-1
+						Local old=triangles[i*3+0]
+						triangles[i*3+0]=triangles[i*3+2]
+						triangles[i*3+2]=old
+					Next
+					
+					For Local i=0 To surface._vertexcnt-1
+						vertices[i*3+2]=-vertices[i*3+2]
+					Next
+		
+					C_AddSurface(info,surface._trianglecnt,surface._vertexcnt,triangles,vertices,count)										
+					vertextotal:+surface._vertexcnt				
+				EndIf	
+			Next
+
+			_tree=C_CreateColTree(info)
+			C_DeleteMeshInfo(info)
+		EndIf
+		Return _tree
 	End Method
 End Type
 

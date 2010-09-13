@@ -263,7 +263,7 @@ Extern
 
 	Function C_NewMeshInfo:Byte Ptr()
 	Function C_DeleteMeshInfo(mesh_info:Byte Ptr)
-	Function C_AddSurface(mesh_info:Byte Ptr,no_tris:Int,no_verts:Int,tris:Short Ptr,verts:Float Ptr,surf:Int)
+	Function C_AddSurface(mesh_info:Byte Ptr,no_tris:Int,no_verts:Int,tris:Int Ptr,verts:Float Ptr,surf:Int)
 	
 	Function C_CreateColTree:Byte Ptr(mesh_info:Byte Ptr)
 	Function C_DeleteColTree(col_tree:Byte Ptr)

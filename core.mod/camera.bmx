@@ -11,7 +11,7 @@ Const CAMMODE_ORTHO	= 2
 Const CLSMODE_COLOR	= 1
 Const CLSMODE_DEPTH	= 2
 
-Const FOGMODE_NONE	= 0
+Const FOGMODE_NONE		= 0
 Const FOGMODE_LINEAR	= 1
 
 Type TCamera Extends TEntity

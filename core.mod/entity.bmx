@@ -4,6 +4,7 @@ Strict
 Import BRL.LinkedList
 Import MaxB3D.MathEx
 Import "brush.bmx"
+Import "collision.bmx"
 Import "worldconfig.bmx"
 
 Type TEntity
@@ -13,13 +14,17 @@ Type TEntity
 	Field _px#,_py#,_pz#
 	Field _rx#,_ry#,_rz#
 	Field _sx#,_sy#,_sz#
-	
-	Field _order
-	
+		
 	Field _brush:TBrush=New TBrush
 	
 	Field _parent:TEntity,_childlist:TList=CreateList()
-	Field _hidden
+	Field _hidden,_order
+	
+	Field _collision:TCollision[]
+	Field _oldx#,_oldy#,_oldz#
+	Field _radiusx#,_radiusy#
+	Field _boxx#,_boxy#,_boxz#,_boxwidth#,_boxheight#,_boxdepth#
+	Field _type,_typelink:TLink
 	
 	Field _linklist:TList=CreateList()
 	
@@ -262,6 +267,58 @@ Type TEntity
 	End Method
 	Method SetVisible(visible)
 		_hidden=Not visible
+	End Method
+	
+	Method GetCollisions:TCollision[]()
+		Return _collision
+	End Method
+	
+	Method GetRadius(x# Var,y# Var)
+		x=_radiusx;y=_radiusy
+	End Method
+	Method SetRadius(x#,y#=-1)
+		_radiusx=x;_radiusy=x
+		If y>-1 _radiusy=y
+	End Method
+	
+	Method GetBox(x# Var,y# Var,z# Var,width# Var,height# Var,depth# Var)
+		x=_boxx;y=_boxy;z=_boxz
+		width=_boxwidth;height=_boxheight;depth=_boxdepth
+	End Method
+	Method SetBox(x#,y#,z#,width#,height#,depth#)
+		_boxx=x;_boxy=y;_boxz=z
+		_boxwidth=width;_boxheight=height;_boxdepth=depth
+	End Method
+	
+	Method Reset()
+		_collision=Null
+		GetPosition _oldx,_oldy,_oldz,True
+	End Method
+	
+	Method GetType()
+		Return _type
+	End Method
+	Method SetType(typ,recursive=False)
+		If _typelink
+			_linklist.Remove(_typelink)
+			_typelink.Remove()
+			_typelink=Null
+		EndIf
+		
+		If typ>0
+			If WorldConfig.CollisionType[typ]=Null WorldConfig.CollisionType[typ]=CreateList()
+			_typelink=WorldConfig.CollisionType[typ].AddLast(Self)
+			AddLink _typelink
+		EndIf		
+		
+		_type=typ
+		GetPosition _oldx,_oldy,_oldz,True
+		
+		If recursive
+			For Local child:TEntity=EachIn _childlist
+				child.SetType typ,True
+			Next
+		EndIf
 	End Method
 	
 	Method RefreshMatrix()
