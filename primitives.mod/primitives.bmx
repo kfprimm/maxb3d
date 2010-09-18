@@ -298,15 +298,12 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			Return True
 		Case "cone"
 			Local segments=Int(params[0]),solid=Int(params[1])
-			
-			Local top,br,bl
-			Local bs0,bs1,newbs
-			
+						
 			If segments<3 Or segments>100 Then Return Null
 			
-			Local surface:TSurface=mesh.AddSurface(1000,1000)
+			Local surface:TSurface=mesh.AddSurface(1+segments*2,segments)
 			Local bottomsurface:TSurface
-			If solid bottomsurface=mesh.AddSurface(1000,100)
+			If solid bottomsurface=mesh.AddSurface(1+segments,segments-1)
 			
 			Local div#=Float(360.0/(segments))
 		
@@ -318,50 +315,38 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			Local xpos#=-Cos(angle)
 			Local zpos#=Sin(angle)
 		
-			top=surface.AddVertex(0.0,height,0.0,upos-(udiv/2.0),0)
-			br=surface.AddVertex(xpos,-height,zpos,upos,1)
-			
-			surface.SetTexCoord(top,upos-(udiv/2.0),0,0.0)
-			surface.SetTexCoord(br,upos,1,0.0)
+			surface.SetCoord(0,0.0,height,0.0);surface.SetTexCoord(0,upos-(udiv/2.0),0)
+			surface.SetCoord(1,xpos,-height,zpos);surface.SetTexCoord(1,upos,1)
 		
-			If solid=True Then bs0=bottomsurface.AddVertex(xpos,-height,zpos,xpos/2.0+0.5,zpos/2.0+0.5)
-			If solid=True Then bottomsurface.SetTexCoord(bs0,xpos/2.0+0.5,zpos/2.0+0.5,0.0)
+			If solid bottomsurface.SetCoord(0,xpos,-height,zpos);bottomsurface.SetTexCoord(0,xpos/2.0+0.5,zpos/2.0+0.5)
 		
-			angle=angle+div
+			angle:+div
 		
 			xpos=-Cos(angle)
 			zpos=Sin(angle)
 						
-			bl=surface.AddVertex(xpos,-height,zpos,upos#-udiv#,1)
-			surface.SetTexCoord(bl,upos-udiv,1,0.0)
+			surface.SetCoord(2,xpos,-height,zpos);surface.SetTexCoord(2,upos-udiv,1)
 		
-			If solid=True Then bs1=bottomsurface.AddVertex(xpos,-height,zpos,xpos/2.0+0.5,zpos/2.0+0.5)
-			If solid=True Then bottomsurface.SetTexCoord(bs1,xpos/2.0+0.5,zpos/2.0+0.5,0.0)
+			If solid bottomsurface.SetCoord(1,xpos,-height,zpos);bottomsurface.SetTexCoord(1,xpos/2.0+0.5,zpos/2.0+0.5)
 			
-			surface.AddTriangle(br,top,bl)
+			surface.SetTriangle(0,2,0,1) 'br,top,bl
 		
 			For Local i=1 To segments-1
-				br=bl
-				upos#=upos-udiv
-				top=surface.AddVertex(0.0,height,0.0,upos#-(udiv#/2.0),0)
-				surface.SetTexCoord(top,upos#-(udiv#/2.0),0,0.0)
+				Local v=1+(i*2)
+				upos:-udiv
+				surface.SetCoord(v+0,0.0,height,0.0);surface.SetTexCoord(v+0,upos-(udiv/2.0),0)
 			
-				angle=angle+div
+				angle:+div
 		
 				xpos=-Cos(angle)
 				zpos=Sin(angle)
 				
-				bl=surface.AddVertex(xpos,-height,zpos,upos-udiv,1)
-				surface.SetTexCoord(bl,upos-udiv,1,0.0)
-		
-				If solid=True Then newbs=bottomsurface.AddVertex(xpos,-height,zpos,xpos/2.0+0.5,zpos/2.0+0.5)
-				If solid=True Then bottomsurface.SetTexCoord(newbs,xpos/2.0+0.5,zpos/2.0+0.5,0.0)
-			
-				surface.AddTriangle(br,top,bl)
+				surface.SetCoord(v+1,xpos,-height,zpos);surface.SetTexCoord(v+1,upos-udiv,1)			
+				surface.SetTriangle(i,v+1,v+0,v-1)
 				
 				If solid=True
-					bottomsurface.AddTriangle(bs0,bs1,newbs)				
-					If i<(segments-1) bs1=newbs
+					bottomsurface.SetCoord(i+1,xpos,-height,zpos);bottomsurface.SetTexCoord(i+1,xpos/2.0+0.5,zpos/2.0+0.5)
+					bottomsurface.SetTriangle(i-1,i+1,i,0)
 				EndIf
 			Next		
 			

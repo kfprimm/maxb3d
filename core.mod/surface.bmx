@@ -131,6 +131,7 @@ Type TSurface
 		_triangle[index*3+0]=v0
 		_triangle[index*3+1]=v1
 		_triangle[index*3+2]=v2
+		_reset:|8
 	End Method
 	
 	Method Flip()

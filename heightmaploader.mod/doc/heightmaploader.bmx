@@ -19,7 +19,7 @@ PointEntity camera,pivot
 Local pixmap:TPixmap=CreatePixmap(64,64,PF_I8)
 For Local y=0 To PixmapHeight(pixmap)-1
 	For Local x=0 To PixmapWidth(pixmap)-1
-		PixmapPixelPtr(pixmap,x,y)[0]=0;'Rand(0,255)
+		PixmapPixelPtr(pixmap,x,y)[0]=Rand(0,10)
 	Next
 Next
 SetWireframe True
