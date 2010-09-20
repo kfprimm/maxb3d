@@ -167,7 +167,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glPopMatrix()
 	End Method
 	
-	Method SetBrush(brush:TBrush,hasalpha,surface:TSurface=Null)
+	Method SetBrush(brush:TBrush,hasalpha)
 		glDisable(GL_ALPHA_TEST)
 		
 		Local ambient#[]=[WorldConfig.AmbientRed/255.0,WorldConfig.AmbientGreen/255.0,WorldConfig.AmbientBlue/255.0]			

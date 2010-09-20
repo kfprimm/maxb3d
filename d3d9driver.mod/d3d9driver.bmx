@@ -64,7 +64,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	End Method
 	
 	Method SetLight(light:TLight,index)
-		_d3ddev.LightEnable index,light.GetVisibility()
+		_d3ddev.LightEnable index,light.GetVisible()
 		Global d3dlight:D3DLIGHT9=New D3DLIGHT9
 		d3dlight.Position_x=0.0;d3dlight.Position_y=0.0;d3dlight.Position_z=1.0
 		d3dlight.Direction_x=0.0;d3dlight.Direction_y=0.0;d3dlight.Direction_z=-1.0
@@ -73,7 +73,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.SetLight(index,d3dlight)
 	End Method
 	
-	Method SetBrush(brush:TBrush) 
+	Method SetBrush(brush:TBrush,hasalpha) 
 	End Method
 	
 	Method RenderSurface(surface:TSurface,brush:TBrush)

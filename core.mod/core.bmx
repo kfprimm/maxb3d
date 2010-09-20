@@ -278,7 +278,7 @@ Type TWorld
 				For Local surface:TSurface=EachIn mesh._surfaces	
 					If surface._brush._a=0 Continue				
 					Local brush:TBrush=driver.MakeBrush(surface._brush,mesh._brush)
-					driver.SetBrush brush,surface.HasAlpha(),surface
+					driver.SetBrush brush,surface.HasAlpha()
 					tricount:+driver.RenderSurface(surface,brush)
 				Next
 				driver.EndRender mesh
@@ -380,7 +380,7 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	Method BeginMax2D() Abstract
 	Method EndMax2D() Abstract
 	
-	Method SetBrush(brush:TBrush,hasalpha,surface:TSurface=Null) Abstract
+	Method SetBrush(brush:TBrush,hasalpha) Abstract
 	Method SetCamera(camera:TCamera) Abstract
 	Method SetLight(light:TLight,index) Abstract	
 	
