@@ -12,21 +12,23 @@ Import PUB.GLew
 Global GL_LIGHT[]=[GL_LIGHT0,GL_LIGHT1,GL_LIGHT2,GL_LIGHT3,GL_LIGHT4,GL_LIGHT5,GL_LIGHT6,GL_LIGHT7]
 
 Type TGLMaxB3DDriver Extends TMaxB3DDriver
-	Method BindTexture(tex)
-		'Global currenttexture
-		'If tex<>currenttexture glBindTexture GL_TEXTURE_2D,tex;currenttexture=tex
-		glBindTexture GL_TEXTURE_2D,tex
-	End Method
-	
 	Method SetGraphics(g:TGraphics)
 		Super.SetGraphics g
 		glewInit()
 		If g<>Null EndMax2D()		
 	End Method
 	
+	Function BindTexture(tex)
+		Global currenttexture
+		If tex<>currenttexture
+			glBindTexture GL_TEXTURE_2D,tex
+			currenttexture=tex
+		EndIf
+	End Function
+	
 	Function EnableStates()	
 		glEnable(GL_LIGHTING)
-   		glEnable(GL_DEPTH_TEST)
+		glEnable(GL_DEPTH_TEST)
 		glEnable(GL_FOG)
 		glEnable(GL_CULL_FACE)
 		glEnable(GL_SCISSOR_TEST)
@@ -47,6 +49,8 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
 	
 		glAlphaFunc(GL_GEQUAL,0.5)
+		
+		BindTexture 0
 	End Function	
 	
 	Method BeginMax2D()

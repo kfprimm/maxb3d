@@ -110,10 +110,10 @@ Type TMatrix
 		Local ty#=0
 		Local tz#=0
 	
-	  	matrix._m[0,0] = _m[0,0]
-	  	matrix._m[1,0] = _m[0,1]
-	  	matrix._m[2,0] = _m[0,2]
-	
+  	matrix._m[0,0] = _m[0,0]
+  	matrix._m[1,0] = _m[0,1]
+  	matrix._m[2,0] = _m[0,2]
+
 		matrix._m[0,1] = _m[1,0]
 		matrix._m[1,1] = _m[1,1]
 		matrix._m[2,1] = _m[1,2]
