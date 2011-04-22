@@ -232,8 +232,8 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 					solidsurface.SetTexCoord(newts,xpos#/2.0+0.5,zpos#/2.0+0.5,0.0)
 					solidsurface.SetTexCoord(newbs,xpos#/2.0+0.5,zpos#/2.0+0.5,0.0)
 					
-					solidsurface.AddTriangle(newts,ts1,ts0)
-					solidsurface.AddTriangle(bs0,bs1,newbs)
+					solidsurface.AddTriangle(ts0,ts1,newts)
+					solidsurface.AddTriangle(newbs,bs1,bs0)
 				
 					If i<(segments-2)
 						ts1=newts
@@ -285,8 +285,8 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 					bl=bRing[v]
 					br=bRing[v-1]
 					
-					surface.AddTriangle(br,tr,tl)
-					surface.AddTriangle(br,tl,bl)
+					surface.AddTriangle(tl,tr,br)
+					surface.AddTriangle(bl,tl,br)
 				Next
 				
 				For Local v=0 To (segments)

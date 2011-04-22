@@ -1,9 +1,9 @@
 *.x86.a
 *.x86.i
 *.debug
-.bmx/
 *.bak
 .*.bmx
-functions.mod/doc/media/
-samples/
-!samples/*/*.bmx
+/functions.mod/doc/media/
+/samples/
+!/samples/*/*.bmx
+.bmx/
