@@ -19,7 +19,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	End Method
 	
 	Function BindTexture(tex)
-		Global currenttexture
+		Global currenttexture = -1
 		If tex<>currenttexture
 			glBindTexture GL_TEXTURE_2D,tex
 			currenttexture=tex

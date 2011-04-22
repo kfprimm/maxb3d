@@ -13,7 +13,7 @@ SetEntityRotation light,90,0,0
 Local cylinder:TMesh=CreateCylinder()
 SetEntityPosition cylinder,0,0,5
 
-While Not KeyDown( KEY_ESCAPE )
+While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
 	RenderWorld
 	Flip
 Wend
