@@ -4,6 +4,6 @@
 *.bak
 .*.bmx
 /functions.mod/doc/media/
-/samples/
-!/samples/*/*.bmx
+/functions.mod/doc/bb/
+/samples/*/media/
 .bmx/

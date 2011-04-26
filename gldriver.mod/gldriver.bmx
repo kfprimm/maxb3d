@@ -39,7 +39,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glEnableClientState(GL_COLOR_ARRAY)
 		glEnableClientState(GL_NORMAL_ARRAY)
 		
-		'glFrontFace(GL_CW)	
+		glFrontFace(GL_CW)	
 		
 		glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL,GL_SEPARATE_SPECULAR_COLOR)
 		glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER,GL_TRUE)
@@ -115,17 +115,17 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glMatrixMode GL_PROJECTION
 		glLoadIdentity()
 		glLoadMatrixf TMatrix.PerspectiveFOV(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).GetPtr()
-		glScalef -1,1,-1
+		glScalef 1,1,-1
 		
 		glMatrixMode GL_MODELVIEW		
-		Local matrix:TMatrix=camera._matrix.Inverse()
-		glLoadMatrixf matrix.GetPtr()		
+		camera._lastglobal=camera._matrix.Inverse()
+		glLoadMatrixf camera._lastglobal.GetPtr()
 		
 		glGetFloatv(GL_MODELVIEW_MATRIX,camera._lastmodelview._m)
 		glGetFloatv(GL_PROJECTION_MATRIX,camera._lastprojection._m)
 		glGetIntegerv(GL_VIEWPORT,camera._lastviewport)
-		
-		'ExtractFrustum()
+
+		camera.ExtractFrustum
 	End Method	
 	
 	Method SetLight(light:TLight,index)
@@ -356,6 +356,19 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glEnd()
 		EndRender plane
 		Return 2
+	End Method
+	
+	Method RenderTerrain(terrain:TTerrain)
+		glEnableClientState  GL_VERTEX_ARRAY
+		glDisableClientState GL_COLOR_ARRAY
+		glDisableClientState GL_NORMAL_ARRAY
+		
+		glVertexPointer(3,GL_FLOAT, 20, terrain._data+2)
+		glDrawArrays(GL_TRIANGLES, 0, 3*terrain._count)
+		
+		glEnableClientState GL_VERTEX_ARRAY
+		glEnableClientState GL_COLOR_ARRAY 
+		glEnableClientState GL_NORMAL_ARRAY 
 	End Method
 	
 	Method UpdateTextureRes:TTextureRes(texture:TTexture)

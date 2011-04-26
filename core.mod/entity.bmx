@@ -2,7 +2,7 @@
 Strict
 
 Import BRL.LinkedList
-Import MaxB3D.MathEx
+Import MaxB3D.Math
 Import "brush.bmx"
 Import "collision.bmx"
 Import "worldconfig.bmx"

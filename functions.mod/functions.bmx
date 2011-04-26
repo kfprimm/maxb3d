@@ -350,6 +350,23 @@ Function CreatePlane:TPlane(parent:TEntity=Null)
 	Return _currentworld.AddPlane(parent)
 End Function
 
+'Terrains
+Function CreateTerrain:TTerrain(size,parent:TEntity=Null)
+	Return _currentworld.AddTerrain([size],parent)
+End Function
+Function LoadTerrain:TTerrain(url:Object,parent:TEntity=Null)
+	Return _currentworld.AddTerrain(url,parent)
+End Function
+Function SetTerrainDetail(terrain:TTerrain,lmax,max_tris,clmax=-1)
+	Return terrain.SetDetail(lmax,max_tris,clmax)
+End Function
+Function GetTerrainHeight#(terrain:TTerrain,x,z)
+	Return terrain.GetHeight(x,z)
+End Function
+Function SetTerrainHeight(terrain:TTerrain,height#,x,z)
+	Return terrain.SetHeight(height,x,z)
+End Function
+
 'Surfaces
 Function CountSurfaceVertices(surface:TSurface)
 	Return surface.CountVertices()

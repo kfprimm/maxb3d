@@ -13,9 +13,11 @@ For Local y=0 To PixmapHeight(pixmap)-1
 		WritePixel pixmap,x,y,color
 	Next
 Next
+Local texture:TTexture=LoadTexture(pixmap)
+SetTextureScale texture,.125,.125
 
 Local camera:TCamera=CreateCamera()
-SetEntityPosition camera,0,0,-5
+SetEntityPosition camera,0,0,-6
 
 Local light:TLight=CreateLight()
 TurnEntity light,45,45,0
@@ -23,7 +25,7 @@ TurnEntity light,45,45,0
 Local segs = 16, rebuild = True, wireframe = False
 
 Local brush:TBrush=CreateBrush()
-SetBrushTexture brush, LoadTexture(pixmap)
+SetBrushTexture brush, texture
 
 Local pivot:TPivot=CreatePivot()
 Local cube:TMesh,sphere:TMesh,cylinder:TMesh,cone:TMesh

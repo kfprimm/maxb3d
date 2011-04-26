@@ -25,9 +25,9 @@ void C_UpdateNormals(int no_tris,int no_verts,int *tris,float *vert_coords,float
 
 		int tri_no=(t+1)*3;
 		
-		int v0=tris[tri_no-3];
+		int v0=tris[tri_no-1];
 		int v1=tris[tri_no-2];
-		int v2=tris[tri_no-1];
+		int v2=tris[tri_no-3];
 
 		float ax=vert_coords[v1*3+0]-vert_coords[v0*3+0];
 		float ay=vert_coords[v1*3+1]-vert_coords[v0*3+1];

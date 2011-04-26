@@ -1,7 +1,7 @@
 
 Strict
 
-Import MaxB3D.MathEx
+Import MaxB3D.Math
 Import "brush.bmx"
 
 Type TSurface

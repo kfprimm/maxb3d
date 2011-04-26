@@ -14,6 +14,7 @@ Local cube:TMesh=CreateCube()
 SetEntityPosition cube,0,0,5
 
 While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
+	TurnEntity cube,.5,0,0
 	RenderWorld
 	Flip
 Wend

@@ -356,7 +356,7 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			Local surface:TSurface=mesh.AddSurface(24,12)
 
 			For Local i=0 To 3
-				surface.SetNormal(i,0,1,0)
+				surface.SetNormal(i,0,-1,0)
 			Next
 			surface.SetCoord( 0, 1.0, 1.0,-1.0);surface.SetTexCoord( 0, 0.0, 0.0)
 			surface.SetCoord( 1,-1.0, 1.0,-1.0);surface.SetTexCoord( 1, 0.0, 1.0)
@@ -366,7 +366,7 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			surface.SetTriangle( 1, 3, 0, 2)			
 			
 			For Local i=4 To 7
-				surface.SetNormal(i,0,-1,0)
+				surface.SetNormal(i,0,1,0)
 			Next
 			surface.SetCoord( 4, 1.0,-1.0, 1.0);surface.SetTexCoord( 4, 0.0, 0.0)
 			surface.SetCoord( 5,-1.0,-1.0, 1.0);surface.SetTexCoord( 5, 0.0, 1.0)
@@ -376,7 +376,7 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			surface.SetTriangle( 3, 7, 4, 6)	
 			
 			For Local i=8 To 11
-				surface.SetNormal(i,0,0,1)
+				surface.SetNormal(i,0,0,-1)
 			Next
 			surface.SetCoord( 8, 1.0, 1.0, 1.0);surface.SetTexCoord( 8, 1.0, 0.0)
 			surface.SetCoord( 9,-1.0, 1.0, 1.0);surface.SetTexCoord( 9, 0.0, 0.0)
@@ -386,7 +386,7 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			surface.SetTriangle( 5,11, 8,10)	
 	
 			For Local i=12 To 15
-				surface.SetNormal(i,0,0,-1)
+				surface.SetNormal(i,0,0,1)
 			Next
 			surface.SetCoord(12, 1.0,-1.0,-1.0);surface.SetTexCoord(12, 0.0, 1.0)
 			surface.SetCoord(13,-1.0,-1.0,-1.0);surface.SetTexCoord(13, 1.0, 1.0)
@@ -396,7 +396,7 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			surface.SetTriangle( 7,15,12,14)	
 			
 			For Local i=16 To 19
-				surface.SetNormal(i,-1,0,0)
+				surface.SetNormal(i,1,0,0)
 			Next
 			surface.SetCoord(16,-1.0, 1.0, 1.0);surface.SetTexCoord(16, 1.0, 0.0)
 			surface.SetCoord(17,-1.0, 1.0,-1.0);surface.SetTexCoord(17, 0.0, 0.0)
@@ -406,7 +406,7 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			surface.SetTriangle( 9,19,16,18)	
 			
 			For Local i=20 To 23
-				surface.SetNormal(i,1,0,0)
+				surface.SetNormal(i,-1,0,0)
 			Next
 			surface.SetCoord(20, 1.0, 1.0,-1.0);surface.SetTexCoord(20, 1.0, 0.0)
 			surface.SetCoord(21, 1.0, 1.0, 1.0);surface.SetTexCoord(21, 0.0, 0.0)
