@@ -25,7 +25,10 @@ Type TWorld
 	
 	Method New()
 		SetAmbientLight 127,127,127
-		_physicsdriver.Init()
+	End Method
+	
+	Method SetPhysics(driver:TPhysicsDriver)
+		driver.Init()
 	End Method
 	
 	Method GetAmbientLight(red Var,green Var,blue Var)
@@ -180,15 +183,14 @@ Type TWorld
 			Local mesh:TMesh=TMesh(entity)
 			Local plane:TPlane=TPlane(entity)
 			Local terrain:TTerrain=TTerrain(entity)
-			If mesh
-				driver.BeginRender mesh
+			driver.BeginRender entity
+			If mesh				
 				For Local surface:TSurface=EachIn mesh._surfaces	
 					If surface._brush._a=0 Continue				
 					Local brush:TBrush=driver.MakeBrush(surface._brush,mesh._brush)
 					driver.SetBrush brush,surface.HasAlpha()
 					tricount:+driver.RenderSurface(surface,brush)
 				Next
-				driver.EndRender mesh
 			ElseIf plane
 				driver.SetBrush plane._brush,plane._brush._a<>1
 				tricount:+driver.RenderPlane(plane)
@@ -198,7 +200,8 @@ Type TWorld
 				camera.GetPosition x,y,z,True
 				terrain.Update camera._lastglobal,x,y,z,camera._lastfrustum
 				tricount:+driver.RenderTerrain(terrain)
-			EndIf			
+			EndIf	
+			driver.EndRender entity		
 		Next
 		Return tricount
 	End Method
@@ -342,6 +345,10 @@ End Function
 Function SetWorld(world:TWorld)
 	_currentworld=world
 	WorldConfig=_currentworld._config
+End Function
+
+Function SetPhysicsDriver(driver:TPhysicsDriver)
+	Return _currentworld.SetPhysics(driver)
 End Function
 
 Function BeginMax2D()

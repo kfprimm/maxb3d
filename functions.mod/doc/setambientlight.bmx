@@ -17,12 +17,12 @@ Local red=127,green=127,blue=127
 
 While Not KeyDown( KEY_ESCAPE )
 	
-	If KeyDown( KEY_1 )=True And red>0 Then red=red-1
-	If KeyDown( KEY_2 )=True And red<255 Then red=red+1
-	If KeyDown( KEY_3 )=True And green>0 Then green=green-1
-	If KeyDown( KEY_4 )=True And green<255 Then green=green+1
-	If KeyDown( KEY_5 )=True And blue>0 Then blue=blue-1
-	If KeyDown( KEY_6)=True And blue<255 Then blue=blue+1
+	If KeyDown( KEY_1 ) And red>0     red=red-1
+	If KeyDown( KEY_2 ) And red<255   red=red+1
+	If KeyDown( KEY_3 ) And green>0   green=green-1
+	If KeyDown( KEY_4 ) And green<255 green=green+1
+	If KeyDown( KEY_5 ) And blue>0    blue=blue-1
+	If KeyDown( KEY_6)  And blue<255  blue=blue+1
 	
 	SetAmbientLight red,green,blue
 	

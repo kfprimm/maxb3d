@@ -359,6 +359,16 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	End Method
 	
 	Method RenderTerrain(terrain:TTerrain)
+	
+		glDisableClientState GL_TEXTURE_COORD_ARRAY
+		For Local i=0 To 7
+			Local texture:TTexture=terrain._brush._texture[i]
+			If texture=Null Continue
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+			glClientActiveTextureARB(GL_TEXTURE0+i)
+			glTexCoordPointer(2,GL_FLOAT,20,terrain._data)
+		Next
+		
 		glEnableClientState  GL_VERTEX_ARRAY
 		glDisableClientState GL_COLOR_ARRAY
 		glDisableClientState GL_NORMAL_ARRAY

@@ -7,6 +7,8 @@ Strict
 Import "entity.bmx"
 Import "roamstep4d.c"
 
+Import BRL.Random
+
 Type TTerrain Extends TRenderEntity
 	Field _heights#[], _size, _lmax, _max_tris, _clmax#
 	Field _handle:Byte Ptr, _data:Float Ptr,_count
@@ -42,10 +44,10 @@ Type TTerrain Extends TRenderEntity
 			While s<_size;s:*2;Wend
 			_size=s
 			_heights=New Float[_size*_size]
-			pixmap=ConvertPixmap(ResizePixmap(pixmap,_size,_size),PF_I8)
+			pixmap=ResizePixmap(pixmap,_size,_size)
 			For Local i = 0 To _size-1
 				For Local j = 0 To _size-1
-					SetHeight (ReadPixel(pixmap, i, j)/255.0)*3,j,i
+					SetHeight ((ReadPixel(pixmap, i, j) & $FF)/255.0)*3,j,i
 				Next
 			Next
 		ElseIf Int[](url)
@@ -95,7 +97,7 @@ Type TTerrain Extends TRenderEntity
 		Local w#=1.0
 		matrix.TransformVector x,y,z,w
 		roam_set_frustum _handle,x,y,z,frustrum
-		roam_optimize _handle		
+		roam_optimize _handle	
 		_data=roam_getdata(_handle, _count)
 	End Method
 End Type
