@@ -5,6 +5,10 @@ Import "worldconfig.bmx"
 Import "entity.bmx"
 Import "mesh.bmx"
 
+Const BODY_NONE   = 0
+Const BODY_BOX 	  = 1
+Const BODY_SPHERE = 2
+
 Type TPhysicsDriver 
 	Method Init();End Method
 	
@@ -115,6 +119,37 @@ Type TB3DPhysicsDriver Extends TPhysicsDriver
 				entity.GetPosition entity._oldx,entity._oldy,entity._oldz,True
 			Next										
 		Next	
+	End Method
+End Type
+
+Type TPhysicsData
+End Type
+
+Type TBody Extends TEntity
+	Field _mass#,_shape
+	Field _data:TPhysicsData,_update
+	
+	Method New()
+		_shape = BODY_SPHERE
+	End Method
+	
+	Method Copy:TBody(parent:TEntity=Null)
+		Local body:TBody=New TBody
+		Return body
+	End Method
+	
+	Method SetBox(x#,y#,z#,width#,height#,depth#)
+		Super.SetBox(x,y,z,width,height,depth)
+		_shape = BODY_BOX
+		_update=True
+	End Method
+
+	Method GetMass#()
+		Return _mass
+	End Method
+	Method SetMass(mass#)
+		_mass=mass
+		_update=True
 	End Method
 End Type
 

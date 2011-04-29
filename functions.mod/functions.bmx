@@ -34,44 +34,15 @@ Function SetWireFrame(enable)
 	Return _currentworld.SetWireFrame(enable)
 End Function
 
-'Textures
-Function CreateTexture:TTexture(width,height,flags=TEXTURE_COLOR|TEXTURE_MIPMAP,frames=1)
-	Local texture:TTexture=_currentworld.AddTexture([width,height],flags)
-	texture.SetPixmap(CreatePixmap(width,height,PF_RGBA8888))
-	Return texture
+'Bodies
+Function CreateBody:TBody()
+	Return _currentworld.AddBody()
 End Function
-Function LoadTexture:TTexture(url:Object,flags=TEXTURE_COLOR|TEXTURE_MIPMAP)
-	Return _currentworld.AddTexture(url,flags)
+Function GetBodyMass#(body:TBody)
+	Return body.GetMass()
 End Function
-Function LockTexture:TPixmap(texture:TTexture)
-	Return texture.Lock()
-End Function
-Function UnlockTexture(texture:TTexture)
-	Return texture.Unlock()
-End Function
-Function GetTextureFlags(texture:TTexture)
-	Return texture.GetFlags()
-End Function
-Function SetTextureFlags(texture:TTexture,flags)
-	Return texture.SetFlags(flags)
-End Function
-Function GetTextureBlend(texture:TTexture)
-	Return texture.GetBlend()
-End Function
-Function SetTextureBlend(texture:TTexture,blend)
-	Return texture.SetBlend(blend)
-End Function
-Function GetTextureCoords(texture:TTexture)
-	Return texture.GetCoords()
-End Function
-Function SetTextureCoords(texture:TTexture,coords)
-	Return texture.SetCoords(coords)
-End Function
-Function GetTextureScale(texture:TTexture,x# Var,y# Var)
-	Return texture.GetScale(x,y)
-End Function
-Function SetTextureScale(texture:TTexture,x#,y#)
-	Return texture.SetScale(x,y)
+Function SetBodyMass(body:TBody,mass#)
+	Return body.SetMass(mass)
 End Function
 
 'Brushes
@@ -117,6 +88,59 @@ Rem
 End Rem
 Function SetBrushFX(brush:TBrush,fx)
 	Return brush.SetFX(fx)
+End Function
+
+'Cameras
+Function CreateCamera:TCamera(parent:TEntity=Null)
+	Return _currentworld.AddCamera(parent)
+End Function
+Function GetCameraMode(camera:TCamera)
+	Return camera.GetMode()
+End Function
+Function SetCameraMode(camera:TCamera,mode)
+	Return camera.SetMode(mode)
+End Function
+Function GetCameraFogMode(camera:TCamera)
+	Return camera.GetFogMode()
+End Function
+Function SetCameraFogMode(camera:TCamera,mode)
+	Return camera.SetFogMode(mode)
+End Function
+Function GetCameraFogColor(camera:TCamera,red Var,green Var,blue Var)
+	Return camera.GetFogColor(red,green,blue)
+End Function
+Function SetCameraFogColor(camera:TCamera,red,green,blue)
+	Return camera.SetFogColor(red,green,blue)
+End Function
+Function GetCameraFogRange(camera:TCamera,near# Var,far# Var)
+	Return camera.GetFogRange(near,far)
+End Function
+Function SetCameraFogRange(camera:TCamera,near#,far#)
+	Return camera.SetFogRange(near,far)
+End Function
+Function GetCameraViewport(camera:TCamera,x Var,y Var,width Var,height Var)
+	Return camera.GetViewport(x,y,width,height)
+End Function
+Function SetCameraViewport(camera:TCamera,x,y,width,height)
+	Return camera.SetViewport(x,y,width,height)
+End Function
+Function GetCameraClsMode(camera:TCamera)
+	Return camera.GetClsMode()
+End Function
+Function SetCameraClsMode(camera:TCamera,mode)
+	Return camera.SetClsMode(mode)
+End Function
+Function GetCameraRange(camera:TCamera,near# Var,far# Var)
+	Return camera.GetRange(near,far)
+End Function
+Function SetCameraRange(camera:TCamera,near#,far#)
+	Return camera.SetRange(near,far)
+End Function
+Function GetCameraZoom#(camera:TCamera)
+	Return camera.GetZoom()
+End Function
+Function SetCameraZoom(camera:TCamera,zoom#)
+	Return camera.SetZoom(zoom)
 End Function
 
 'Entities
@@ -255,64 +279,6 @@ Function SetLightAngles(light:TLight,inner#,outer#)
 	Return light.SetAngles(inner,outer)
 End Function
 
-'Cameras
-Function CreateCamera:TCamera(parent:TEntity=Null)
-	Return _currentworld.AddCamera(parent)
-End Function
-Function GetCameraMode(camera:TCamera)
-	Return camera.GetMode()
-End Function
-Function SetCameraMode(camera:TCamera,mode)
-	Return camera.SetMode(mode)
-End Function
-Function GetCameraFogMode(camera:TCamera)
-	Return camera.GetFogMode()
-End Function
-Function SetCameraFogMode(camera:TCamera,mode)
-	Return camera.SetFogMode(mode)
-End Function
-Function GetCameraFogColor(camera:TCamera,red Var,green Var,blue Var)
-	Return camera.GetFogColor(red,green,blue)
-End Function
-Function SetCameraFogColor(camera:TCamera,red,green,blue)
-	Return camera.SetFogColor(red,green,blue)
-End Function
-Function GetCameraFogRange(camera:TCamera,near# Var,far# Var)
-	Return camera.GetFogRange(near,far)
-End Function
-Function SetCameraFogRange(camera:TCamera,near#,far#)
-	Return camera.SetFogRange(near,far)
-End Function
-Function GetCameraViewport(camera:TCamera,x Var,y Var,width Var,height Var)
-	Return camera.GetViewport(x,y,width,height)
-End Function
-Function SetCameraViewport(camera:TCamera,x,y,width,height)
-	Return camera.SetViewport(x,y,width,height)
-End Function
-Function GetCameraClsMode(camera:TCamera)
-	Return camera.GetClsMode()
-End Function
-Function SetCameraClsMode(camera:TCamera,mode)
-	Return camera.SetClsMode(mode)
-End Function
-Function GetCameraRange(camera:TCamera,near# Var,far# Var)
-	Return camera.GetRange(near,far)
-End Function
-Function SetCameraRange(camera:TCamera,near#,far#)
-	Return camera.SetRange(near,far)
-End Function
-Function GetCameraZoom#(camera:TCamera)
-	Return camera.GetZoom()
-End Function
-Function SetCameraZoom(camera:TCamera,zoom#)
-	Return camera.SetZoom(zoom)
-End Function
-
-'Pivots
-Function CreatePivot:TPivot(parent:TEntity=Null)
-	Return _currentworld.AddPivot(parent)
-End Function
-
 'Meshes
 Function CreateMesh:TMesh(parent:TEntity=Null)
 	Return _currentworld.AddMesh("*null*",parent)
@@ -345,26 +311,14 @@ Function UpdateMeshNormals(mesh:TMesh)
 	Return mesh.UpdateNormals()
 End Function
 
+'Pivots
+Function CreatePivot:TPivot(parent:TEntity=Null)
+	Return _currentworld.AddPivot(parent)
+End Function
+
 'Planes
 Function CreatePlane:TPlane(parent:TEntity=Null)
 	Return _currentworld.AddPlane(parent)
-End Function
-
-'Terrains
-Function CreateTerrain:TTerrain(size,parent:TEntity=Null)
-	Return _currentworld.AddTerrain([size],parent)
-End Function
-Function LoadTerrain:TTerrain(url:Object,parent:TEntity=Null)
-	Return _currentworld.AddTerrain(url,parent)
-End Function
-Function SetTerrainDetail(terrain:TTerrain,lmax,max_tris,clmax=-1)
-	Return terrain.SetDetail(lmax,max_tris,clmax)
-End Function
-Function GetTerrainHeight#(terrain:TTerrain,x,z)
-	Return terrain.GetHeight(x,z)
-End Function
-Function SetTerrainHeight(terrain:TTerrain,height#,x,z)
-	Return terrain.SetHeight(height,x,z)
 End Function
 
 'Surfaces
@@ -412,4 +366,61 @@ Function GetSurfaceBrush:TBrush(surface:TSurface)
 End Function
 Function SetSurfaceBrush(surface:TSurface,brush:TBrush)
 	Return surface.SetBrush(brush)
+End Function
+
+'Terrains
+Function CreateTerrain:TTerrain(size,parent:TEntity=Null)
+	Return _currentworld.AddTerrain([size],parent)
+End Function
+Function LoadTerrain:TTerrain(url:Object,parent:TEntity=Null)
+	Return _currentworld.AddTerrain(url,parent)
+End Function
+Function SetTerrainDetail(terrain:TTerrain,lmax,max_tris,clmax=-1)
+	Return terrain.SetDetail(lmax,max_tris,clmax)
+End Function
+Function GetTerrainHeight#(terrain:TTerrain,x,z)
+	Return terrain.GetHeight(x,z)
+End Function
+Function SetTerrainHeight(terrain:TTerrain,height#,x,z)
+	Return terrain.SetHeight(height,x,z)
+End Function
+
+'Textures
+Function CreateTexture:TTexture(width,height,flags=TEXTURE_COLOR|TEXTURE_MIPMAP,frames=1)
+	Local texture:TTexture=_currentworld.AddTexture([width,height],flags)
+	texture.SetPixmap(CreatePixmap(width,height,PF_RGBA8888))
+	Return texture
+End Function
+Function LoadTexture:TTexture(url:Object,flags=TEXTURE_COLOR|TEXTURE_MIPMAP)
+	Return _currentworld.AddTexture(url,flags)
+End Function
+Function LockTexture:TPixmap(texture:TTexture)
+	Return texture.Lock()
+End Function
+Function UnlockTexture(texture:TTexture)
+	Return texture.Unlock()
+End Function
+Function GetTextureFlags(texture:TTexture)
+	Return texture.GetFlags()
+End Function
+Function SetTextureFlags(texture:TTexture,flags)
+	Return texture.SetFlags(flags)
+End Function
+Function GetTextureBlend(texture:TTexture)
+	Return texture.GetBlend()
+End Function
+Function SetTextureBlend(texture:TTexture,blend)
+	Return texture.SetBlend(blend)
+End Function
+Function GetTextureCoords(texture:TTexture)
+	Return texture.GetCoords()
+End Function
+Function SetTextureCoords(texture:TTexture,coords)
+	Return texture.SetCoords(coords)
+End Function
+Function GetTextureScale(texture:TTexture,x# Var,y# Var)
+	Return texture.GetScale(x,y)
+End Function
+Function SetTextureScale(texture:TTexture,x#,y#)
+	Return texture.SetScale(x,y)
 End Function

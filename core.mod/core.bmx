@@ -29,6 +29,7 @@ Type TWorld
 	
 	Method SetPhysics(driver:TPhysicsDriver)
 		driver.Init()
+		_physicsdriver=driver
 	End Method
 	
 	Method GetAmbientLight(red Var,green Var,blue Var)
@@ -137,6 +138,12 @@ Type TWorld
 		terrain.SetMap url
 		terrain.AddToWorld parent,[WORLDLIST_TERRAIN,WORLDLIST_RENDER]
 		Return terrain
+	End Method
+	
+	Method AddBody:TBody()
+		Local body:TBody=New TBody
+		body.AddToWorld Null,[WORLDLIST_BODY]
+		Return body
 	End Method
 	
 	Method Render(tween#=1.0)

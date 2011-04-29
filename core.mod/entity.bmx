@@ -8,7 +8,7 @@ Import "collision.bmx"
 Import "worldconfig.bmx"
 
 Type TEntity
-	Field _matrix:TMatrix=TMatrix.Identity()
+	Field _matrix:TMatrix=TMatrix.Identity(), _lockmatrix
 	
 	Field _name$
 	Field _px#,_py#,_pz#
@@ -333,6 +333,29 @@ Type TEntity
 		EndIf
 	End Method
 	
+	Method GetMatrix:TMatrix()
+		Return _matrix.Copy()
+	End Method
+	Method SetMatrix(matrix:TMatrix)
+		Local x#,y#,z#,pitch#,yaw#,roll#,sx#,sy#,sz#
+		matrix.GetPosition x,y,z
+		matrix.GetRotation pitch,yaw,roll
+		matrix.GetScale sx,sy,sz
+		
+		LockMatrix
+		SetPosition x,y,z,True
+		SetRotation pitch,yaw,roll,True
+		SetScale sx,sy,sz,True
+		UnlockMatrix
+	End Method
+	
+	Method LockMatrix()
+		_lockmatrix=True
+	End Method
+	Method UnlockMatrix()
+		_lockmatrix=False
+		RefreshMatrix()
+	End Method
 	
 	Method RefreshMatrix()
 		If _parent<>Null
@@ -357,8 +380,7 @@ Type TEntity
 			child.UpdateMatrix(False)
 			child.UpdateChildren()
 		Next
-	End Method
-	
+	End Method	
 End Type
 
 Type TRenderEntity Extends TEntity

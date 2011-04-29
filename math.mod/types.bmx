@@ -6,6 +6,12 @@ Import BRL.Math
 Type TMatrix
 	Field _m#[4,4]
 	
+	Method Copy:TMatrix()
+		Local matrix:TMatrix=New TMatrix
+		matrix.Overwrite(Self)
+		Return matrix
+	End Method
+	
 	Function Identity:TMatrix()
 		Local matrix:TMatrix=New TMatrix
 		matrix._m[0,0]=1.0;matrix._m[1,1]=1.0;matrix._m[2,2]=1.0;matrix._m[3,3]=1.0
@@ -155,6 +161,12 @@ Type TMatrix
 	Method GetPtr:Float Ptr()
 		Return Varptr _m[0,0]
 	End Method
+	
+	Function FromPtr:TMatrix(matrix_ptr:Float Ptr)
+		Local matrix:TMatrix=New TMatrix
+		MemCopy matrix._m,matrix_ptr,64
+		Return matrix
+	End Function
 End Type
 
 Type TQuaternion
