@@ -345,7 +345,7 @@ Type TEntity
 		LockMatrix
 		SetPosition x,y,z,True
 		SetRotation pitch,yaw,roll,True
-		SetScale sx,sy,sz,True
+		'SetScale sx,sy,sz,True
 		UnlockMatrix
 	End Method
 	
@@ -358,6 +358,7 @@ Type TEntity
 	End Method
 	
 	Method RefreshMatrix()
+		If _lockmatrix Return
 		If _parent<>Null
 			_matrix=_parent._matrix
 			UpdateMatrix False

@@ -138,6 +138,21 @@ Type TBody Extends TEntity
 		Return body
 	End Method
 	
+	Method SetScale(x#,y#,z#,glob=False)
+		Super.SetScale(x,y,z,glob)
+		_update=True
+	End Method
+	
+	Method SetRotation(x#,y#,z#,glob=False)
+		Super.SetRotation(x,y,z,glob)
+		_update=True
+	End Method
+	
+	Method SetPosition(x#,y#,z#,glob=False)
+		Super.SetPosition(x,y,z,glob)
+		_update=True
+	End Method
+	
 	Method SetBox(x#,y#,z#,width#,height#,depth#)
 		Super.SetBox(x,y,z,width,height,depth)
 		_shape = BODY_BOX
