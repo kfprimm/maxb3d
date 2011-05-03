@@ -40,6 +40,10 @@ Type TMesh Extends TRenderEntity
 	Method AddSurface:TSurface(vertices=0,triangles=0)
 		Local surface:TSurface=New TSurface
 		surface.Resize vertices,triangles
+		Return AppendSurface(surface)
+	End Method
+	
+	Method AppendSurface:TSurface(surface:TSurface)
 		_surfaces.AddLast surface
 		Return surface
 	End Method
@@ -152,6 +156,14 @@ Type TMesh Extends TRenderEntity
 	
 	Method Scale(x#,y#,z#)
 		Return Transform(TMatrix.Scale(x,y,z))
+	End Method
+	
+	Method Rotate(pitch#,yaw#,roll#)
+		Return Transform(TMatrix.YawPitchRoll(yaw,pitch,roll))
+	End Method
+	
+	Method Shift(x#,y#,z#)
+		Return Transform(TMatrix.Translation(x#,y#,z#))
 	End Method
 	
 	Method Transform(matrix:TMatrix)

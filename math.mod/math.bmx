@@ -3,7 +3,7 @@ Strict
 
 Module MaxB3D.Math
 ModuleInfo "Author: Kevin Primm"
-ModuleInfo "License: LGPL"
+ModuleInfo "License: MIT"
 
 Import "collision.cpp"
 Import "geom.cpp"

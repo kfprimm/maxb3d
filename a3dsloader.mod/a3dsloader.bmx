@@ -4,7 +4,7 @@ Strict
 Module MaxB3D.A3DSLoader
 
 ModuleInfo "Author: Kevin Primm"
-ModuleInfo "License: LGPL"
+ModuleInfo "License: MIT"
 ModuleInfo "Credit: Uses Markus Ranch's 3DS loading code from the BlitzBasic.com Code Archives."
 
 Import MaxB3D.Core

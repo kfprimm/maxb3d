@@ -3,7 +3,7 @@ Strict
 
 Module MaxB3D.Primitives
 ModuleInfo "Author: Kevin Primm"
-ModuleInfo "License: LGPL"
+ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
 

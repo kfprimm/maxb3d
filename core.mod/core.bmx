@@ -3,7 +3,9 @@ Strict
 
 Module MaxB3D.Core
 ModuleInfo "Author: Kevin Primm"
-ModuleInfo "License: LGPL"
+ModuleInfo "License: MIT"
+ModuleInfo "Credit: Mostly derived from the MiniB3D source."
+ModuleInfo "Credit: Terrain system adapted from Warner's engine."
 
 Import BRL.Max2D
 

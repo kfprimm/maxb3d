@@ -3,7 +3,7 @@ Strict
 
 Module MaxB3D.Drivers
 ModuleInfo "Author: Kevin Primm"
-ModuleInfo "License: LGPL"
+ModuleInfo "License: MIT"
 
 Import MaxB3D.Functions
 Import MaxB3D.GLDriver

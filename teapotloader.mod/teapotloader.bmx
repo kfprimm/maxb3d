@@ -6,7 +6,7 @@ Strict
 'End Rem
 Module MaxB3D.TeapotLoader
 ModuleInfo "Author: Kevin Primm"
-ModuleInfo "License: LGPL"
+ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
 Import BRL.RamStream

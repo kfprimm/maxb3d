@@ -3,7 +3,7 @@ Strict
 
 Module MaxB3D.D3D9Driver
 ModuleInfo "Author: Kevin Primm"
-ModuleInfo "License: LGPL"
+ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
 Import BRL.D3D9Max2D

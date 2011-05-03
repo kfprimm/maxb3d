@@ -3,7 +3,7 @@ Strict
 
 Module MaxB3D.Functions
 ModuleInfo "Author: Kevin Primm"
-ModuleInfo "License: LGPL"
+ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
 
@@ -298,6 +298,12 @@ End Function
 Function ScaleMesh(mesh:TMesh,x#,y#,z#)
 	Return mesh.Scale(x,y,z)
 End Function
+Function RotateMesh(mesh:TMesh,pitch#,yaw#,roll#)
+	Return mesh.Rotate(pitch,yaw,roll)
+End Function
+Function ShiftMesh(mesh:TMesh,x#,y#,z#)
+	Return mesh.Shift(x,y,z)
+End function
 Function GetMeshSize(mesh:TMesh,width#,height#,depth#)
 	Return mesh.GetSize(width,height,depth)
 End Function

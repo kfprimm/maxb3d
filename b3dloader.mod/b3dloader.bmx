@@ -3,7 +3,7 @@ Strict
 
 Module MaxB3D.B3DLoader
 ModuleInfo "Author: Kevin Primm"
-ModuleInfo "License: LGPL"
+ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
 Import MaxB3D.B3DUtils
