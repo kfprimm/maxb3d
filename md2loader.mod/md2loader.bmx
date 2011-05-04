@@ -70,7 +70,7 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 		Next
 		
 		Local master_surface:TSurface=New TSurface
-		master_surface.Resize(num_tris*,num_tris)
+		master_surface.Resize(num_tris,num_tris)
 		For Local i=0 To num_tris-1
 			Local v0=tri[(i*6)+0],v1=tri[(i*6)+1],v2=tri[(i*6)+2]
 			Local tc0=tri[(i*6)+3],tc1=tri[(i*6)+4],tc2=tri[(i*6)+5]
