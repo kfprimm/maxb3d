@@ -1,6 +1,9 @@
 
 Strict
 
+Rem
+	bbdoc: Autodesk 3DS loader for MaxB3D
+End Rem
 Module MaxB3D.A3DSLoader
 
 ModuleInfo "Author: Kevin Primm"

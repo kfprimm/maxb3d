@@ -1,6 +1,9 @@
 
 Strict
 
+Rem
+	bbdoc: Direct3D 9 renderer for MaxB3D
+End Rem
 Module MaxB3D.D3D9Driver
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"

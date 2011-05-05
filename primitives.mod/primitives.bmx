@@ -1,21 +1,36 @@
 
 Strict
 
+Rem
+	bbdoc: Primitive mesh loader for MaxB3D.
+End Rem
 Module MaxB3D.Primitives
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
 
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function CreateCube:TMesh(parent:TEntity=Null)
 	Return _currentworld.AddMesh("*cube*",parent)
 End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function CreateCone:TMesh(segments=8,solid=True,parent:TEntity=Null)
 	Return _currentworld.AddMesh("*cone*("+segments+","+solid+")",parent)
 End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function CreateCylinder:TMesh(segments=8,solid=True,parent:TEntity=Null)
 	Return _currentworld.AddMesh("*cylinder*("+segments+","+solid+")",parent)
 End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function CreateSphere:TMesh(segments=8,parent:TEntity=Null)
 	Return _currentworld.AddMesh("*sphere*("+segments+")",parent)
 End Function

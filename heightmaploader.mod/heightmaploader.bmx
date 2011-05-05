@@ -1,6 +1,9 @@
 
 Strict
 
+Rem
+	bbdoc: Heightmap mesh loader for MaxB3D
+End Rem
 Module MaxB3D.HeightmapLoader
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"

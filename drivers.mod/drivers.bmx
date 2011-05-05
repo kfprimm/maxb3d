@@ -1,6 +1,9 @@
 
 Strict
 
+Rem
+	bbdoc: MaxB3D driver collection
+End Rem
 Module MaxB3D.Drivers
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"

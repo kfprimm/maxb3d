@@ -1,6 +1,9 @@
 
 Strict
 
+Rem
+	bbdoc: Math library for MaxB3D
+End Rem
 Module MaxB3D.Math
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"

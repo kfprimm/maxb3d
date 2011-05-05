@@ -2,6 +2,7 @@
 *.x86.i
 *.debug
 *.bak
+*.html
 .*.bmx
 /functions.mod/doc/media/
 /functions.mod/doc/bb/

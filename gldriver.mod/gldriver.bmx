@@ -1,6 +1,9 @@
 
 Strict
 
+Rem
+	bbdoc: OpenGL 1.1 driver for MaxB3D
+End Rem
 Module MaxB3D.GLDriver
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"

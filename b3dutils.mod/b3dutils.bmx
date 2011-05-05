@@ -1,6 +1,9 @@
 
 Strict
 
+Rem
+	bbdoc: Blitz3D model file utilities
+End Rem
 Module MaxB3D.B3DUtils
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"

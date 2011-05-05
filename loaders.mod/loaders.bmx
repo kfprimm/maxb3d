@@ -1,9 +1,12 @@
 
 Strict
 
+Rem
+	bbdoc: MaxB3D loader collection
+End Rem
 Module MaxB3D.Loaders
 ModuleInfo "Author: Kevin Primm"
-ModuleInfo "License: LGPL"
+ModuleInfo "License: MIT"
 
 Import MaxB3D.A3DSLoader
 Import MaxB3D.B3DLoader

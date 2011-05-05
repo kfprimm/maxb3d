@@ -1,9 +1,9 @@
 
 Strict
 
-'Rem
-'bbdoc: MaxB3D MD2 loader
-'End Rem
+Rem
+	bbdoc: MD2 model loader for MaxB3D
+End Rem
 Module MaxB3D.MD2Loader
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"

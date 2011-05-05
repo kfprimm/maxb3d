@@ -1,6 +1,9 @@
 
 Strict
 
+Rem
+	bbdoc: MaxB3D core logic
+End Rem
 Module MaxB3D.Core
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
@@ -348,21 +351,36 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	End Function
 End Type
 
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function CreateWorld:TWorld()
 	Return New TWorld
 End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function SetWorld(world:TWorld)
 	_currentworld=world
 	WorldConfig=_currentworld._config
 End Function
 
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function SetPhysicsDriver(driver:TPhysicsDriver)
 	Return _currentworld.SetPhysics(driver)
 End Function
 
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function BeginMax2D()
 	Return TMaxB3DDriver(GetGraphicsDriver()).BeginMax2D()
 End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function EndMax2D()
 	Return TMaxB3DDriver(GetGraphicsDriver()).EndMax2D()
 End Function

@@ -1,6 +1,9 @@
 
 Strict
 
+Rem
+	bbdoc: Blitz3D model loader for MaxB3D
+End Rem
 Module MaxB3D.B3DLoader
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
