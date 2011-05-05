@@ -17,6 +17,7 @@ Import "d3d9.bmx"
 
 Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	Field _d3ddev:IDirect3DDevice9
+	Field _viewporton
 	
 	Method SetGraphics( g:TGraphics )
 		Super.SetGraphics g
@@ -26,14 +27,6 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	
 	Method BeginMax2D()
 		Global identity:TMatrix=TMatrix.Identity()
-		_d3ddev.SetRenderState D3DRS_ZENABLE,False
-		_d3ddev.SetTransform D3DTS_WORLD,identity.GetPtr()
-		_d3ddev.SetTransform D3DTS_VIEW,identity.GetPtr()
-		_d3ddev.SetVertexDeclaration(Null)
-		_d3ddev.SetIndices(Null)
-		_d3ddev.SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1)
-		_d3ddev.SetRenderState(D3DRS_LIGHTING,False)
-		
 		Local width=GraphicsWidth(),height=GraphicsHeight()
 		Local matrix#[]=[..
 		2.0/width,0.0,0.0,0.0,..
@@ -42,20 +35,33 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		 -1-(1.0/width),1+(1.0/height),1.0,1.0]
 		
 		_d3ddev.SetTransform D3DTS_PROJECTION,matrix
+		_d3ddev.SetTransform D3DTS_WORLD,identity.GetPtr()
+		_d3ddev.SetTransform D3DTS_VIEW,identity.GetPtr()		
+		
+		_d3ddev.SetVertexDeclaration Null
+		_d3ddev.SetIndices Null
+		_d3ddev.SetFVF D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1
+		
+		_d3ddev.SetRenderState D3DRS_LIGHTING,False
+		_d3ddev.SetRenderState D3DRS_ZENABLE,False
+		_d3ddev.SetRenderState D3DRS_SCISSORTESTENABLE,_viewporton		
 	End Method
 	
 	Method EndMax2D()
 		_d3ddev.SetRenderState D3DRS_ZENABLE,True
 		_d3ddev.SetRenderState D3DRS_ZWRITEENABLE,True
-		_d3ddev.SetRenderState(D3DRS_LIGHTING,True)
+		_d3ddev.SetRenderState D3DRS_LIGHTING,True
+				
+		_d3ddev.GetRenderState D3DRS_SCISSORTESTENABLE,_viewporton
+		_d3ddev.SetRenderState D3DRS_SCISSORTESTENABLE,True
 	End Method
 	
 	Method SetCamera(camera:TCamera)
 		Local clearflags		
 		If camera._clsmode&CLSMODE_COLOR clearflags:|D3DCLEAR_TARGET
 		If camera._clsmode&CLSMODE_DEPTH clearflags:|D3DCLEAR_ZBUFFER
-				
-		Local viewport[]=[camera._viewx,camera._viewy,camera._viewwidth,camera._viewheight]
+
+		Local viewport[]=[camera._viewx,camera._viewy,camera._viewwidth-camera._viewx,camera._viewheight-camera._viewy]
 		_d3ddev.SetScissorRect viewport
 		_d3ddev.Clear(1,viewport,clearflags,D3DCOLOR_XRGB(camera._brush._r*255,camera._brush._g*255,camera._brush._b*255),1.0,0)
 		
@@ -82,12 +88,12 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	Method RenderSurface(surface:TSurface,brush:TBrush)
 		Local res:TD3D9SurfaceRes=UpdateSurfaceRes(surface)
 		
-		_d3ddev.SetVertexDeclaration(GetD3D9MaxB3DVertexDecl(_d3ddev))
-		_d3ddev.SetStreamSource(0,res._pos,Null,12)
-		_d3ddev.SetStreamSource(1,res._nml,Null,12)
-		_d3ddev.SetStreamSource(2,res._clr,Null,16)
-		_d3ddev.SetIndices(res._tri)
-		_d3ddev.DrawIndexedPrimitive(D3DPT_TRIANGLELIST,0,0,surface._vertexcnt,0,surface._trianglecnt)
+		_d3ddev.SetVertexDeclaration GetD3D9MaxB3DVertexDecl(_d3ddev)
+		_d3ddev.SetStreamSource 0,res._pos,0,0
+		_d3ddev.SetStreamSource 1,res._nml,0,0
+		_d3ddev.SetStreamSource 2,res._clr,0,0
+		_d3ddev.SetIndices res._tri
+		_d3ddev.DrawIndexedPrimitive D3DPT_TRIANGLELIST,0,0,surface._vertexcnt,0,surface._trianglecnt
 
 		Return surface._trianglecnt
 	End Method
@@ -100,6 +106,9 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	End Method
 	
 	Method RenderPlane(plane:TPlane)
+	End Method
+	
+	Method RenderTerrain(terrain:TTerrain)
 	End Method
 	
 	Method UpdateTextureRes:TD3D9TextureRes(texture:TTexture)
@@ -151,6 +160,9 @@ Type TD3D9SurfaceRes Extends TSurfaceRes
 	Field _tex:IDirect3DVertexBuffer9[8]
 End Type
 
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function D3D9MaxB3DDriver:TD3D9MaxB3DDriver()
 	If D3D9Max2DDriver()
 		Global driver:TD3D9MaxB3DDriver=New TD3D9MaxB3DDriver

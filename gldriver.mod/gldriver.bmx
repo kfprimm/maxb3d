@@ -451,6 +451,9 @@ Type TGLTextureRes Extends TTextureRes
 	Field _id
 End Type
 
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function GLMaxB3DDriver:TGLMaxB3DDriver()
 	If GLMax2DDriver()
 		Global driver:TGLMaxB3DDriver=New TGLMaxB3DDriver

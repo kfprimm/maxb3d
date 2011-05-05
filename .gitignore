@@ -1,6 +1,7 @@
 *.x86.a
 *.x86.i
 *.debug
+*.exe
 *.bak
 *.html
 .*.bmx
