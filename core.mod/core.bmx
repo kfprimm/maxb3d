@@ -152,9 +152,13 @@ Type TWorld
 	End Method
 	
 	Method Render(tween#=1.0)
+		Local driver:TMaxB3DDriver=TMaxB3DDriver(GetGraphicsDriver())
+		Assert driver,"MaxB3D driver not set!"
+		Assert driver._current,"Graphics not set!"
+		
 		Local tricount
 		For Local camera:TCamera=EachIn _config.List[WORLDLIST_CAMERA]
-			If camera.GetVisible() tricount:+RenderCamera(camera)
+			If camera.GetVisible() tricount:+RenderCamera(driver,camera)
 		Next
 		Return tricount
 	End Method
@@ -178,10 +182,7 @@ Type TWorld
 		_config.CollisionPairs.AddLast pair
 	End Method
 	
-	Method RenderCamera(camera:TCamera)
-		Local driver:TMaxB3DDriver=TMaxB3DDriver(GetGraphicsDriver())
-		Assert driver,"MaxB3D driver not set!"
-		Assert driver._current,"Graphics not set!"
+	Method RenderCamera(driver:TMaxB3DDriver,camera:TCamera)
 		driver.SetCamera camera
 		Local index
 		For Local light:TLight=EachIn _config.List[WORLDLIST_LIGHT]
@@ -195,7 +196,7 @@ Type TWorld
 			Local mesh:TMesh=TMesh(entity)
 			Local plane:TPlane=TPlane(entity)
 			Local terrain:TTerrain=TTerrain(entity)
-			driver.BeginRender entity
+			driver.BeginEntityRender entity
 			If mesh				
 				For Local surface:TSurface=EachIn mesh._surfaces	
 					If surface._brush._a=0 Continue				
@@ -213,7 +214,7 @@ Type TWorld
 				terrain.Update camera._lastglobal,x,y,z,camera._lastfrustum
 				tricount:+driver.RenderTerrain(terrain)
 			EndIf	
-			driver.EndRender entity		
+			driver.EndEntityRender entity		
 		Next
 		Return tricount
 	End Method
@@ -312,12 +313,11 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	Method SetCamera(camera:TCamera) Abstract
 	Method SetLight(light:TLight,index) Abstract	
 	
+	Method BeginEntityRender(entity:TEntity) Abstract
+	Method EndEntityRender(entity:TEntity) Abstract
+	
 	Method RenderSurface(surface:TSurface,brush:TBrush) Abstract
-	Method BeginRender(entity:TEntity) Abstract
-	Method EndRender(entity:TEntity) Abstract
-	
-	Method RenderPlane(plane:TPlane) Abstract
-	
+	Method RenderPlane(plane:TPlane) Abstract	
 	Method RenderTerrain(terrain:TTerrain) Abstract
 	
 	Method UpdateTextureRes:TTextureRes(texture:TTexture) Abstract

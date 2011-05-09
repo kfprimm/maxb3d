@@ -4,7 +4,7 @@ Strict
 Import BRL.Math
 
 Type TMatrix
-	Field _m#[4,4]
+	Field _m#[4,4],_t#[4,4]
 	
 	Method Copy:TMatrix()
 		Local matrix:TMatrix=New TMatrix
@@ -107,9 +107,9 @@ Type TMatrix
 		Local ty#=0
 		Local tz#=0
 	
-  	matrix._m[0,0] = _m[0,0]
-  	matrix._m[1,0] = _m[0,1]
-  	matrix._m[2,0] = _m[0,2]
+	  	matrix._m[0,0] = _m[0,0]
+	  	matrix._m[1,0] = _m[0,1]
+	  	matrix._m[2,0] = _m[0,2]
 
 		matrix._m[0,1] = _m[1,0]
 		matrix._m[1,1] = _m[1,1]
@@ -158,7 +158,16 @@ Type TMatrix
 		w=_m[0,3]*_x+_m[1,3]*_y+_m[2,3]*_z+_m[3,3]*_w
 	End Method
 	
-	Method GetPtr:Float Ptr()
+	Method GetPtr:Float Ptr(transposed=False)
+		If transposed
+			For Local i=0 To 3
+				For Local j=0 To 3
+					_t[i,j]=_m[j,i]
+				Next
+			Next
+			Return Varptr _t[0,0]
+		EndIf
+		
 		Return Varptr _m[0,0]
 	End Method
 	

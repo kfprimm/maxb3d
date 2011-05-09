@@ -324,7 +324,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Return surface._trianglecnt
 	End Method
 	
-	Method BeginRender(entity:TEntity)		
+	Method BeginEntityRender(entity:TEntity)		
 		If entity._order<>0
 			glDisable(GL_DEPTH_TEST)
 			glDepthMask(GL_FALSE)
@@ -337,13 +337,12 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glPushMatrix()
 		glMultMatrixf(entity._matrix.GetPtr())
 	End Method
-	Method EndRender(entity:TEntity)
+	Method EndEntityRender(entity:TEntity)
 		glMatrixMode(GL_MODELVIEW)
 		glPopMatrix()
 	End Method
 	
 	Method RenderPlane(plane:TPlane)
-		BeginRender plane
 		glDisable(GL_BLEND)		
 		glDepthMask(GL_TRUE)
 		glBegin(GL_QUADS)	
@@ -357,7 +356,6 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			glTexCoord2f 0,1
 			glVertex3f(-1,0, -1)			
 		glEnd()
-		EndRender plane
 		Return 2
 	End Method
 	
