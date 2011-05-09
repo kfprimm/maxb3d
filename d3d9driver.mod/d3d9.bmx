@@ -4,6 +4,11 @@ Strict
 Import PUB.DirectX
 Import "d3d9.cpp"
 
+' D3DFILLMODE
+Const D3DFILL_POINT			= 1
+Const D3DFILL_WIREFRAME	= 2
+Const D3DFILL_SOLID			= 3
+
 Extern "C"
 	Function maxb3dD3D9VertexElements:Byte Ptr()'="_maxb3dD3D9VertexElements@0"
 End Extern
@@ -24,3 +29,15 @@ End Function
 Function D3DCOLOR_ARGB(alpha,red,green,blue)
 	Return ((alpha&$ff) Shl 24)|((red&$ff) Shl 16)|((green&$ff) Shl 8)|(blue&$ff)
 End Function
+
+
+'''' TESTING!!!
+Global d3d_set_camera(d3ddev:IDirect3DDevice9)
+Global d3d_draw_cube(d3ddev:IDirect3DDevice9)
+
+
+Local lib=LoadLibraryA("d3d9_testing.dll")
+d3d_set_camera=GetProcAddress(lib,"_d3d_set_camera@4")
+d3d_draw_cube=GetProcAddress(lib,"_d3d_draw_cube@4")
+DebugLog "loaded"
+

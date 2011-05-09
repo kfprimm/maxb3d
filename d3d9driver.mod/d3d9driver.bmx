@@ -22,7 +22,10 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	Method SetGraphics( g:TGraphics )
 		Super.SetGraphics g
 		_d3ddev=Null
-		If g<>Null _d3ddev=TD3D9Graphics(TMax2DGraphics(g)._graphics).GetDirect3DDevice()
+		If g<>Null
+			_d3ddev=TD3D9Graphics(TMax2DGraphics(g)._graphics).GetDirect3DDevice()
+			EndMax2D
+		EndIf
 	End Method
 	
 	Method BeginMax2D()
@@ -54,6 +57,10 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 				
 		_d3ddev.GetRenderState D3DRS_SCISSORTESTENABLE,_viewporton
 		_d3ddev.SetRenderState D3DRS_SCISSORTESTENABLE,True
+		
+		_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_XRGB(255,0,0)'D3DCOLOR_XRGB(WorldConfig.AmbientRed,WorldConfig.AmbientGreen,WorldConfig.AmbientBlue)
+		
+		_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CW
 	End Method
 	
 	Method SetCamera(camera:TCamera)
@@ -65,44 +72,60 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.SetScissorRect viewport
 		_d3ddev.Clear(1,viewport,clearflags,D3DCOLOR_XRGB(camera._brush._r*255,camera._brush._g*255,camera._brush._b*255),1.0,0)
 		
-		Local ratio#=(Float(camera._viewwidth)/camera._viewheight)
-		_d3ddev.SetTransform D3DTS_PROJECTION,TMatrix.PerspectiveFOV(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).GetPtr()
+		'Local ratio#=(Float(camera._viewwidth)/camera._viewheight)
+		'_d3ddev.SetTransform D3DTS_PROJECTION,TMatrix.PerspectiveFOV(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).GetPtr(True)
 		
 		Local matrix:TMatrix=camera._matrix.Inverse()
 		_d3ddev.SetTransform D3DTS_VIEW,matrix.GetPtr()
+		d3d_set_camera _d3ddev
 	End Method
 	
 	Method SetLight(light:TLight,index)
 		_d3ddev.LightEnable index,light.GetVisible()
+		If Not light.GetVisible() Return False		
+		
 		Global d3dlight:D3DLIGHT9=New D3DLIGHT9
-		d3dlight.Position_x=0.0;d3dlight.Position_y=0.0;d3dlight.Position_z=1.0
+		d3dlight.Type_=D3DLIGHT_DIRECTIONAL   
 		d3dlight.Direction_x=0.0;d3dlight.Direction_y=0.0;d3dlight.Direction_z=-1.0
-		d3dlight.Ambient_r=light._brush._r;d3dlight.Ambient_g=light._brush._g;d3dlight.Ambient_b=light._brush._b
+		d3dlight.Ambient_r=WorldConfig.AmbientRed/255.0
+		d3dlight.Ambient_g=WorldConfig.AmbientGreen/255.0
+		d3dlight.Ambient_b=WorldConfig.AmbientBlue/255.0
+		d3dlight.Ambient_a=1.0
+		d3dlight.Diffuse_r=1.0;d3dlight.Diffuse_g=0.0;d3dlight.Diffuse_b=1.0;d3dlight.Diffuse_a=1.0
+		d3dlight.Range=1000
+		
+		light.GetPosition d3dlight.Position_x,d3dlight.Position_y,d3dlight.Position_z,True
 		
 		_d3ddev.SetLight(index,d3dlight)
 	End Method
 	
 	Method SetBrush(brush:TBrush,hasalpha) 
+		If brush._fx&FX_WIREFRAME
+			_d3ddev.SetRenderState D3DRS_FILLMODE,D3DFILL_WIREFRAME
+		Else
+			_d3ddev.SetRenderState D3DRS_FILLMODE,D3DFILL_SOLID
+		EndIf
+		
 	End Method
 	
 	Method RenderSurface(surface:TSurface,brush:TBrush)
 		Local res:TD3D9SurfaceRes=UpdateSurfaceRes(surface)
 		
 		_d3ddev.SetVertexDeclaration GetD3D9MaxB3DVertexDecl(_d3ddev)
-		_d3ddev.SetStreamSource 0,res._pos,0,0
-		_d3ddev.SetStreamSource 1,res._nml,0,0
-		_d3ddev.SetStreamSource 2,res._clr,0,0
+		_d3ddev.SetStreamSource 0,res._pos,0,12
+		_d3ddev.SetStreamSource 1,res._nml,0,12
+		'_d3ddev.SetStreamSource 2,res._clr,0,16
 		_d3ddev.SetIndices res._tri
 		_d3ddev.DrawIndexedPrimitive D3DPT_TRIANGLELIST,0,0,surface._vertexcnt,0,surface._trianglecnt
 
 		Return surface._trianglecnt
 	End Method
 	
-	Method BeginRender(entity:TEntity)
+	Method BeginEntityRender(entity:TEntity)
 		_d3ddev.SetTransform D3DTS_WORLD,entity._matrix.GetPtr()
 	End Method
 	
-	Method EndRender(entity:TEntity)
+	Method EndEntityRender(entity:TEntity)
 	End Method
 	
 	Method RenderPlane(plane:TPlane)
