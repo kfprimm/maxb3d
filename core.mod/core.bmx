@@ -185,10 +185,15 @@ Type TWorld
 	Method RenderCamera(driver:TMaxB3DDriver,camera:TCamera)
 		driver.SetCamera camera
 		Local index
-		For Local light:TLight=EachIn _config.List[WORLDLIST_LIGHT]
-			driver.SetLight light,index
-			index:+1
-			If index>7 index=0
+		For Local i=0 To 7
+			Local light:TLight
+			If index<CountList(_config.List[WORLDLIST_LIGHT])
+				Repeat 
+					light=TLight(_config.List[WORLDLIST_LIGHT].ValueAtIndex(index))
+					index:+1
+				Until light.GetVisible()
+			EndIf
+			driver.SetLight light,i
 		Next
 		Local tricount
 		For Local entity:TRenderEntity=EachIn _config.List[WORLDLIST_RENDER]

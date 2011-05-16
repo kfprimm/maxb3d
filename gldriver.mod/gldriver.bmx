@@ -30,28 +30,28 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	End Function
 	
 	Function EnableStates()	
-		glEnable(GL_LIGHTING)
-		glEnable(GL_DEPTH_TEST)
-		glEnable(GL_FOG)
-		glEnable(GL_CULL_FACE)
-		glEnable(GL_SCISSOR_TEST)
+		glEnable GL_LIGHTING
+		glEnable GL_DEPTH_TEST
+		glEnable GL_FOG
+		glEnable GL_CULL_FACE
+		glEnable GL_SCISSOR_TEST
 		
-		glEnable(GL_NORMALIZE)
+		glEnable GL_NORMALIZE
 		
-		glEnableClientState(GL_VERTEX_ARRAY)
-		glEnableClientState(GL_COLOR_ARRAY)
-		glEnableClientState(GL_NORMAL_ARRAY)
+		glEnableClientState GL_VERTEX_ARRAY
+		glEnableClientState GL_COLOR_ARRAY
+		glEnableClientState GL_NORMAL_ARRAY
 		
-		glFrontFace(GL_CW)	
+		glFrontFace GL_CW
 		
-		glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL,GL_SEPARATE_SPECULAR_COLOR)
-		glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER,GL_TRUE)
+		glLightModeli GL_LIGHT_MODEL_COLOR_CONTROL,GL_SEPARATE_SPECULAR_COLOR
+		glLightModeli GL_LIGHT_MODEL_LOCAL_VIEWER,GL_TRUE
 	
-		glClearDepth(1.0)						
-		glDepthFunc(GL_LEQUAL)
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+		glClearDepth 1.0
+		glDepthFunc GL_LEQUAL
+		glHint GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST
 	
-		glAlphaFunc(GL_GEQUAL,0.5)
+		glAlphaFunc GL_GEQUAL,0.5
 		
 		BindTexture 0
 	End Function	
@@ -116,7 +116,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Local ratio#=(Float(camera._viewwidth)/camera._viewheight)
 		
 		glMatrixMode GL_PROJECTION
-		glLoadIdentity()
+		glLoadIdentity
 		glLoadMatrixf TMatrix.PerspectiveFOV(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).GetPtr()
 		glScalef 1,1,-1
 		
@@ -124,20 +124,20 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		camera._lastglobal=camera._matrix.Inverse()
 		glLoadMatrixf camera._lastglobal.GetPtr()
 		
-		glGetFloatv(GL_MODELVIEW_MATRIX,camera._lastmodelview._m)
-		glGetFloatv(GL_PROJECTION_MATRIX,camera._lastprojection._m)
-		glGetIntegerv(GL_VIEWPORT,camera._lastviewport)
+		glGetFloatv GL_MODELVIEW_MATRIX,camera._lastmodelview._m
+		glGetFloatv GL_PROJECTION_MATRIX,camera._lastprojection._m
+		glGetIntegerv GL_VIEWPORT,camera._lastviewport
 
 		camera.ExtractFrustum
 	End Method	
 	
 	Method SetLight(light:TLight,index)
-		If Not light.GetVisible()
-			glDisable(GL_LIGHT[index])
+		If light=Null
+			glDisable GL_LIGHT[index]
 			Return
-		Else
-			glEnable(GL_LIGHT[index])
 		EndIf
+		
+		glEnable GL_LIGHT[index]
 		
 		glPushMatrix()
 

@@ -22,12 +22,17 @@ Function GetD3D9MaxB3DVertexDecl:IDirect3DVertexDeclaration9(d3ddev:IDirect3DDev
 	Return decl
 End Function
 
+Function D3DCOLOR_ARGB(alpha,red,green,blue)
+	Return ((alpha&$ff) Shl 24)|((red&$ff) Shl 16)|((green&$ff) Shl 8)|(blue&$ff)
+End Function
+Function D3DCOLOR_RGBA(red,green,blue,alpha)
+	Return D3DCOLOR_ARGB(alpha,red,green,blue)
+End Function
 Function D3DCOLOR_XRGB(red,green,blue)
 	Return D3DCOLOR_ARGB(255,red,green,blue)
 End Function
-
-Function D3DCOLOR_ARGB(alpha,red,green,blue)
-	Return ((alpha&$ff) Shl 24)|((red&$ff) Shl 16)|((green&$ff) Shl 8)|(blue&$ff)
+Function D3DCOLOR_RGB(red,green,blue)
+	Return D3DCOLOR_ARGB(255,red,green,blue)
 End Function
 
 
