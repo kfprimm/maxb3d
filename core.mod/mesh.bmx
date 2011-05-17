@@ -162,7 +162,7 @@ Type TMesh Extends TRenderEntity
 		Return Transform(TMatrix.YawPitchRoll(yaw,pitch,roll))
 	End Method
 	
-	Method Shift(x#,y#,z#)
+	Method Position(x#,y#,z#)
 		Return Transform(TMatrix.Translation(x#,y#,z#))
 	End Method
 	

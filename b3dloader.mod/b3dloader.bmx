@@ -13,7 +13,6 @@ Import MaxB3D.B3DUtils
 
 Type TMeshLoaderB3D Extends TMeshLoader
 	Method Run(url:Object,mesh:TMesh)
-		If ExtractExt(String(url))="b3d" DebugStop
 		Local model:TBB3DChunk=TBB3DChunk.Load(url)
 		If model=Null Return False
 		

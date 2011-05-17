@@ -12,13 +12,20 @@ Import MaxB3D.Core
 Import BRL.GLMax2D
 Import PUB.GLew
 
+Private
+Function ModuleLog(message$)
+	_maxb3d_logger.Write "gldriver",message
+End Function
+
+Public
+
 Global GL_LIGHT[]=[GL_LIGHT0,GL_LIGHT1,GL_LIGHT2,GL_LIGHT3,GL_LIGHT4,GL_LIGHT5,GL_LIGHT6,GL_LIGHT7]
 
 Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	Method SetGraphics(g:TGraphics)
 		Super.SetGraphics g
 		glewInit()
-		If g<>Null EndMax2D()		
+		If g<>Null Startup
 	End Method
 	
 	Function BindTexture(tex)
@@ -28,6 +35,16 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			currenttexture=tex
 		EndIf
 	End Function
+	
+	Method Startup()
+		Global _firsttime=True
+		If _firsttime
+			ModuleLog "Initializing GL driver"
+			ModuleLog "Extensions supported: "+String.FromCString(glGetString(GL_EXTENSIONS))
+			_firsttime=False
+		EndIf
+		EndMax2D
+	End Method
 	
 	Function EnableStates()	
 		glEnable GL_LIGHTING
@@ -335,7 +352,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		
 		glMatrixMode(GL_MODELVIEW)
 		glPushMatrix()
-		glMultMatrixf(entity._matrix.GetPtr())
+		glMultMatrixf(entity.GetMatrix(True,False).GetPtr())
 	End Method
 	Method EndEntityRender(entity:TEntity)
 		glMatrixMode(GL_MODELVIEW)
@@ -357,6 +374,20 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			glVertex3f(-1,0, -1)			
 		glEnd()
 		Return 2
+	End Method
+	
+	Method RenderSprite(sprite:TSprite)
+		glBegin GL_QUADS
+			glNormal3f 0,0,1
+			glTexCoord2f 0,1
+			glVertex3f 1, -1, 0			
+			glTexCoord2f 0,0
+			glVertex3f 1, 1, 0			
+			glTexCoord2f 1,0
+			glVertex3f -1,1, 0			
+			glTexCoord2f 1,1
+			glVertex3f -1,-1, 0
+		glEnd
 	End Method
 	
 	Method RenderTerrain(terrain:TTerrain)

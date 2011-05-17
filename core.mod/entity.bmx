@@ -281,6 +281,13 @@ Type TEntity
 		_hidden=Not visible
 	End Method
 	
+	Method GetOrder()
+		Return _order
+	End Method
+	Method SetOrder(order)
+		_order=order
+	End method
+	
 	Method GetCollisions:TCollision[]()
 		Return _collision
 	End Method
@@ -333,8 +340,9 @@ Type TEntity
 		EndIf
 	End Method
 	
-	Method GetMatrix:TMatrix()
-		Return _matrix.Copy()
+	Method GetMatrix:TMatrix(alternate=False,copy=True)
+		If copy Return _matrix.Copy()
+		Return _matrix
 	End Method
 	Method SetMatrix(matrix:TMatrix)
 		Local x#,y#,z#,pitch#,yaw#,roll#,sx#,sy#,sz#
