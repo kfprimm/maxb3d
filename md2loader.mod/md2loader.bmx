@@ -17,9 +17,7 @@ Global md2_anorms#[][]= [[ -0.525731,  0.000000,  0.850651 ],[ -0.442863,  0.238
 Public
 
 Type TMeshLoaderMD2 Extends TMeshLoader
-	Method Run(url:Object,mesh:TMesh)
-		Local stream:TStream=TStream(url)
-		If stream=Null stream=ReadStream(url)
+	Method Run(mesh:TMesh,stream:TStream,url:Object)
 		If stream=Null Return False
 		stream=LittleEndianStream(stream)
 		
@@ -81,24 +79,29 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 			master_surface.SetTexCoord v2,st[(tc2*2)+0]/Float(skinwidth),st[(tc2*2)+1]/Float(skinheight)
 		Next
 		
+		mesh.AppendSurface master_surface
+		
 		SeekStream stream,offset_frames
+		Local animator:TFrameAnimator=New TFrameAnimator
+		
 		For Local i=0 To num_frames-1
 			Local sx#=ReadFloat(stream),sy#=ReadFloat(stream),sz#=ReadFloat(stream)
 			Local name$=ReadString(stream,16)
 			Local tx#=ReadFloat(stream),ty#=ReadFloat(stream),tz#=ReadFloat(stream)
-			Local surface:TSurface=master_surface.Copy()
+			Local surface:TSurface=master_surface.Copy(SURFACE_POS|SURFACE_NML)
 			For Local v=0 To num_vertices-1
 				Local x#=ReadByte(stream)*sx+tx,y#=ReadByte(stream)*sy+ty,z#=ReadByte(stream)*sz+tz
 				Local ni=ReadByte(stream)
 				surface.SetCoord v,x,y,z
 				surface.SetNormal v,md2_anorms[ni][2],md2_anorms[ni][1],md2_anorms[ni][0]
 			Next
-			mesh.AppendSurface surface
-			Exit
+			surface.Transform TMatrix.YawPitchRoll(-90,90,0)
+			animator.AddFrame surface
 		Next
 		CloseStream stream
 		
-		mesh.Rotate(90,0,0)
+		mesh._animator=animator
+		
 		mesh.UpdateNormals
 		
 		Return True

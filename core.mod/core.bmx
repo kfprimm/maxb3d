@@ -36,10 +36,16 @@ SetWorld _currentworld
 
 Type TWorld
 	Field _config:TWorldConfig=New TWorldConfig
+	Field _resource_path$[]
 	Field _physicsdriver:TPhysicsDriver=B3DPhysicsDriver()
 	
 	Method New()
 		SetAmbientLight 127,127,127
+	End Method
+	
+	Method AddResourcePath(path$)
+		_resource_path=_resource_path[.._resource_path.length+1]
+		_resource_path[_resource_path.length-1]=path
 	End Method
 	
 	Method SetPhysics(driver:TPhysicsDriver)
@@ -65,6 +71,22 @@ Type TWorld
 		_config.Wireframe=enable
 	End Method
 	
+	Method Stream:Object(url:Object)
+		Local stream:TStream=ReadStream(url)
+		If stream Return stream
+		If String(url)
+			Local uri$=String(url),file$=StripDir(uri)
+			For Local path$=EachIn _resource_path
+				stream=ReadStream(path+"/"+file)
+				If stream Return stream
+			Next
+			stream=ReadStream(file)
+			If stream Return stream
+			Return url
+		EndIf 
+		Return url
+	End Method
+	
 	Method AddTexture:TTexture(url:Object,flags=TEXTURE_DEFAULT)
 		Local texture:TTexture=New TTexture,pixmap:TPixmap
 		If Int[](url)
@@ -76,7 +98,7 @@ Type TWorld
 		ElseIf TPixmap(url) 
 			pixmap=TPixmap(url)
 		Else
-			pixmap=LoadPixmap(url)
+			pixmap=LoadPixmap(Stream(url))
 		EndIf
 		
 		If pixmap=Null 
@@ -140,7 +162,7 @@ Type TWorld
 	
 	Method AddMesh:TMesh(url:Object,parent:TEntity=Null)
 		Local mesh:TMesh=New TMesh
-		If Not TMeshLoader.Load(url,mesh)
+		If Not TMeshLoader.Load(mesh,Stream(url))
 			If url ModuleLog "Unable to load mesh url. ("+url.ToString()+")" Else ModuleLog "Unable to load mesh url. (null)"
 			Return Null
 		EndIf
@@ -174,6 +196,12 @@ Type TWorld
 		Return body
 	End Method
 	
+	Method AddBone:TBone(parent:TEntity=Null)
+		Local bone:TBone=New TBone
+		bone.AddToWorld parent,[WORLDLIST_BONE]
+		Return bone
+	End Method
+	
 	Method Render(tween#=1.0)
 		Local driver:TMaxB3DDriver=TMaxB3DDriver(GetGraphicsDriver())
 		Assert driver,"MaxB3D driver not set!"
@@ -188,6 +216,12 @@ Type TWorld
 	
 	Method Update()
 		_physicsdriver.Update _config
+		For Local mesh:TMesh=EachIn _config.List[WORLDLIST_MESH]
+			If mesh._animator
+				mesh._animator._frame=( mesh._animator._frame+.2 )Mod mesh._animator.GetFrameCount()
+				mesh._animator.Update()
+			EndIf
+		Next
 	End Method
 
 	Method SetCollisions(src,dest,methd,response)
@@ -248,12 +282,17 @@ Type TWorld
 			Local mesh:TMesh=TMesh(entity),plane:TPlane=TPlane(entity),terrain:TTerrain=TTerrain(entity)
 			Local sprite:TSprite=TSprite(entity)
 			driver.BeginEntityRender entity
-			If mesh				
+			If mesh
 				For Local surface:TSurface=EachIn mesh._surfaces	
+					Local animation_surface:TSurface,merge_data
+					If mesh._animator
+						animation_surface=mesh._animator.GetSurface(surface)
+						merge_data=mesh._animator.GetMergeData()
+					EndIf
 					If surface._brush._a=0 Continue				
 					Local brush:TBrush=driver.MakeBrush(surface._brush,mesh._brush)
 					driver.SetBrush brush,surface.HasAlpha()
-					tricount:+driver.RenderSurface(surface,brush)
+					tricount:+driver.RenderSurface(driver.MergeSurfaceRes(surface,animation_surface,merge_data),surface._trianglecnt,brush)
 				Next
 			ElseIf plane
 				driver.SetBrush plane._brush,plane._brush._a<>1
@@ -374,13 +413,14 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	Method BeginEntityRender(entity:TEntity) Abstract
 	Method EndEntityRender(entity:TEntity) Abstract
 	
-	Method RenderSurface(surface:TSurface,brush:TBrush) Abstract
+	Method RenderSurface(surface:TSurfaceRes,count,brush:TBrush) Abstract
 	Method RenderPlane(plane:TPlane) Abstract	
 	Method RenderSprite(sprite:TSprite) Abstract
 	Method RenderTerrain(terrain:TTerrain) Abstract
 	
 	Method UpdateTextureRes:TTextureRes(texture:TTexture) Abstract
 	Method UpdateSurfaceRes:TSurfaceRes(surface:TSurface) Abstract
+	Method MergeSurfaceRes:TSurfaceRes(base:TSurface,animation:TSurface,data) Abstract
 	
 	Function MakeBrush:TBrush(brush:TBrush,master:TBrush)
 		Local red#,green#,blue#,alpha#,shine#,blend,fx

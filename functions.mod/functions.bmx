@@ -295,6 +295,12 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function CountEntityChildren(entity:TEntity,recursive=False)
+	Return entity.CountChildren(recursive)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function GetEntityVisible(entity:TEntity)
 	Return entity.GetVisible()
 End Function
@@ -815,7 +821,7 @@ Rem
 End Rem
 Function GetTerrainSize(terrain:TTerrain)
 	Return terrain.GetSize()
-End function
+End Function
 
 'Textures
 Rem

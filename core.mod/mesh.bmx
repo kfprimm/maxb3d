@@ -4,10 +4,15 @@ Strict
 Import "worldconfig.bmx"
 Import "entity.bmx"
 Import "surface.bmx"
+Import "bone.bmx"
+Import "animation.bmx"
 
 Type TMesh Extends TRenderEntity 
 	Field _surfaces:TList=CreateList()
 	Field _resetbounds,_minx#,_miny#,_minz#,_maxx#,_maxy#,_maxz#
+
+	Field _animator:TAnimator
+	Field _bone:TBone[]
 	
 	Field _tree:Byte Ptr
 	Field _resettree
@@ -168,11 +173,7 @@ Type TMesh Extends TRenderEntity
 	
 	Method Transform(matrix:TMatrix)
 		For Local surface:TSurface=EachIn _surfaces
-			For Local i=0 To surface._vertexcnt-1
-				Local w#=1.0
-				matrix.TransformVector surface._vertexpos[i*3+0],surface._vertexpos[i*3+1],surface._vertexpos[i*3+2],w
-				'matrix.TransformVector surface._vertexnml[i+0],surface._vertexnml[i+1],surface._vertexnml[i+2],w
-			Next
+			surface.Transform matrix
 		Next
 	End Method
 	
@@ -238,20 +239,24 @@ Type TMeshLoader
 		loader._next=Self 
 	End Method
 	
-	Function Load(url:Object,mesh:TMesh)
+	Function Load(mesh:TMesh,url:Object)
 		Local loader:TMeshLoader=_start
+		Local stream:TStream=TStream(url)
+		If stream=Null stream=ReadStream(stream)
 		While loader<>Null
-			If loader.Run(url,mesh) Return True
+			If stream SeekStream stream,0
+			If loader.Run(mesh,stream,url) Return True
 			loader=loader._next
 		Wend
+		If stream CloseStream stream
 		Return False
 	End Function
 	
-	Method Run(url:Object,mesh:TMesh) Abstract
+	Method Run(mesh:TMesh,stream:TStream,url:Object) Abstract
 End Type
 
 Type TMeshLoaderNull Extends TMeshLoader
-	Method Run(url:Object,mesh:TMesh)
+	Method Run(mesh:TMesh,stream:TStream,url:Object)
 		If String(url)="*null*" Return True
 		Return False
 	End Method

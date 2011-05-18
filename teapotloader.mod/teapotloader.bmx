@@ -23,7 +23,7 @@ End Function
 Type TMeshLoaderTeapot Extends TMeshLoader
 	Field _surface:TSurface
 	
-	Method Run(url:Object,mesh:TMesh)
+	Method Run(mesh:TMesh,stream:TStream,url:Object)
 		If String(url)="*teapot*"
 			If _surface=Null
 				Local stream:TStream=ReadStream("incbin::data.dat")

@@ -96,6 +96,16 @@ Type TEntity
 		EndIf			
 	End Method
 	
+	Method CountChildren(recursive=False)
+		Local count
+		If recursive
+			For Local child:TEntity=EachIn _childlist
+				count:+child.CountChildren(true)
+			Next
+		EndIf
+		Return _childlist.Count()+count
+	End Method
+	
 	Method GetName$()
 		Return _name
 	End Method
@@ -182,7 +192,7 @@ Type TEntity
 
 		Local dist22#=Sqr((xdiff*xdiff)+(zdiff*zdiff))
 		Local pitch#=ATan2(ydiff,dist22)
-		Local yaw#=ATan2(xdiff,-zdiff)
+		Local yaw#=-ATan2(xdiff,-zdiff)
 
 		SetRotation pitch,yaw,roll,True
 	End Method
@@ -286,7 +296,7 @@ Type TEntity
 	End Method
 	Method SetOrder(order)
 		_order=order
-	End method
+	End Method
 	
 	Method GetCollisions:TCollision[]()
 		Return _collision

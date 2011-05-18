@@ -36,7 +36,7 @@ Function CreateSphere:TMesh(segments=8,parent:TEntity=Null)
 End Function
 
 Type TMeshLoaderPrimitives Extends TMeshLoader
-	Method Run(url:Object,mesh:TMesh)
+	Method Run(mesh:TMesh,stream:TStream,url:Object)
 		Local str$=String(url)
 		Local params$[]=str[str.Find("(")+1..str.FindLast(")")].Split(",")
 		

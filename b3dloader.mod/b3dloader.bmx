@@ -12,10 +12,10 @@ Import MaxB3D.Core
 Import MaxB3D.B3DUtils
 
 Type TMeshLoaderB3D Extends TMeshLoader
-	Method Run(url:Object,mesh:TMesh)
+	Method Run(mesh:TMesh,stream:TStream,url:Object)
 		Local model:TBB3DChunk=TBB3DChunk.Load(url)
 		If model=Null Return False
-		
+				
 		Local olddir$=CurrentDir()
 		If String(url) ChangeDir(ExtractDir(String(url)))
 		
@@ -46,50 +46,67 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		Next		
 		ChangeDir olddir
 		
-		If model.node
-			Local node:TNODEChunk=model.node
-			mesh.SetName node.name
-			mesh.SetPosition node.position[0],node.position[1],node.position[2]
-			Local pitch#,yaw#,roll#
-			TQuaternion.Euler node.rotation[0],node.rotation[1],node.rotation[2],node.rotation[3],pitch,yaw,roll
-			mesh.SetRotation pitch,yaw,roll
-			mesh.SetScale node.scale[0],node.scale[1],node.scale[2]
-			
-			Local meshchunk:TMESHChunk=TMESHChunk(node.kind)
-			If meshchunk
-				If meshchunk.brush_id>-1 mesh.SetBrush brush[meshchunk.brush_id]
-				
-				Local vrts:TVRTSChunk=meshchunk.vrts
-				Local vertsurface:TSurface=New TSurface
-				vertsurface.Resize(vrts.xyz.length/3,0)
-				
-				For Local i=0 To vertsurface.CountVertices()-1
-					vertsurface.SetCoord i,vrts.xyz[i*3+0],vrts.xyz[i*3+1],vrts.xyz[i*3+2]
-					If vrts.nxyz vertsurface.SetNormal i,vrts.nxyz[i*3+0],vrts.nxyz[i*3+1],vrts.nxyz[i*3+2]
-					If vrts.rgba vertsurface.SetColor i,vrts.rgba[i*4+0]*255,vrts.rgba[i*4+1]*255,vrts.rgba[i*4+2]*255,vrts.rgba[i*4+3]
-					For Local j=0 To vrts.SetCount()-1
-						Local u#,v#
-						If vrts.SetSize()>1 u=vrts.tex_coords[i][j,0];v=vrts.tex_coords[i][j,1]
-						vertsurface.SetTexCoord i,u,v
-					Next
-				Next
-				If vrts.nxyz=Null vertsurface.UpdateNormals()
-				
-				For Local i=0 To meshchunk.tris.length-1
-					Local tri:TTRISChunk=meshchunk.tris[i]
-					Local surface:TSurface=vertsurface.Copy()
-					surface.Resize(-1,tri.vertex_id.length/3)
-					If tri.brush_id>-1 surface.SetBrush brush[tri.brush_id]
-					For Local t=0 To surface.CountTriangles()-1
-						surface.SetTriangle t,tri.vertex_id[t*3+2],tri.vertex_id[t*3+1],tri.vertex_id[t*3+0]
-					Next					
-					mesh._surfaces.AddLast surface
-				Next
-			EndIf
-			
+		If model.node 
+			ParseNode model.node,mesh,brush,mesh
 			Return True
 		EndIf
 		Return False
+	End Method
+	
+	Method ParseNode(node:TNODEChunk,parent:TEntity,brush:TBrush[],entity:TEntity=Null)
+		Local meshchunk:TMESHChunk=TMESHChunk(node.kind),bonechunk:TBONEChunk=TBONEChunk(node.kind)
+				
+		Select node.kind
+		Case meshchunk			
+			If entity=Null entity=_currentworld.AddMesh("*null*",parent)
+			Local mesh:TMesh=TMesh(entity)
+			
+			If meshchunk.brush_id>-1 entity.SetBrush brush[meshchunk.brush_id]
+			
+			Local vrts:TVRTSChunk=meshchunk.vrts
+			Local vertsurface:TSurface=New TSurface
+			vertsurface.Resize(vrts.xyz.length/3,0)
+			
+			For Local i=0 To vertsurface.CountVertices()-1
+				vertsurface.SetCoord i,vrts.xyz[i*3+0],vrts.xyz[i*3+1],vrts.xyz[i*3+2]
+				If vrts.nxyz vertsurface.SetNormal i,vrts.nxyz[i*3+0],vrts.nxyz[i*3+1],vrts.nxyz[i*3+2]
+				If vrts.rgba vertsurface.SetColor i,vrts.rgba[i*4+0]*255,vrts.rgba[i*4+1]*255,vrts.rgba[i*4+2]*255,vrts.rgba[i*4+3]
+				For Local j=0 To vrts.SetCount()-1
+					Local u#,v#
+					If vrts.SetSize()>1 u=vrts.tex_coords[i][j,0];v=vrts.tex_coords[i][j,1]
+					vertsurface.SetTexCoord i,u,v
+				Next
+			Next
+			
+			For Local i=0 To meshchunk.tris.length-1
+				Local tri:TTRISChunk=meshchunk.tris[i]
+				Local surface:TSurface=vertsurface.Copy()
+				surface.Resize(-1,tri.vertex_id.length/3)
+				If tri.brush_id>-1 surface.SetBrush brush[tri.brush_id]
+				For Local t=0 To surface.CountTriangles()-1
+					surface.SetTriangle t,tri.vertex_id[t*3+0],tri.vertex_id[t*3+1],tri.vertex_id[t*3+2]
+				Next
+				If vrts.nxyz=Null surface.UpdateNormals			
+				mesh._surfaces.AddLast surface
+			Next
+		Case bonechunk
+			entity=_currentworld.AddBone(parent)
+			Local bone:TBone=TBone(entity)
+		Default
+			entity=_currentworld.AddPivot(parent)
+		End Select		
+		
+		entity.SetName node.name
+		entity.SetPosition node.position[0],node.position[1],node.position[2]
+		Local pitch#,yaw#,roll#
+		TQuaternion.Euler node.rotation[0],node.rotation[1],node.rotation[2],node.rotation[3],pitch,yaw,roll
+		entity.SetRotation pitch,yaw,roll
+		entity.SetScale node.scale[0],node.scale[1],node.scale[2]
+		
+		For Local child:TNODEChunk=EachIn node.node
+			ParseNode child,entity,brush
+		Next
+		
 	End Method
 End Type
 New TMeshLoaderB3D
