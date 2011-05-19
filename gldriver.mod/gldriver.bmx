@@ -461,6 +461,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	End Method
 	
 	Method MergeSurfaceRes:TGLSurfaceRes(base:TSurface,animation:TSurface,data)
+		If animation=Null Return UpdateSurfaceRes(base)
 		Global res:TGLSurfaceRes=New TGLSurfaceRes
 		Local res_base:TGLSurfaceRes=TGLSurfaceRes(UpdateSurfaceRes(base))
 		Local res_anim:TGLSurfaceRes=TGLSurfaceRes(UpdateSurfaceRes(animation))

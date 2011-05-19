@@ -65,7 +65,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.SetRenderState D3DRS_LIGHTING,True
 		_d3ddev.SetRenderState D3DRS_NORMALIZENORMALS,True
 		_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(WorldConfig.AmbientRed,WorldConfig.AmbientGreen,WorldConfig.AmbientBlue)
-		_d3ddev.SetRenderState D3DRS_COLORVERTEX, False
+		_d3ddev.SetRenderState D3DRS_COLORVERTEX, True
+		_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE,D3DMCS_MATERIAL
 
 		_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CCW		
 	End Method
@@ -80,8 +81,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.Clear(1,viewport,clearflags,D3DCOLOR_XRGB(camera._brush._r*255,camera._brush._g*255,camera._brush._b*255),1.0,0)
 
 		Local ratio#=(Float(camera._viewwidth)/camera._viewheight)		
-		Local p:Float Ptr=d3d_set_camera(_d3ddev)
 		_d3ddev.SetTransform D3DTS_PROJECTION,TMatrix.PerspectiveFovLH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).GetPtr()
+		Local p:Float Ptr=d3d_set_camera(_d3ddev)
 		
 		Global t
 		If Not t
@@ -98,25 +99,31 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			Return
 		EndIf
 
-		Local d3dlight:D3DLIGHT9=New D3DLIGHT9
+		Global d3dlight:D3DLIGHT9=New D3DLIGHT9
 		d3dlight.Type_=D3DLIGHT_DIRECTIONAL   
-		'd3dlight.Diffuse_r=1.0;d3dlight.Diffuse_g=1.0;d3dlight.Diffuse_b=1.0;'d3dlight.Diffuse_a=1.0
+		d3dlight.Diffuse_r=1.0;d3dlight.Diffuse_g=1.0;d3dlight.Diffuse_b=1.0;d3dlight.Diffuse_a=1.0
 		
-		d3dlight.Ambient_r=.5'WorldConfig.AmbientRed/255.0
-		d3dlight.Ambient_g=.5'WorldConfig.AmbientGreen/255.0
-		d3dlight.Ambient_b=.5'WorldConfig.AmbientBlue/255.0
+		'd3dlight.Ambient_r=WorldConfig.AmbientRed/255.0
+		'd3dlight.Ambient_g=WorldConfig.AmbientGreen/255.0
+		'd3dlight.Ambient_b=WorldConfig.AmbientBlue/255.0
 		'd3dlight.Ambient_a=1.0
 		
-		d3dlight.Direction_x=0.0;d3dlight.Direction_y=0.0;d3dlight.Direction_z=-1.0
+		d3dlight.Direction_x=0.0;d3dlight.Direction_y=0.0;d3dlight.Direction_z=1.0
 		'light.GetPosition d3dlight.Position_x,d3dlight.Position_y,d3dlight.Position_z,True
 		
-		d3dlight.Range=1000		
+		'd3dlight.Range=light._range		
 		
 		_d3ddev.SetLight index,d3dlight
 		_d3ddev.LightEnable index,True
 	End Method
 	
 	Method SetBrush(brush:TBrush,hasalpha) 
+		If brush._fx&FX_FULLBRIGHT
+			_d3ddev.SetRenderState D3DRS_AMBIENT,$ffffffff
+		Else
+			_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(WorldConfig.AmbientRed,WorldConfig.AmbientGreen,WorldConfig.AmbientBlue)
+		EndIf
+		
 		If brush._fx&FX_WIREFRAME
 			_d3ddev.SetRenderState D3DRS_FILLMODE,D3DFILL_WIREFRAME
 		Else
@@ -145,7 +152,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	
 	Method RenderSprite(sprite:TSprite)
 	
-	End method
+	End Method
 	
 	Method BeginEntityRender(entity:TEntity)
 		_d3ddev.SetTransform D3DTS_WORLD,entity._matrix.GetPtr()
