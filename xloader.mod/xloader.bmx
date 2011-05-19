@@ -8,7 +8,7 @@ ModuleInfo "License: MIT"
 Import MaxB3D.Core
 
 Type TMeshLoaderX Extends TMeshLoader
-	Method Run(url:Object, mesh:TMesh)
+	Method Run(mesh:TMesh,stream:TStream,url:Object)
 		Local file:TXFile=TXFile.Load(url)
 		If file=Null Return False
 		
@@ -25,12 +25,19 @@ Type TXFile
 		If stream=Null stream=ReadStream(url)
 		If stream=Null Return Null
 		
-		If ReadString(stream,4)<>"xof " Return Null
+		If ReadString(stream,4)="xof " 
+			CloseStream stream
+			Return Null
+		EndIf
+		
 		Local major=Int(ReadString(stream,2)),minor=Int(ReadString(stream,2))
 		Local format$=ReadString(stream,4)
 		Local float_size=Int(ReadString(stream,4))
 		
-		If format<>"txt " Return Null
+		If format<>"txt "
+			CloseStream stream
+			Return Null
+		EndIf
 		
 		Local data_str$[]=TXData.Parse(ReadString(stream,StreamSize(stream)-16))
 		

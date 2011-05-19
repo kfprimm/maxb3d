@@ -14,7 +14,7 @@ Import MaxB3D.Core
 Import "MR_3DS.bmx"
 
 Type TMeshLoader3DS Extends TMeshLoader
-	Method Run(url:Object,mesh:TMesh)	
+	Method Run(mesh:TMesh,stream:TStream,url:Object)	
 		If ExtractExt(String(url))<>"3ds" Return False
 		If Not Load3DSIntoMemory(String(url)) Return False
 		

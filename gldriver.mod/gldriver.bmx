@@ -12,13 +12,20 @@ Import MaxB3D.Core
 Import BRL.GLMax2D
 Import PUB.GLew
 
+Private
+Function ModuleLog(message$)
+	_maxb3d_logger.Write "gldriver",message
+End Function
+
+Public
+
 Global GL_LIGHT[]=[GL_LIGHT0,GL_LIGHT1,GL_LIGHT2,GL_LIGHT3,GL_LIGHT4,GL_LIGHT5,GL_LIGHT6,GL_LIGHT7]
 
 Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	Method SetGraphics(g:TGraphics)
 		Super.SetGraphics g
 		glewInit()
-		If g<>Null EndMax2D()		
+		If g<>Null Startup
 	End Method
 	
 	Function BindTexture(tex)
@@ -28,6 +35,16 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			currenttexture=tex
 		EndIf
 	End Function
+	
+	Method Startup()
+		Global _firsttime=True
+		If _firsttime
+			ModuleLog "Initializing GL driver"
+			ModuleLog "Extensions supported: "+String.FromCString(glGetString(GL_EXTENSIONS))
+			_firsttime=False
+		EndIf
+		EndMax2D
+	End Method
 	
 	Function EnableStates()	
 		glEnable GL_LIGHTING
@@ -296,8 +313,8 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Next		
 	End Method
 	
-	Method RenderSurface(surface:TSurface,brush:TBrush)
-		Local res:TGLSurfaceRes=UpdateSurfaceRes(surface)	
+	Method RenderSurface(resource:TSurfaceRes,brush:TBrush)
+		Local res:TGLSurfaceRes=TGLSurfaceRes(resource)	
 		
 		glDisableClientState GL_TEXTURE_COORD_ARRAY
 		For Local i=0 To 7
@@ -319,9 +336,9 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glColorPointer(4,GL_FLOAT,0,Null)
 	
 		glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,res._vbo[3])
-		glDrawElements(GL_TRIANGLES,surface._trianglecnt*3,GL_UNSIGNED_INT,Null)
+		glDrawElements(GL_TRIANGLES,res._trianglecnt*3,GL_UNSIGNED_INT,Null)
 		
-		Return surface._trianglecnt
+		Return res._trianglecnt
 	End Method
 	
 	Method BeginEntityRender(entity:TEntity)		
@@ -335,7 +352,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		
 		glMatrixMode(GL_MODELVIEW)
 		glPushMatrix()
-		glMultMatrixf(entity._matrix.GetPtr())
+		glMultMatrixf(entity.GetMatrix(True,False).GetPtr())
 	End Method
 	Method EndEntityRender(entity:TEntity)
 		glMatrixMode(GL_MODELVIEW)
@@ -357,6 +374,20 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			glVertex3f(-1,0, -1)			
 		glEnd()
 		Return 2
+	End Method
+	
+	Method RenderSprite(sprite:TSprite)
+		glBegin GL_QUADS
+			glNormal3f 0,0,1
+			glTexCoord2f 0,1
+			glVertex3f 1, -1, 0			
+			glTexCoord2f 0,0
+			glVertex3f 1, 1, 0			
+			glTexCoord2f 1,0
+			glVertex3f -1,1, 0			
+			glTexCoord2f 1,1
+			glVertex3f -1,-1, 0
+		glEnd
 	End Method
 	
 	Method RenderTerrain(terrain:TTerrain)
@@ -400,7 +431,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	End Method
 	
 	Method UpdateSurfaceRes:TGLSurfaceRes(surface:TSurface)
-		Local res:TGLSurfaceRes=TGLSurfaceRes(surface._Res)
+		Local res:TGLSurfaceRes=TGLSurfaceRes(surface._res)
 		If res=Null res=New TGLSurfaceRes;surface._res=res
 		If surface._reset=0 Return res
 		
@@ -421,7 +452,21 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			If surface._reset&Int(2^(4+i)) UploadVertexBuffer res._vbo[4+i],surface._vertextex[i]
 		Next	
 		
+		res._trianglecnt=surface._trianglecnt
+		res._vertexcnt=surface._vertexcnt
+
+		
 		surface._reset=0		
+		Return res
+	End Method
+	
+	Method MergeSurfaceRes:TGLSurfaceRes(base:TSurface,animation:TSurface,data)
+		Global res:TGLSurfaceRes=New TGLSurfaceRes
+		Local res_base:TGLSurfaceRes=TGLSurfaceRes(UpdateSurfaceRes(base))
+		Local res_anim:TGLSurfaceRes=TGLSurfaceRes(UpdateSurfaceRes(animation))
+		res._vbo=res_base._vbo[..]
+		res._texcoord=res_base._texcoord
+		res._vbo[0]=res_anim._vbo[0]
 		Return res
 	End Method
 	

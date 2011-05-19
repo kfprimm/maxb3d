@@ -66,6 +66,10 @@ Type TTerrain Extends TRenderEntity
 		_heights[(z*_size)+x]=height			
 	End Method	
 	
+	Method GetSize()
+		Return _size
+	End Method
+	
 	Method SetDetail(lmax, max_tris, clmax=-1)
 		If clmax = -1 clmax = lmax
 		_lmax = Min(lmax,44)

@@ -130,18 +130,22 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.SetMaterial material
 	End Method
 	
-	Method RenderSurface(surface:TSurface,brush:TBrush)
-		Local res:TD3D9SurfaceRes=UpdateSurfaceRes(surface)
+	Method RenderSurface(resource:TSurfaceRes,brush:TBrush)
+		Local res:TD3D9SurfaceRes=TD3D9SurfaceRes(resource)
 		
 		_d3ddev.SetVertexDeclaration GetD3D9MaxB3DVertexDecl(_d3ddev)
 		_d3ddev.SetStreamSource 0,res._pos,0,12
 		_d3ddev.SetStreamSource 1,res._nml,0,12
 		'_d3ddev.SetStreamSource 2,res._clr,0,16
 		_d3ddev.SetIndices res._tri
-		_d3ddev.DrawIndexedPrimitive D3DPT_TRIANGLELIST,0,0,surface._vertexcnt,0,surface._trianglecnt
+		_d3ddev.DrawIndexedPrimitive D3DPT_TRIANGLELIST,0,0,res._vertexcnt,0,res._trianglecnt
 
-		Return surface._trianglecnt
+		Return res._trianglecnt
 	End Method
+	
+	Method RenderSprite(sprite:TSprite)
+	
+	End method
 	
 	Method BeginEntityRender(entity:TEntity)
 		_d3ddev.SetTransform D3DTS_WORLD,entity._matrix.GetPtr()
@@ -178,10 +182,17 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			res._tri.Unlock()
 		EndIf
 		
+		res._trianglecnt=surface._trianglecnt
+		res._vertexcnt=surface._vertexcnt
+		
 		surface._reset=0
 		surface._res=res
 		
 		Return res
+	End Method
+
+	Method MergeSurfaceRes:TSurfaceRes(base:TSurface,animation:TSurface,data)
+		Return UpdateSurfaceRes(base)
 	End Method
 	
 	Method UploadVertexData(buffer:IDirect3DVertexBuffer9 Var,data#[])
@@ -191,6 +202,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		MemCopy dataptr,data,data.length*4		
 		buffer.Unlock()
 	End Method
+	
 End Type
 
 Type TD3D9TextureRes Extends TTextureRes

@@ -40,6 +40,11 @@ Type TTEXSChunk Extends TChunk
 	Method GetLength()
 		Return (file.length+1)+(2*4)+(2*4)+(2*4)+4
 	End Method
+	
+	Method Dump(stream:TStream,level=0)
+		WriteDump stream,level,"TEXS"
+		WriteDump stream,level,"File: "+file
+	End Method
 End Type
 
 Type TBRUSChunk Extends TChunk
@@ -75,6 +80,11 @@ Type TBRUSChunk Extends TChunk
 	
 	Method GetLength()
 		Return (name.length+1)+(4*4)+4+(2*4)+(n_texs*4)
+	End Method
+	
+	Method Dump(stream:TStream,level=0)
+		WriteDump stream,level,"BRUS"
+		WriteDump stream,level,"Name: "+name
 	End Method
 End Type
 
@@ -144,6 +154,10 @@ Type TVRTSChunk Extends TChunk
 	Method GetLength()
 		Return (3*4)+(3*4)+(((nxyz<>Null)+(rgba<>Null))*4)+(SetCount()*SetSize()*4)
 	End Method
+	
+	Method Dump(stream:TStream,level=0)
+		WriteDump stream,level,"VRTS"
+	End Method
 End Type
 
 Type TTRISChunk Extends TChunk
@@ -168,6 +182,10 @@ Type TTRISChunk Extends TChunk
 	
 	Method GetLength()
 		Return (vertex_id.length+1)*4
+	End Method
+	
+	Method Dump(stream:TStream,level=0)
+		WriteDump stream,level,"TRIS"
 	End Method
 End Type
 
@@ -208,6 +226,13 @@ Type TMESHChunk Extends TChunk
 	Method GetLength()
 		Return
 	End Method
+	
+	Method Dump(stream:TStream,level=0)
+		WriteDump stream,level,"MESH"
+		WriteDump stream,level,"Brush ID: "+brush_id
+		DumpChunk vrts,stream,level+1
+		DumpChunks tris,stream,level+1
+	End Method
 End Type
 
 Type TNODEChunk Extends TChunk
@@ -216,6 +241,8 @@ Type TNODEChunk Extends TChunk
 	Field scale#[3]
 	Field rotation#[4]
 	Field kind:TChunk
+	Field keys:TKEYSChunk[],node:TNODEChunk[]
+	Field anim:TANIMChunk
 	
 	Method Read(stream:TStream,length Var)
 		name=ReadCString(stream)
@@ -231,10 +258,103 @@ Type TNODEChunk Extends TChunk
 			Case "MESH"				
 				kind=New TMESHChunk
 				kind.Read(stream,chunklength)
+			Case "BONE"
+				kind=New TBONEChunk
+				kind.Read(stream,chunklength)
+			Case "KEYS"
+				Local chunk:TKEYSChunk=New TKEYSChunk
+				chunk.Read(stream,chunklength)
+				keys=keys[..keys.length+1]
+				keys[keys.length-1]=chunk
+			Case "NODE"
+				Local chunk:TNODEChunk=New TNODEChunk
+				chunk.Read(stream,chunklength)
+				node=node[..node.length+1]
+				node[node.length-1]=chunk
+			Case "ANIM"
+				anim=New TANIMChunk
+				anim.Read(stream,chunklength)
 			Default
+				DebugLog "Invalid tag: "+tag
 				SkipChunk stream,chunklength
 			End Select
 		Wend
+	End Method
+	
+	Method Dump(stream:TStream,level=0)
+		WriteDump stream,level,"NODE"
+		WriteDump stream,level,"Name: "+name
+		DumpChunk kind,stream,level+1
+		DumpChunks keys,stream,level+1
+		DumpChunks node,stream,level+1
+		DumpChunk anim,stream,level+1
+	End Method
+End Type
+
+Type TBONEChunk Extends TChunk
+	Field vertex_id[]
+	Field weight#[]
+	
+	Method Read(stream:TStream,length Var)	
+		vertex_id=New Int[length/8]
+		weight=New Float[length/8]
+		For Local i=0 To length/8-1
+			vertex_id[i]=ReadInt(stream)
+			weight[i]=ReadFloat(stream)
+		Next
+		length=0
+	End Method
+	
+	Method Dump(stream:TStream,level=0)
+		WriteDump stream,level,"BONE"
+	End Method
+End Type
+
+Type TKEYSChunk Extends TChunk
+	Field frame[]
+	Field position#[]
+	Field scale#[]
+	Field rotation#[]
+	
+	Method Read(stream:TStream,length Var)
+		Local flags=ReadInt(stream)
+		Local size=((flags&1<>0)*3+(flags&2<>0)*3+(flags&4<>0)*4)*4+4
+		Local count=(length-4)/size
+		frame=New Int[count]
+		If flags&1 position=New Float[count*3]
+		If flags&2 scale=New Float[count*3]
+		If flags&4 rotation=New Float[count*4]
+		For Local i=0 To count-1
+			frame[i]=ReadInt(stream)
+			If flags&1 ReadFloats stream,position,3
+			If flags&2 ReadFloats stream,scale,3
+			If flags&4 ReadFloats stream,rotation,4
+			length:-size
+		Next
+	End Method
+	
+	Method Dump(stream:TStream,level=0)
+		WriteDump stream,level,"KEYS"
+	End Method
+End Type
+
+Type TANIMChunk Extends TChunk
+	Field flags
+	Field frames
+	Field fps#
+	
+	Method Read(stream:TStream,length Var)
+		flags=ReadInt(stream)
+		frames=ReadInt(stream)
+		fps=ReadFloat(stream)
+		length=0
+	End Method
+	
+	Method Dump(stream:TStream,level=0)
+		WriteDump stream,level,"ANIM"
+		WriteDump stream,level,"Flags: "+flags
+		WriteDump stream,level,"Frames: "+frames
+		WriteDump stream,level,"FPS: "+fps
 	End Method
 End Type
 
@@ -256,6 +376,15 @@ Type TBB3DChunk Extends TChunk
 		CloseStream stream
 		Return chunk
 	End Function
+	
+	Method Dump(stream:TStream,level=0)
+		WriteDump stream,level,"BB3D"
+		WriteDump stream,level,"Version: "+version
+		DumpChunks texs,stream,1
+		DumpChunks brus,stream,1
+		DumpChunk node,stream,1
+		stream.Flush
+	End Method
 	
 	Method Save(url:Object)
 		Local stream:TStream=WriteStream(url)
@@ -288,7 +417,7 @@ Type TBB3DChunk Extends TChunk
 			Case "NODE"
 				node=New TNODEChunk
 				node.Read stream,chunklength
-			Default
+			Default				
 				SkipChunk stream,chunklength
 			End Select
 		Wend
@@ -328,6 +457,23 @@ End Type
 Type TChunk
 	Global tagstack[]
 	Method Read(stream:TStream,length Var) Abstract	
+	Method Dump(stream:TStream,level=0) Abstract
+	
+	Function WriteDump(stream:TStream,level,info$)
+		WriteLine stream,info[-level..]
+	End Function
+	
+	Function DumpChunk(chunk:TChunk,stream:TStream,level)
+		If chunk=Null Return
+		chunk.Dump stream,level
+	End Function
+	
+	Function DumpChunks(chunks:TChunk[],stream:TStream,level)
+		If chunks.length=0 Return
+		For Local chunk:TChunk=EachIn chunks
+			chunk.Dump stream,level
+		Next
+	End Function
 	
 	Function ReadTag$(stream:TStream,length Var)
 		Local tag$=ReadString(stream,4)
@@ -362,6 +508,12 @@ Type TChunk
 		Return str
 	End Function
 	
+	Function ReadFloats(stream:TStream,array:Float Ptr,length)
+		For Local i=0 To length-1
+			array[i]=ReadFloat(stream)
+		Next
+	End Function
+		
 	Function WriteFloats(stream:TStream,array:Float Ptr,length)
 		For Local f#=0 To length-1
 			WriteFloat stream,f

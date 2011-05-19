@@ -4,6 +4,13 @@ Strict
 Import MaxB3D.Math
 Import "brush.bmx"
 
+Const SURFACE_POS = 1
+Const SURFACE_NML = 2
+Const SURFACE_CLR = 4
+Const SURFACE_TEX = 8
+Const SURFACE_TRI = 16
+Const SURFACE_ALL = SURFACE_POS|SURFACE_NML|SURFACE_CLR|SURFACE_TEX
+
 Type TSurface
 	Field _brush:TBrush=New TBrush
 	
@@ -18,13 +25,15 @@ Type TSurface
 	
 	Field _res:TSurfaceRes,_reset=-1
 	
-	Method Copy:TSurface()
+	Method Copy:TSurface(data=SURFACE_ALL)
 		Local surface:TSurface=New TSurface
 		surface._brush.Load(_brush)
-		surface._vertexcnt=_vertexcnt;surface._trianglecnt=_trianglecnt
-		surface._vertexpos=_vertexpos[..];surface._vertexnml=_vertexnml[..];surface._vertexclr=_vertexclr[..]
-		surface._vertextex=_vertextex[..];surface._texcoordsize=_texcoordsize
-		surface._triangle=_triangle[..]
+		surface._vertexcnt=_vertexcnt		
+		If data&SURFACE_POS surface._vertexpos=_vertexpos[..]
+		If data&SURFACE_NML surface._vertexnml=_vertexnml[..]
+		If data&SURFACE_CLR surface._vertexclr=_vertexclr[..]
+		If data&SURFACE_TEX surface._vertextex=_vertextex[..];surface._texcoordsize=_texcoordsize
+		If data&SURFACE_TRI surface._trianglecnt=_trianglecnt;surface._triangle=_triangle[..]
 		Return surface
 	End Method
 	
@@ -148,6 +157,14 @@ Type TSurface
 		_reset:|2|8
 	End Method
 	
+	Method Transform(matrix:TMatrix)
+		For Local i=0 To _vertexcnt-1
+			Local w#=1.0
+			matrix.TransformVector _vertexpos[i*3+0],_vertexpos[i*3+1],_vertexpos[i*3+2],w
+			'matrix.TransformVector _vertexnml[i+0],_vertexnml[i+1],_vertexnml[i+2],w
+		Next
+	End Method
+	
 	Method UpdateNormals()
 		C_UpdateNormals(_trianglecnt,_vertexcnt,_triangle,_vertexpos,_vertexnml)
 		_reset:|2
@@ -173,5 +190,6 @@ Type TSurface
 End Type
 
 Type TSurfaceRes
-
+	Field _vertexcnt
+	Field _trianglecnt
 End Type

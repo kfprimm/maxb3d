@@ -295,6 +295,12 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function CountEntityChildren(entity:TEntity,recursive=False)
+	Return entity.CountChildren(recursive)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function GetEntityVisible(entity:TEntity)
 	Return entity.GetVisible()
 End Function
@@ -307,13 +313,25 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function GetEntityOrder(entity:TEntity)
+	Return entity.GetOrder()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetEntityOrder(entity:TEntity,order)
+	Return entity.SetOrder(order)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function GetEntityName$(entity:TEntity)
 	Return entity.GetName()
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function SetEntityName$(entity:TEntity,name$)
+Function SetEntityName(entity:TEntity,name$)
 	Return entity.SetName(name)
 End Function
 Rem
@@ -581,8 +599,8 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function ShiftMesh(mesh:TMesh,x#,y#,z#)
-	Return mesh.Shift(x,y,z)
+Function PositionMesh(mesh:TMesh,x#,y#,z#)
+	Return mesh.Position(x,y,z)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -623,6 +641,56 @@ Rem
 End Rem
 Function CreatePlane:TPlane(parent:TEntity=Null)
 	Return _currentworld.AddPlane(parent)
+End Function
+
+'Sprite
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function CreateSprite:TSprite(parent:TEntity=Null)
+	Return _currentworld.AddSprite(Null,TEXTURE_DEFAULT,parent)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function LoadSprite:TSprite(url:Object,flags=TEXTURE_DEFAULT,parent:TEntity=Null)
+	Return _currentworld.AddSprite(url,flags,parent)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetSpriteAngle#(sprite:TSprite)
+	Return sprite.GetAngle()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetSpriteAngle(sprite:TSprite,angle#)
+	Return sprite.SetAngle(angle)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetSpriteHandle(sprite:TSprite,x# Var,y# Var)
+	Return sprite.GetHandle(x,y)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End RemS
+Function SetSpriteHandle(sprite:TSprite,x#,y#)
+	Return sprite.SetHandle(x,y)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetSpriteViewMode(sprite:TSprite)
+	Return sprite.GetViewMode()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetSpriteViewMode(sprite:TSprite,mode)
+	Return sprite.SetViewMode(mode)
 End Function
 
 'Surfaces
@@ -747,6 +815,12 @@ Rem
 End Rem
 Function SetTerrainHeight(terrain:TTerrain,height#,x,z)
 	Return terrain.SetHeight(height,x,z)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetTerrainSize(terrain:TTerrain)
+	Return terrain.GetSize()
 End Function
 
 'Textures

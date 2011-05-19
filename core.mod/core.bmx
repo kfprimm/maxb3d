@@ -12,6 +12,8 @@ ModuleInfo "Credit: Terrain system adapted from Warner's engine."
 
 Import BRL.Max2D
 
+Import MaxB3D.Logging
+
 Import "texture.bmx"
 Import "physics.bmx"
 Import "camera.bmx"
@@ -19,17 +21,31 @@ Import "pivot.bmx"
 Import "light.bmx"
 Import "mesh.bmx"
 Import "plane.bmx"
+Import "sprite.bmx"
 Import "terrain.bmx"
+
+Private
+Function ModuleLog(message$)
+	_maxb3d_logger.Write "core",message
+End Function
+
+Public
 
 Global _currentworld:TWorld=CreateWorld()
 SetWorld _currentworld
 
 Type TWorld
 	Field _config:TWorldConfig=New TWorldConfig
+	Field _resource_path$[]
 	Field _physicsdriver:TPhysicsDriver=B3DPhysicsDriver()
 	
 	Method New()
 		SetAmbientLight 127,127,127
+	End Method
+	
+	Method AddResourcePath(path$)
+		_resource_path=_resource_path[.._resource_path.length+1]
+		_resource_path[_resource_path.length-1]=path
 	End Method
 	
 	Method SetPhysics(driver:TPhysicsDriver)
@@ -55,6 +71,22 @@ Type TWorld
 		_config.Wireframe=enable
 	End Method
 	
+	Method Stream:Object(url:Object)
+		Local stream:TStream=ReadStream(url)
+		If stream Return stream
+		If String(url)
+			Local uri$=String(url),file$=StripDir(uri)
+			For Local path$=EachIn _resource_path
+				stream=ReadStream(path+"/"+file)
+				If stream Return stream
+			Next
+			stream=ReadStream(file)
+			If stream Return stream
+			Return url
+		EndIf 
+		Return url
+	End Method
+	
 	Method AddTexture:TTexture(url:Object,flags=TEXTURE_DEFAULT)
 		Local texture:TTexture=New TTexture,pixmap:TPixmap
 		If Int[](url)
@@ -66,10 +98,13 @@ Type TWorld
 		ElseIf TPixmap(url) 
 			pixmap=TPixmap(url)
 		Else
-			pixmap=LoadPixmap(url)
+			pixmap=LoadPixmap(Stream(url))
 		EndIf
 		
-		If pixmap=Null Return Null
+		If pixmap=Null 
+			If url ModuleLog "Invalid texture url passed. ("+url.ToString()+")" Else ModuleLog "Invalid texture url passed. ("+url.ToString()+")"
+			Return Null
+		EndIf
 		texture.SetPixmap pixmap
 		texture.SetFlags flags
 		_config.AddObject texture,WORLDLIST_TEXTURE
@@ -92,7 +127,7 @@ Type TWorld
 		ElseIf TTexture(url)
 			texture=TTexture(url)
 		ElseIf url<>Null
-			texture=_currentworld.AddTexture(url)
+			texture=AddTexture(url)
 		EndIf
 		brush.SetTexture texture,0
 		brush.SetColor red,green,blue
@@ -127,7 +162,10 @@ Type TWorld
 	
 	Method AddMesh:TMesh(url:Object,parent:TEntity=Null)
 		Local mesh:TMesh=New TMesh
-		If Not TMeshLoader.Load(url,mesh) Return Null
+		If Not TMeshLoader.Load(mesh,Stream(url))
+			If url ModuleLog "Unable to load mesh url. ("+url.ToString()+")" Else ModuleLog "Unable to load mesh url. (null)"
+			Return Null
+		EndIf
 		mesh.AddToWorld parent,[WORLDLIST_MESH,WORLDLIST_RENDER]
 		Return mesh
 	End Method
@@ -136,6 +174,13 @@ Type TWorld
 		Local plane:TPlane=New TPlane
 		plane.AddToWorld parent,[WORLDLIST_PLANE,WORLDLIST_RENDER]
 		Return plane
+	End Method
+	
+	Method AddSprite:TSprite(url:Object,flags=TEXTURE_DEFAULT,parent:TEntity=Null)
+		Local sprite:TSprite=New TSprite
+		sprite.SetTexture AddTexture(url,flags)
+		sprite.AddToWorld parent,[WORLDLIST_SPRITE,WORLDLIST_RENDER]
+		Return sprite
 	End Method
 	
 	Method AddTerrain:TTerrain(url:Object,parent:TEntity=Null)
@@ -149,6 +194,12 @@ Type TWorld
 		Local body:TBody=New TBody
 		body.AddToWorld Null,[WORLDLIST_BODY]
 		Return body
+	End Method
+	
+	Method AddBone:TBone(parent:TEntity=Null)
+		Local bone:TBone=New TBone
+		bone.AddToWorld parent,[WORLDLIST_BONE]
+		Return bone
 	End Method
 	
 	Method Render(tween#=1.0)
@@ -165,6 +216,12 @@ Type TWorld
 	
 	Method Update()
 		_physicsdriver.Update _config
+		For Local mesh:TMesh=EachIn _config.List[WORLDLIST_MESH]
+			If mesh._animator
+				mesh._animator._frame=( mesh._animator._frame+.2 )Mod mesh._animator.GetFrameCount()
+				mesh._animator.Update()
+			EndIf
+		Next
 	End Method
 
 	Method SetCollisions(src,dest,methd,response)
@@ -195,23 +252,55 @@ Type TWorld
 			EndIf
 			driver.SetLight light,i
 		Next
+		
+		For Local sprite:TSprite=EachIn _config.List[WORLDLIST_SPRITE]
+				Local matrix:TMatrix
+				If sprite._viewmode<>VIEWMODE_FREE		
+					Local x#,y#,z#
+					sprite.GetPosition x,y,z,True
+				
+					matrix = camera.GetMatrix()'.Inverse()
+					matrix._m[3,0]=x
+					matrix._m[3,1]=y
+					matrix._m[3,2]=z
+					
+					matrix=TMatrix.YawPitchRoll(180,0,sprite._angle).Multiply(matrix)					
+					'If sprite._sx<>1.0 Or sprite._sy<>1.0 matrix=TMatrix.Scale(sprite._sx,sprite._sy,1.0).Multiply(matrix)					
+					'If sprite._handlex<>0.0 Or sprite._handley<>0.0 matrix=TMatrix.Translation(-sprite._handlex,-sprite._handley,0.0).Multiply(matrix)
+				Else				
+					matrix = sprite.GetMatrix()					
+					'If sprite.scale_x#<>1.0 Or sprite.scale_y#<>1.0
+					'	sprite.mat_sp.Scale(sprite.scale_x#,sprite.scale_y#,1.0)
+					'EndIf		
+				EndIf		
+				sprite._view_matrix = matrix	
+		Next
+		
 		Local tricount
 		For Local entity:TRenderEntity=EachIn _config.List[WORLDLIST_RENDER]
 			If Not entity.GetVisible() Or entity._brush._a=0 Continue
-			Local mesh:TMesh=TMesh(entity)
-			Local plane:TPlane=TPlane(entity)
-			Local terrain:TTerrain=TTerrain(entity)
+			Local mesh:TMesh=TMesh(entity),plane:TPlane=TPlane(entity),terrain:TTerrain=TTerrain(entity)
+			Local sprite:TSprite=TSprite(entity)
 			driver.BeginEntityRender entity
-			If mesh				
+			If mesh
 				For Local surface:TSurface=EachIn mesh._surfaces	
+					Local animation_surface:TSurface,merge_data
+					If mesh._animator
+						animation_surface=mesh._animator.GetSurface(surface)
+						merge_data=mesh._animator.GetMergeData()
+					EndIf
 					If surface._brush._a=0 Continue				
 					Local brush:TBrush=driver.MakeBrush(surface._brush,mesh._brush)
 					driver.SetBrush brush,surface.HasAlpha()
-					tricount:+driver.RenderSurface(surface,brush)
+					tricount:+driver.RenderSurface(driver.MergeSurfaceRes(surface,animation_surface,merge_data),brush)
 				Next
 			ElseIf plane
 				driver.SetBrush plane._brush,plane._brush._a<>1
 				tricount:+driver.RenderPlane(plane)
+			ElseIf sprite				
+				driver.SetBrush sprite._brush,sprite._brush._a<>1
+				driver.RenderSprite(sprite)
+				tricount:+4+(4*(sprite._brush._fx&FX_NOCULLING<>0))
 			ElseIf terrain
 				driver.SetBrush terrain._brush,terrain._brush._a<>1
 				Local x#,y#,z#
@@ -289,15 +378,13 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	Method GraphicsModes:TGraphicsMode[]()
 		Return _parent.GraphicsModes()
 	End Method
-	
+		
 	Method AttachGraphics:TGraphics( widget,flags )
-		Return _parent.AttachGraphics(widget,flags)
+		Return MakeGraphics(_parent.AttachGraphics(widget,flags))		
 	End Method
 	
 	Method CreateGraphics:TGraphics( width,height,depth,hertz,flags )
-		Local g:TGraphics=_parent.CreateGraphics(width,height,depth,hertz,flags)
-		TMax2DGraphics(g)._driver=Self
-		Return g
+		Return MakeGraphics(_parent.CreateGraphics(width,height,depth,hertz,flags))
 	End Method
 	
 	Method SetGraphics( g:TGraphics )
@@ -311,6 +398,11 @@ Type TMaxB3DDriver Extends TMax2DDriver
 		Return _parent.Flip(sync)
 	End Method
 	
+	Method MakeGraphics:TGraphics(g:TGraphics)
+		TMax2DGraphics(g)._driver=Self
+		Return g
+	End Method
+	
 	Method BeginMax2D() Abstract
 	Method EndMax2D() Abstract
 	
@@ -321,12 +413,14 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	Method BeginEntityRender(entity:TEntity) Abstract
 	Method EndEntityRender(entity:TEntity) Abstract
 	
-	Method RenderSurface(surface:TSurface,brush:TBrush) Abstract
+	Method RenderSurface(surface:TSurfaceRes,brush:TBrush) Abstract
 	Method RenderPlane(plane:TPlane) Abstract	
+	Method RenderSprite(sprite:TSprite) Abstract
 	Method RenderTerrain(terrain:TTerrain) Abstract
 	
 	Method UpdateTextureRes:TTextureRes(texture:TTexture) Abstract
 	Method UpdateSurfaceRes:TSurfaceRes(surface:TSurface) Abstract
+	Method MergeSurfaceRes:TSurfaceRes(base:TSurface,animation:TSurface,data) Abstract
 	
 	Function MakeBrush:TBrush(brush:TBrush,master:TBrush)
 		Local red#,green#,blue#,alpha#,shine#,blend,fx
