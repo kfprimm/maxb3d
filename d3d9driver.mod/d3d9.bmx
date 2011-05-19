@@ -37,7 +37,7 @@ End Function
 
 
 '''' TESTING!!!
-Global d3d_set_camera(d3ddev:IDirect3DDevice9)
+Global d3d_set_camera:Float Ptr(d3ddev:IDirect3DDevice9)
 Global d3d_draw_cube(d3ddev:IDirect3DDevice9)
 
 

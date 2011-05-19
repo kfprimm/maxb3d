@@ -4,7 +4,7 @@ Strict
 Import MaxB3D.Drivers
 Import MaxB3D.TeapotLoader
 
-'SetGraphicsDriver GLMaxB3DDriver()
+SetGraphicsDriver GLMaxB3DDriver()
 Graphics 800,600
 SetAmbientLight 127,0,0
 Local camera:TCamera=CreateCamera()

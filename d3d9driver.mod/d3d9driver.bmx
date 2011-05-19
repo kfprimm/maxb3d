@@ -78,11 +78,16 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		Local viewport[]=[camera._viewx,camera._viewy,camera._viewwidth-camera._viewx,camera._viewheight-camera._viewy]
 		_d3ddev.SetScissorRect viewport
 		_d3ddev.Clear(1,viewport,clearflags,D3DCOLOR_XRGB(camera._brush._r*255,camera._brush._g*255,camera._brush._b*255),1.0,0)
+
+		Local ratio#=(Float(camera._viewwidth)/camera._viewheight)		
+		Local p:Float Ptr=d3d_set_camera(_d3ddev)
+		_d3ddev.SetTransform D3DTS_PROJECTION,TMatrix.PerspectiveFovLH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).GetPtr()
 		
-		'Local ratio#=(Float(camera._viewwidth)/camera._viewheight)
-		'_d3ddev.SetTransform D3DTS_PROJECTION,TMatrix.PerspectiveFOV(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).GetPtr(True)
-		d3d_set_camera _d3ddev
-		
+		Global t
+		If Not t
+			DebugLog "~n"+TMatrix.PerspectiveFovLH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).ToString();t=True
+			DebugLog "~n"+TMatrix.FromPtr(p).ToString()
+		EndIf
 		Local matrix:TMatrix=camera._matrix.Inverse()
 		_d3ddev.SetTransform D3DTS_VIEW,matrix.GetPtr()
 	End Method

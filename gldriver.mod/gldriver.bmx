@@ -117,7 +117,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		
 		glMatrixMode GL_PROJECTION
 		glLoadIdentity
-		glLoadMatrixf TMatrix.PerspectiveFOV(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).GetPtr()
+		glLoadMatrixf TMatrix.PerspectiveFovRH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).GetPtr()
 		glScalef 1,1,-1
 		
 		glMatrixMode GL_MODELVIEW		

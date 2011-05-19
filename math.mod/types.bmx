@@ -6,6 +6,10 @@ Import BRL.Math
 Type TMatrix
 	Field _m#[4,4],_t#[4,4]
 	
+	Method ToString$()
+		Return "["+_m[0,0]+","+_m[1,0]+","+_m[2,0]+","+_m[3,0]+"]~n["+_m[0,1]+","+_m[1,1]+","+_m[2,1]+","+_m[3,1]+"]~n["+_m[0,2]+","+_m[1,2]+","+_m[2,2]+","+_m[3,2]+"]~n["+_m[0,3]+","+_m[1,3]+","+_m[2,3]+","+_m[3,3]+"]"
+	End Method
+	
 	Method Copy:TMatrix()
 		Local matrix:TMatrix=New TMatrix
 		matrix.Overwrite(Self)
@@ -18,7 +22,7 @@ Type TMatrix
 		Return matrix
 	End Function
 	
-	Function PerspectiveFOV:TMatrix(fovy#,aspect#,near#,far#)		
+	Function PerspectiveFovRH:TMatrix(fovy#,aspect#,near#,far#)		
 		Local sine#,cot#,dz#
 		Local radians#=(fovy/2.0)
 		dz=far-near
@@ -35,6 +39,19 @@ Type TMatrix
 		Return matrix
 	End Function
 	
+	Function PerspectiveFovLH:TMatrix(fovy#,aspect#,near#,far#)		
+		Local yscale#=1.0/Tan(fovy/2.0)
+		Local xscale#=yscale/aspect
+		Local matrix:TMatrix=New TMatrix
+		matrix._m[0,0]=xscale
+		matrix._m[1,1]=yscale
+		matrix._m[2,2]=far/(far-near)
+		matrix._m[2,3]=-near*far/(far-near)
+		matrix._m[3,2]=1
+		matrix._m[3,3]=0
+		Return matrix
+	End Function
+		
 	Function Translation:TMatrix(x#,y#,z#)
 		Local matrix:TMatrix=Identity()
 		matrix._m[3,0]=x;matrix._m[3,1]=y;matrix._m[3,2]=z
