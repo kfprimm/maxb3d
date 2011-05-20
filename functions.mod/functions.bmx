@@ -626,6 +626,12 @@ End Rem
 Function UpdateMeshNormals(mesh:TMesh)
 	Return mesh.UpdateNormals()
 End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function AddMeshAnimSeq:TAnimSeq(mesh:TMesh)
+	Return mesh.AddAnimSeq
+End Function
 
 'Pivots
 Rem

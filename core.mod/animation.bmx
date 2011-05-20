@@ -4,9 +4,18 @@ Strict
 Import "surface.bmx"
 Import "bone.bmx"
 
-Type TAnimator
-	Field _frame#
+Type TAnimSeq
+	Field _start,_end
 	
+	Method GetLength()
+		Return _end-_start
+	End Method
+End Type
+
+Type TAnimator
+	Field _frame#,_current:TAnimSeq
+	Field _seq:TAnimSeq[]
+
 	Method GetSurface:TSurface(surface:TSurface) Abstract
 	Method GetMergeData() Abstract
 	Method Update() Abstract
@@ -44,7 +53,7 @@ Type TFrameAnimator Extends TAnimator
 			end_frame.GetCoord v,x2,y2,z2
 			_inter_frame.SetCoord v,(x2-x1)*diff,(y2-y1)*diff,(z2-z1)*diff			
 		Next
-		_anim_frame=_inter_frame
+		_anim_frame=start_frame'_inter_frame
 	End Method
 	
 	Method AddFrame(surface:TSurface)

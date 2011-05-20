@@ -22,6 +22,9 @@ SetEntityRotation gargoyle,0,180,0
 
 While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
 	UpdateWorld
-	RenderWorld
+	Local tricount=RenderWorld()
+	BeginMax2D
+	DrawText "FPS: "+tricount,0,0
+	EndMax2D
 	Flip
 Wend

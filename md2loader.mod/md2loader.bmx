@@ -78,9 +78,7 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 			master_surface.SetTexCoord v1,st[(tc1*2)+0]/Float(skinwidth),st[(tc1*2)+1]/Float(skinheight)
 			master_surface.SetTexCoord v2,st[(tc2*2)+0]/Float(skinwidth),st[(tc2*2)+1]/Float(skinheight)
 		Next
-		
-		mesh.AppendSurface master_surface
-		
+				
 		SeekStream stream,offset_frames
 		Local animator:TFrameAnimator=New TFrameAnimator
 		
@@ -96,9 +94,16 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 				surface.SetNormal v,md2_anorms[ni][2],md2_anorms[ni][1],md2_anorms[ni][0]
 			Next
 			surface.Transform TMatrix.YawPitchRoll(-90,90,0)
+			
+			If i=0							
+				master_surface._vertexpos=surface._vertexpos[..]
+				master_surface._vertexnml=surface._vertexnml[..]				
+				mesh.AppendSurface master_surface
+			EndIf
+			
 			animator.AddFrame surface
 		Next
-		CloseStream stream
+		CloseStream stream		
 		
 		mesh._animator=animator
 		

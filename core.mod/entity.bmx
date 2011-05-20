@@ -100,7 +100,7 @@ Type TEntity
 		Local count
 		If recursive
 			For Local child:TEntity=EachIn _childlist
-				count:+child.CountChildren(true)
+				count:+child.CountChildren(True)
 			Next
 		EndIf
 		Return _childlist.Count()+count

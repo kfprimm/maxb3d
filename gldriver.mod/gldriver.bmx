@@ -453,9 +453,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Next	
 		
 		res._trianglecnt=surface._trianglecnt
-		res._vertexcnt=surface._vertexcnt
-
-		
+		res._vertexcnt=surface._vertexcnt		
 		surface._reset=0		
 		Return res
 	End Method

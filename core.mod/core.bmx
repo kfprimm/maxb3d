@@ -217,7 +217,7 @@ Type TWorld
 	Method Update()
 		_physicsdriver.Update _config
 		For Local mesh:TMesh=EachIn _config.List[WORLDLIST_MESH]
-			If mesh._animator
+			If mesh._animation
 				mesh._animator._frame=( mesh._animator._frame+.2 )Mod mesh._animator.GetFrameCount()
 				mesh._animator.Update()
 			EndIf
@@ -281,33 +281,36 @@ Type TWorld
 			If Not entity.GetVisible() Or entity._brush._a=0 Continue
 			Local mesh:TMesh=TMesh(entity),plane:TPlane=TPlane(entity),terrain:TTerrain=TTerrain(entity)
 			Local sprite:TSprite=TSprite(entity)
+			Local brush:TBrush=entity._brush
+			If brush._a=0 Continue
 			driver.BeginEntityRender entity
 			If mesh
 				For Local surface:TSurface=EachIn mesh._surfaces	
 					Local animation_surface:TSurface,merge_data
-					If mesh._animator
+					If mesh._animation And mesh._animator
 						animation_surface=mesh._animator.GetSurface(surface)
 						merge_data=mesh._animator.GetMergeData()
 					EndIf
-					If surface._brush._a=0 Continue				
+					If surface._brush._a=0 Continue					
+					Local resource:TSurfaceRes=driver.UpdateSurfaceRes(surface)'driver.MergeSurfaceRes(surface,animation_surface,merge_data)					
 					Local brush:TBrush=driver.MakeBrush(surface._brush,mesh._brush)
 					driver.SetBrush brush,surface.HasAlpha()
-					tricount:+driver.RenderSurface(driver.MergeSurfaceRes(surface,animation_surface,merge_data),brush)
+					tricount:+driver.RenderSurface(resource,brush)
 				Next
-			ElseIf plane
-				driver.SetBrush plane._brush,plane._brush._a<>1
-				tricount:+driver.RenderPlane(plane)
-			ElseIf sprite				
-				driver.SetBrush sprite._brush,sprite._brush._a<>1
-				driver.RenderSprite(sprite)
-				tricount:+4+(4*(sprite._brush._fx&FX_NOCULLING<>0))
-			ElseIf terrain
-				driver.SetBrush terrain._brush,terrain._brush._a<>1
-				Local x#,y#,z#
-				camera.GetPosition x,y,z,True
-				terrain.Update camera._lastglobal,x,y,z,camera._lastfrustum
-				tricount:+driver.RenderTerrain(terrain)
-			EndIf	
+			Else
+				driver.SetBrush brush,brush._a<>1
+				If plane					
+					tricount:+driver.RenderPlane(plane)
+				ElseIf sprite				
+					driver.RenderSprite(sprite)
+					tricount:+4+(4*(brush._fx&FX_NOCULLING<>0))
+				ElseIf terrain
+					Local x#,y#,z#
+					camera.GetPosition x,y,z,True
+					terrain.Update camera._lastglobal,x,y,z,camera._lastfrustum
+					tricount:+driver.RenderTerrain(terrain)
+				EndIf	
+			EndIf
 			driver.EndEntityRender entity		
 		Next
 		Return tricount

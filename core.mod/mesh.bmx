@@ -183,6 +183,19 @@ Type TMesh Extends TRenderEntity
 		Next
 	End Method
 	
+	Method AddAnimSeq:TAnimSeq(start_frame,end_frame)
+		Local seq:TAnimSeq=New TAnimSeq
+		seq._start=start_frame
+		seq._end=end_frame
+		_animseq=_animseq[.._animseq.length+1]
+		_animseq[_animseq.length-1]=seq
+		Return seq
+	End Method
+	
+	Method SetAnimSeq(seq:TAnimSeq)
+		_animator._seq=seq
+	End Method
+	
 	Method TreeCheck:Byte Ptr()
 		If _resettree=True
 			If _tree<>Null C_DeleteColTree(_tree);_tree=Null
