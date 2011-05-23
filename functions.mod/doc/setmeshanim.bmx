@@ -11,9 +11,9 @@ Local camera:TCamera=CreateCamera()
 Local light:TLight=CreateLight()
 SetEntityRotation light,90,0,0
 
-Local gargoyle:TMesh=LoadMesh( "gargoyle.md2" )
+Local gargoyle:TMesh=LoadMesh( "media/Gargoyle/Gargoyle.md2" )
 
-Local garg_tex:TTexture=LoadTexture( "gargoyle.bmp" )
+Local garg_tex:TTexture=LoadTexture( "media/Gargoyle/Gargoyle.bmp" )
 SetEntityTexture gargoyle,garg_tex
 
 Local walking_seq:TAnimSeq=ExtractMeshAnimSeq(gargoyle,32,46)

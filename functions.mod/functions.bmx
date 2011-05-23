@@ -20,8 +20,8 @@ End Function
 Rem
 	bbdoc: Advances all animations and updates collision/physics.
 End Rem
-Function UpdateWorld()
-	Return _currentworld.Update()
+Function UpdateWorld(anim_speed#=1.0,collision_speed#=1.0)
+	Return _currentworld.Update(anim_speed,collision_speed)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -629,8 +629,56 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function SetMeshAnim(mesh:TMesh,seq:TAnimSeq,mode=ANIMATION_LOOP,speed#=1.0)
+	Return mesh.SetAnim(seq,mode,speed)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function AddMeshAnimSeq:TAnimSeq(mesh:TMesh)
 	Return mesh.AddAnimSeq(0,0)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function ExtractMeshAnimSeq:TAnimSeq(mesh:TMesh,start_frame,end_frame)
+	Return mesh.ExtractAnimSeq(start_frame,end_frame)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetMeshAnimSeq:TAnimSeq(mesh:TMesh)
+	Return mesh.GetAnimSeq()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetMeshAnimSeq(mesh:TMesh,seq:TAnimSeq)
+	Return mesh.SetAnimSeq(seq)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetMeshAnimMode(mesh:TMesh)
+	Return mesh.GetAnimMode()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetMeshAnimMode(mesh:TMesh,mode)
+	Return mesh.SetAnimMode(mode)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetMeshAnimSpeed#(mesh:TMesh)
+	Return mesh.GetAnimSpeed()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetMeshAnimSpeed(mesh:TMesh,speed#)
+	Return mesh.SetAnimSpeed(speed)
 End Function
 
 'Pivots

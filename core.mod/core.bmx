@@ -214,14 +214,30 @@ Type TWorld
 		Return tricount
 	End Method
 	
-	Method Update()
+	Method Update(anim_speed#,collision_speed#)
 		_physicsdriver.Update _config
 		For Local mesh:TMesh=EachIn _config.List[WORLDLIST_MESH]
-			If mesh._animator
-				If mesh._animator._current
-					mesh._animator._frame=( mesh._animator._frame+.2 )Mod mesh._animator.GetFrameCount()
-					mesh._animator.Update()
+			Local animator:TAnimator=mesh._animator
+			If animator=Null Continue
+			Local seq:TAnimSeq=animator._current
+			If seq
+				If animator._mode>0		
+					animator._frame:+(anim_speed*animator._speed)
+					If animator._frame>seq._end Or animator._frame<seq._start
+						Select animator._mode
+						Case ANIMATION_LOOP
+							If animator._frame>seq._end animator._frame=seq._start'+(animator._frame-seq._end)
+							If animator._frame<seq._start animator._frame=seq._end'-(seq._begin-animator._frame)
+						Case ANIMATION_PINGPONG
+							If animator._frame>seq._end animator._frame=seq._end'+(animator._frame-seq._end)
+							If animator._frame<seq._start animator._frame=seq._start'-(seq._begin-animator._frame)
+							animator._speed:*-1
+						Case ANIMATION_SINGLE
+							animator._mode=ANIMATION_STOP
+						End Select
+					EndIf
 				EndIf
+				animator.Update()
 			EndIf
 		Next
 	End Method
@@ -296,7 +312,7 @@ Type TWorld
 						EndIf
 					EndIf
 					If surface._brush._a=0 Continue					
-					Local resource:TSurfaceRes=driver.UpdateSurfaceRes(surface)'driver.MergeSurfaceRes(surface,animation_surface,merge_data)					
+					Local resource:TSurfaceRes=driver.MergeSurfaceRes(surface,animation_surface,merge_data)				'driver.UpdateSurfaceRes(surface)
 					Local brush:TBrush=driver.MakeBrush(surface._brush,mesh._brush)
 					driver.SetBrush brush,surface.HasAlpha()
 					tricount:+driver.RenderSurface(resource,brush)

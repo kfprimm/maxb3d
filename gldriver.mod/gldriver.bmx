@@ -461,11 +461,9 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	
 	Method MergeSurfaceRes:TGLSurfaceRes(base:TSurface,animation:TSurface,data)
 		If animation=Null Return UpdateSurfaceRes(base)
-		Global res:TGLSurfaceRes=New TGLSurfaceRes
 		Local res_base:TGLSurfaceRes=TGLSurfaceRes(UpdateSurfaceRes(base))
 		Local res_anim:TGLSurfaceRes=TGLSurfaceRes(UpdateSurfaceRes(animation))
-		res._vbo=res_base._vbo[..]
-		res._texcoord=res_base._texcoord
+		Local res:TGLSurfaceRes=res_base.Copy()
 		res._vbo[0]=res_anim._vbo[0]
 		Return res
 	End Method
@@ -488,6 +486,14 @@ End Type
 Type TGLSurfaceRes Extends TSurfaceRes
 	Field _vbo[12]
 	Field _texcoord
+	
+	Method Copy:TGLSurfaceRes()
+		Local res:TGLSurfaceRes=New TGLSurfaceRes
+		res._vertexcnt=_vertexcnt;res._trianglecnt=_trianglecnt
+		res._vbo=_vbo[..]
+		res._texcoord=_texcoord
+		Return res
+	End Method
 End Type
 
 Type TGLTextureRes Extends TTextureRes

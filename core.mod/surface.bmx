@@ -192,4 +192,6 @@ End Type
 Type TSurfaceRes
 	Field _vertexcnt
 	Field _trianglecnt
+	
+	Method Copy:TSurfaceRes() Abstract
 End Type

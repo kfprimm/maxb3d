@@ -84,8 +84,9 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 		
 		For Local i=0 To num_frames-1
 			Local sx#=ReadFloat(stream),sy#=ReadFloat(stream),sz#=ReadFloat(stream)
-			Local name$=ReadString(stream,16)
 			Local tx#=ReadFloat(stream),ty#=ReadFloat(stream),tz#=ReadFloat(stream)
+			Local name$=ReadString(stream,16)
+			
 			Local surface:TSurface=master_surface.Copy(SURFACE_POS|SURFACE_NML)
 			For Local v=0 To num_vertices-1
 				Local x#=ReadByte(stream)*sx+tx,y#=ReadByte(stream)*sy+ty,z#=ReadByte(stream)*sz+tz
