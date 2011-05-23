@@ -217,9 +217,11 @@ Type TWorld
 	Method Update()
 		_physicsdriver.Update _config
 		For Local mesh:TMesh=EachIn _config.List[WORLDLIST_MESH]
-			If mesh._animation
-				mesh._animator._frame=( mesh._animator._frame+.2 )Mod mesh._animator.GetFrameCount()
-				mesh._animator.Update()
+			If mesh._animator
+				If mesh._animator._current
+					mesh._animator._frame=( mesh._animator._frame+.2 )Mod mesh._animator.GetFrameCount()
+					mesh._animator.Update()
+				EndIf
 			EndIf
 		Next
 	End Method
@@ -287,9 +289,11 @@ Type TWorld
 			If mesh
 				For Local surface:TSurface=EachIn mesh._surfaces	
 					Local animation_surface:TSurface,merge_data
-					If mesh._animation And mesh._animator
-						animation_surface=mesh._animator.GetSurface(surface)
-						merge_data=mesh._animator.GetMergeData()
+					If mesh._animator
+						If mesh._animator._current
+							animation_surface=mesh._animator.GetSurface(surface)
+							merge_data=mesh._animator.GetMergeData()
+						EndIf
 					EndIf
 					If surface._brush._a=0 Continue					
 					Local resource:TSurfaceRes=driver.UpdateSurfaceRes(surface)'driver.MergeSurfaceRes(surface,animation_surface,merge_data)					
@@ -307,7 +311,7 @@ Type TWorld
 				ElseIf terrain
 					Local x#,y#,z#
 					camera.GetPosition x,y,z,True
-					terrain.Update camera._lastglobal,x,y,z,camera._lastfrustum
+					terrain.Update x,y,z,camera._lastfrustum
 					tricount:+driver.RenderTerrain(terrain)
 				EndIf	
 			EndIf
@@ -392,9 +396,9 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	
 	Method SetGraphics( g:TGraphics )
 		_parent.SetGraphics(g)
-		WorldConfig.Width=GraphicsWidth()
-		WorldConfig.Height=GraphicsHeight()
 		_current=g
+		WorldConfig.Width=GraphicsWidth()
+		WorldConfig.Height=GraphicsHeight()		
 	End Method
 	
 	Method Flip( sync )

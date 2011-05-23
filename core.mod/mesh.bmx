@@ -153,6 +153,22 @@ Type TMesh Extends TRenderEntity
 		Next
 	End Method
 	
+	Method CountTriangles()
+		Local count
+		For Local surface:TSurface=EachIn _surfaces
+			count:+surface._trianglecnt
+		Next
+		Return count
+	End Method
+	
+	Method CountVertices()
+		Local count
+		For Local surface:TSurface=EachIn _surfaces
+			count:+surface._vertexcnt
+		Next
+		Return count
+	End Method
+	
 	Method UpdateNormals()
 		For Local surface:TSurface=EachIn _surfaces
 			surface.UpdateNormals()
@@ -184,16 +200,16 @@ Type TMesh Extends TRenderEntity
 	End Method
 	
 	Method AddAnimSeq:TAnimSeq(start_frame,end_frame)
-		Local seq:TAnimSeq=New TAnimSeq
-		seq._start=start_frame
-		seq._end=end_frame
-		_animseq=_animseq[.._animseq.length+1]
-		_animseq[_animseq.length-1]=seq
-		Return seq
+	'	Local seq:TAnimSeq=New TAnimSeq
+	'	seq._start=start_frame
+	'	seq._end=end_frame
+	'	_animseq=_animseq[.._animseq.length+1]
+	'	_animseq[_animseq.length-1]=seq
+	'	Return seq
 	End Method
 	
 	Method SetAnimSeq(seq:TAnimSeq)
-		_animator._seq=seq
+	'	_animator._seq=seq
 	End Method
 	
 	Method TreeCheck:Byte Ptr()

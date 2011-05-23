@@ -21,7 +21,6 @@ Type TCamera Extends TEntity
 	Field _clsmode,_near#,_far#
 	Field _zoom#
 	
-	Field _lastglobal:TMatrix=New TMatrix
 	Field _lastmodelview:TMatrix=New TMatrix
 	Field _lastprojection:TMatrix=New TMatrix
 	Field _lastviewport[4]

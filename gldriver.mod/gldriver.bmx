@@ -42,8 +42,10 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			ModuleLog "Initializing GL driver"
 			ModuleLog "Extensions supported: "+String.FromCString(glGetString(GL_EXTENSIONS))
 			_firsttime=False
-		EndIf
-		EndMax2D
+			EndMax2D
+		Else
+			EnableStates
+		EndIf		
 	End Method
 	
 	Function EnableStates()	
@@ -138,8 +140,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glScalef 1,1,-1
 		
 		glMatrixMode GL_MODELVIEW		
-		camera._lastglobal=camera._matrix.Inverse()
-		glLoadMatrixf camera._lastglobal.GetPtr()
+		glLoadMatrixf camera._matrix.Inverse().GetPtr()
 		
 		glGetFloatv GL_MODELVIEW_MATRIX,camera._lastmodelview._m
 		glGetFloatv GL_PROJECTION_MATRIX,camera._lastprojection._m

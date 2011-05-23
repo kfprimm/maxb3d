@@ -14,8 +14,8 @@ SetEntityRotation light,90,0,0
 Local grass_tex:TTexture=LoadTexture( "media/mossyground.bmp" )
 SetTextureScale grass_tex,3,3
 
-Local terrain:TTerrain=LoadTerrain( ResizePixmap(LoadPixmap("media/height_map.bmp" ),512,512))
-SetTerrainDetail terrain,14,1000000
+Local terrain:TTerrain=LoadTerrain( "media/height_map.bmp" )
+SetTerrainDetail terrain,20,2500
 SetEntityScale terrain,1,50,1
 SetEntityTexture terrain,grass_tex
 
@@ -39,10 +39,10 @@ While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
 	'Local terra_y#=GetTerrainHei(terrain,x#,y#,z#)+5
 	
 	'PositionEntity camera,x#,terra_y#,z#
-	
 	RenderWorld
 	BeginMax2D	
 	DrawText "Use cursor keys to move about the terrain",0,0
 	EndMax2D
+	
 	Flip
 Wend

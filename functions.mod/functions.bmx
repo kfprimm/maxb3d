@@ -630,7 +630,7 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function AddMeshAnimSeq:TAnimSeq(mesh:TMesh)
-	Return mesh.AddAnimSeq
+	Return mesh.AddAnimSeq(0,0)
 End Function
 
 'Pivots
