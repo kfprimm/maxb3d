@@ -21,8 +21,8 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 		If stream=Null Return False
 		stream=LittleEndianStream(stream)
 		
-		If ReadInt(stream)<>844121161 CloseStream stream;Return False
-		If ReadInt(stream)<>8 CloseStream stream;Return False
+		If ReadInt(stream)<>844121161 Return False
+		If ReadInt(stream)<>8 Return False
 	  
 	  Local skinwidth=ReadInt(stream),skinheight=ReadInt(stream)
 	
@@ -104,7 +104,6 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 			
 			animator.AddFrame surface
 		Next
-		CloseStream stream		
 		
 		mesh._animator=animator
 		

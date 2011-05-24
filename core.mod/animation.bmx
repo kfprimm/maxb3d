@@ -59,7 +59,7 @@ Type TFrameAnimator Extends TAnimator
 		Local frame0=Int(Floor(_frame)),frame1=Int(Ceil(_frame))
 		If frame1>_current._end-1 frame1=_current._start	
 		
-		If _inter_frame=Null _inter_frame=
+		If _inter_frame=Null _inter_frame=_frames[0].Copy()
 		
 		_anim_frame=InterpolateSurfaces(_frames[frame0],_frames[frame1],_frame-Floor(_frame),_inter_frame)
 		_lastframe=_frame
