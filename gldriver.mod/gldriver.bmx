@@ -425,7 +425,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		
 		If glres._id=0 glGenTextures(1,Varptr glres._id)
 		BindTexture glres._id
-		gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGBA8,texture._width,texture._height,GL_RGBA,GL_UNSIGNED_BYTE,texture._pixmap.pixels)
+		gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGBA8,texture._width,texture._height,GL_BGRA,GL_UNSIGNED_BYTE,texture._pixmap.pixels)
 		
 		texture._updateres=0
 		Return glres
@@ -475,11 +475,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	
 	Method UploadVertexNormals(vbo,data#[])
 		glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo)
-		Local cpy#[]=data[..]
-		For Local i=0 To cpy.length-1
-			cpy[i]:*-1
-		Next
-		glBufferDataARB(GL_ARRAY_BUFFER_ARB,data.length*4,cpy,GL_STATIC_DRAW_ARB)
+		glBufferDataARB(GL_ARRAY_BUFFER_ARB,data.length*4,data,GL_STATIC_DRAW_ARB)
 	End Method
 End Type
 
@@ -509,6 +505,14 @@ Function GLMaxB3DDriver:TGLMaxB3DDriver()
 		driver._parent=GLMax2DDriver()
 		Return driver
 	End If
+End Function
+
+Rem
+	bbdoc: Utility function that sets the MaxB3D GL driver and calls Graphics.
+End Rem
+Function GLGraphics3D:TGraphics(width,height,depth=0,hertz=0,flags=0)
+	SetGraphicsDriver GLMaxB3DDriver(),GRAPHICS_BACKBUFFER|GRAPHICS_DEPTHBUFFER
+	Return Graphics(width,height,depth,hertz,flags)
 End Function
 
 Local driver:TGLMaxB3DDriver=GLMaxB3DDriver()

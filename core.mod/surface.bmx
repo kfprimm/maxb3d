@@ -9,7 +9,7 @@ Const SURFACE_NML = 2
 Const SURFACE_CLR = 4
 Const SURFACE_TEX = 8
 Const SURFACE_TRI = 16
-Const SURFACE_ALL = SURFACE_POS|SURFACE_NML|SURFACE_CLR|SURFACE_TEX
+Const SURFACE_ALL = SURFACE_POS|SURFACE_NML|SURFACE_CLR|SURFACE_TEX|SURFACE_TRI
 
 Type TSurface
 	Field _brush:TBrush=New TBrush
@@ -77,14 +77,14 @@ Type TSurface
 	End Method
 	
 	Method GetNormal(index,nx# Var,ny# Var,nz# Var)
-		nx=_vertexnml[index*3+0]
-		ny=_vertexnml[index*3+1]
-		nz=_vertexnml[index*3+2]
+		nx=_vertexnml[index*3+0]*-1
+		ny=_vertexnml[index*3+1]*-1
+		nz=_vertexnml[index*3+2]*-1
 	End Method
 	Method SetNormal(index,nx#,ny#,nz#)
-		_vertexnml[index*3+0]=nx
-		_vertexnml[index*3+1]=ny
-		_vertexnml[index*3+2]=nz
+		_vertexnml[index*3+0]=nx*-1
+		_vertexnml[index*3+1]=ny*-1
+		_vertexnml[index*3+2]=nz*-1
 		_reset:|2
 	End Method
 	

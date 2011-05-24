@@ -15,6 +15,17 @@ Import BRL.D3D9Max2D
 
 Import "d3d9.bmx"
 
+Private 
+Function Pow2Size( n )
+	Local t=1
+	While t<n
+		t:*2
+	Wend
+	Return t
+End Function
+
+Public
+
 Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	Field _d3ddev:IDirect3DDevice9
 	Field _viewporton
@@ -92,20 +103,18 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			_d3ddev.LightEnable index,False
 			Return
 		EndIf
+		
+		Local brush:TBrush=light._brush
 
 		Global d3dlight:D3DLIGHT9=New D3DLIGHT9
 		d3dlight.Type_=D3DLIGHT_DIRECTIONAL   
-		d3dlight.Diffuse_r=1.0;d3dlight.Diffuse_g=1.0;d3dlight.Diffuse_b=1.0;d3dlight.Diffuse_a=1.0
-		
-		'd3dlight.Ambient_r=WorldConfig.AmbientRed/255.0
-		'd3dlight.Ambient_g=WorldConfig.AmbientGreen/255.0
-		'd3dlight.Ambient_b=WorldConfig.AmbientBlue/255.0
-		'd3dlight.Ambient_a=1.0
+		d3dlight.Diffuse_r=brush._r;d3dlight.Diffuse_g=brush._g;d3dlight.Diffuse_b=brush._b;d3dlight.Diffuse_a=brush._a
+		'd3dlight.Ambient_r=WorldConfig.AmbientRed/255.0;d3dlight.Ambient_g=WorldConfig.AmbientGreen/255.0;d3dlight.Ambient_b=WorldConfig.AmbientBlue/255.0;d3dlight.Ambient_a=1.0
 		
 		d3dlight.Direction_x=0.0;d3dlight.Direction_y=0.0;d3dlight.Direction_z=1.0
-		'light.GetPosition d3dlight.Position_x,d3dlight.Position_y,d3dlight.Position_z,True
+		light.GetPosition d3dlight.Position_x,d3dlight.Position_y,d3dlight.Position_z,True
 		
-		'd3dlight.Range=light._range		
+		d3dlight.Range=light._range		
 		
 		_d3ddev.SetLight index,d3dlight
 		_d3ddev.LightEnable index,True
@@ -118,6 +127,12 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(WorldConfig.AmbientRed,WorldConfig.AmbientGreen,WorldConfig.AmbientBlue)
 		EndIf
 		
+		If brush._fx&FX_NOCULLING
+			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_NONE
+		Else
+			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CCW
+		endif
+		
 		If brush._fx&FX_WIREFRAME
 			_d3ddev.SetRenderState D3DRS_FILLMODE,D3DFILL_WIREFRAME
 		Else
@@ -129,6 +144,13 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		material.Ambient_r=brush._r;material.Ambient_g=brush._g;material.Ambient_b=brush._b;material.Ambient_a=brush._a
 
 		_d3ddev.SetMaterial material
+		
+		For Local i=0 To 7
+			Local texture:TTexture=brush._texture[i]
+			If texture=Null Continue
+			
+			_d3ddev.SetTexture i,UpdateTextureRes(texture)._tex
+		Next
 	End Method
 	
 	Method RenderSurface(resource:TSurfaceRes,brush:TBrush)
@@ -137,7 +159,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.SetVertexDeclaration GetD3D9MaxB3DVertexDecl(_d3ddev)
 		_d3ddev.SetStreamSource 0,res._pos,0,12
 		_d3ddev.SetStreamSource 1,res._nml,0,12
-		'_d3ddev.SetStreamSource 2,res._clr,0,16
+		_d3ddev.SetStreamSource 2,res._clr,0,16
+		_d3ddev.SetStreamSource 3,res._tex[0],0,8
 		_d3ddev.SetIndices res._tri
 		_d3ddev.DrawIndexedPrimitive D3DPT_TRIANGLELIST,0,0,res._vertexcnt,0,res._trianglecnt
 
@@ -162,7 +185,22 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	End Method
 	
 	Method UpdateTextureRes:TD3D9TextureRes(texture:TTexture)
+		Local res:TD3D9TextureRes=TD3D9TextureRes(texture._res)
+		If res And texture._updateres=False Return res
 		
+		If res=Null res=New TD3D9TextureRes
+		texture._res=res
+		
+		Local pixmap:TPixmap=texture._pixmap
+		Local tex_width=Pow2Size(pixmap.width),tex_height=Pow2Size(pixmap.height)
+		If res._tex=Null Assert _d3ddev.CreateTexture(tex_width,tex_height,(texture._flags & TEXTURE_MIPMAP)=0,D3DUSAGE_AUTOGENMIPMAP,D3DFMT_A8R8G8B8,D3DPOOL_MANAGED,res._tex,Null)=D3D_OK
+		
+		Local rect:D3DLOCKED_RECT =New D3DLOCKED_RECT 
+		res._tex.LockRect 0,rect,Null,0
+		MemCopy rect.pBits,pixmap.pixels,pixmap.width*pixmap.height*4
+		res._tex.UnlockRect 0
+		
+		Return res
 	End Method
 	
 	Method UpdateSurfaceRes:TD3D9SurfaceRes(surface:TSurface)
@@ -182,6 +220,11 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			MemCopy dataptr,surface._triangle,surface._triangle.length*4		
 			res._tri.Unlock()
 		EndIf
+		
+		For Local i=0 To surface._vertextex.length-1
+			If surface._reset&Int(2^(4+i)) UploadVertexData res._tex[i],surface._vertextex[i]
+		Next	
+
 		
 		res._trianglecnt=surface._trianglecnt
 		res._vertexcnt=surface._vertexcnt
@@ -207,7 +250,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 End Type
 
 Type TD3D9TextureRes Extends TTextureRes
-
+	Field _tex:IDirect3DTexture9
 End Type
 
 Type TD3D9SurfaceRes Extends TSurfaceRes
@@ -234,6 +277,14 @@ Function D3D9MaxB3DDriver:TD3D9MaxB3DDriver()
 		driver._parent=D3D9Max2DDriver()
 		Return driver
 	End If
+End Function
+
+Rem
+	bbdoc: Utility function that sets the MaxB3D D3D9 driver and calls Graphics.
+End Rem
+Function D3D9Graphics3D:TGraphics(width,height,depth=0,hertz=0,flags=0)
+	SetGraphicsDriver D3D9MaxB3DDriver(),GRAPHICS_BACKBUFFER|GRAPHICS_DEPTHBUFFER
+	Return Graphics(width,height,depth,hertz,flags)
 End Function
 
 Local driver:TD3D9MaxB3DDriver=D3D9MaxB3DDriver()

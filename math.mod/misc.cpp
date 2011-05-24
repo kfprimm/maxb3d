@@ -81,9 +81,9 @@ void C_UpdateNormals(int no_tris,int no_verts,int *tris,float *vert_coords,float
 		
 		norm.normalize();
 		
-		vert_norm[v*3+0]=norm.x; // surf.VertexNormal(v,norm.x,norm.y,norm.z)
-		vert_norm[v*3+1]=norm.y; // surf.VertexNormal(v,norm.x,norm.y,norm.z)
-		vert_norm[v*3+2]=norm.z; // surf.VertexNormal(v,norm.x,norm.y,norm.z)
+		vert_norm[v*3+0]=norm.x*-1; // surf.VertexNormal(v,norm.x,norm.y,norm.z)
+		vert_norm[v*3+1]=norm.y*-1; // surf.VertexNormal(v,norm.x,norm.y,norm.z)
+		vert_norm[v*3+2]=norm.z*-1; // surf.VertexNormal(v,norm.x,norm.y,norm.z)
 	
 	}
 	

@@ -28,7 +28,7 @@ Type TMeshLoaderTeapot Extends TMeshLoader
 		If _surface=Null
 			stream=ReadStream("incbin::data.dat")
 			Local vertexcount=ReadInt(stream),trianglecount=ReadInt(stream)
-
+			
 			_surface=New TSurface
 			_surface.Resize(vertexcount,trianglecount)			
 			

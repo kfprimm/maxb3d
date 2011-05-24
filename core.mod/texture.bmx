@@ -42,7 +42,7 @@ Type TTexture
 	End Method
 	
 	Method SetPixmap:TPixmap(pixmap:TPixmap)
-		_pixmap=ConvertPixmap(pixmap,PF_RGBA8888)
+		_pixmap=ConvertPixmap(pixmap,PF_BGRA8888)
 		_width=PixmapWidth(_pixmap)
 		_height=PixmapHeight(_pixmap)
 		_updateres=True
