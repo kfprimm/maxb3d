@@ -36,7 +36,7 @@ SetWorld _currentworld
 
 Type TWorld
 	Field _config:TWorldConfig=New TWorldConfig
-	Field _resource_path$[]
+	Field _resource_path$[],_tmp_res_path$
 	Field _physicsdriver:TPhysicsDriver=B3DPhysicsDriver()
 	
 	Method New()
@@ -76,7 +76,7 @@ Type TWorld
 		If stream Return stream
 		If String(url)
 			Local uri$=String(url),file$=StripDir(uri)
-			For Local path$=EachIn _resource_path
+			For Local path$=EachIn _resource_path+[_tmp_res_path]
 				stream=ReadStream(path+"/"+file)
 				If stream Return stream
 			Next
@@ -162,10 +162,13 @@ Type TWorld
 	
 	Method AddMesh:TMesh(url:Object,parent:TEntity=Null)
 		Local mesh:TMesh=New TMesh
+		If String(url) _tmp_res_path=ExtractDir(String(url))
 		If Not TMeshLoader.Load(mesh,Stream(url))
+			_tmp_res_path=""
 			If url ModuleLog "Unable to load mesh url. ("+url.ToString()+")" Else ModuleLog "Unable to load mesh url. (null)"
 			Return Null
 		EndIf
+		_tmp_res_path=""
 		mesh.AddToWorld parent,[WORLDLIST_MESH,WORLDLIST_RENDER]
 		Return mesh
 	End Method

@@ -28,11 +28,17 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		If g<>Null Startup
 	End Method
 	
-	Function BindTexture(tex)
-		Global currenttexture = -1
-		If tex<>currenttexture
+	Function BindTexture(index,tex)
+		If index=-1
+			For Local i=0 To 7
+				BindTexture i,tex
+			Next
+			Return
+		EndIf
+		Global currenttexture[] = [-1,-1,-1,-1,-1,-1,-1,-1]
+		If tex<>currenttexture[index]
 			glBindTexture GL_TEXTURE_2D,tex
-			currenttexture=tex
+			currenttexture[index]=tex
 		EndIf
 	End Function
 	
@@ -72,7 +78,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	
 		glAlphaFunc GL_GEQUAL,0.5
 		
-		BindTexture 0
+		BindTexture -1,0
 	End Function	
 	
 	Method BeginMax2D()
@@ -262,15 +268,19 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 				
 		glDisable GL_TEXTURE_2D
 		For Local i=0 To 7
+			glActiveTextureARB(GL_TEXTURE0+i)
+
 			Local texture:TTexture=brush._texture[i]
-			If texture=Null Continue
+			If texture=Null
+				BindTexture i,0
+				Continue
+			EndIf
 			
 			Local texres:TGLTextureRes=TGLTextureRes(UpdateTextureRes(texture))
 			
-			glActiveTextureARB(GL_TEXTURE0+i)
-						
 			glEnable GL_TEXTURE_2D
-			BindTexture texres._id	
+			
+			BindTexture i,texres._id	
 			
 			glMatrixMode GL_TEXTURE
 			glLoadIdentity
@@ -424,7 +434,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		If Not texture._updateres Return texture._res
 		
 		If glres._id=0 glGenTextures(1,Varptr glres._id)
-		BindTexture glres._id
+		BindTexture 0,glres._id
 		gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGBA8,texture._width,texture._height,GL_BGRA,GL_UNSIGNED_BYTE,texture._pixmap.pixels)
 		
 		texture._updateres=0
