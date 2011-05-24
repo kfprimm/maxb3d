@@ -46,8 +46,8 @@ Type TMatrix
 		matrix._m[0,0]=xscale
 		matrix._m[1,1]=yscale
 		matrix._m[2,2]=far/(far-near)
-		matrix._m[2,3]=-near*far/(far-near)
-		matrix._m[3,2]=1
+		matrix._m[2,3]=near*far/(far-near)
+		matrix._m[3,2]=-1
 		matrix._m[3,3]=0
 		Return matrix
 	End Function

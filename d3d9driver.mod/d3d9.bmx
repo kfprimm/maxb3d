@@ -36,13 +36,3 @@ Function D3DCOLOR_RGB(red,green,blue)
 End Function
 
 
-'''' TESTING!!!
-Global d3d_set_camera:Float Ptr(d3ddev:IDirect3DDevice9)
-Global d3d_draw_cube(d3ddev:IDirect3DDevice9)
-
-
-Local lib=LoadLibraryA("d3d9_testing.dll")
-d3d_set_camera=GetProcAddress(lib,"_d3d_set_camera@4")
-d3d_draw_cube=GetProcAddress(lib,"_d3d_draw_cube@4")
-DebugLog "loaded"
-

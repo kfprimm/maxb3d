@@ -82,13 +82,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 
 		Local ratio#=(Float(camera._viewwidth)/camera._viewheight)		
 		_d3ddev.SetTransform D3DTS_PROJECTION,TMatrix.PerspectiveFovLH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).GetPtr()
-		Local p:Float Ptr=d3d_set_camera(_d3ddev)
 		
-		Global t
-		If Not t
-			DebugLog "~n"+TMatrix.PerspectiveFovLH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).ToString();t=True
-			DebugLog "~n"+TMatrix.FromPtr(p).ToString()
-		EndIf
 		Local matrix:TMatrix=camera._matrix.Inverse()
 		_d3ddev.SetTransform D3DTS_VIEW,matrix.GetPtr()
 	End Method
@@ -222,6 +216,13 @@ Type TD3D9SurfaceRes Extends TSurfaceRes
 	Field _clr:IDirect3DVertexBuffer9
 	Field _tri:IDirect3DIndexBuffer9
 	Field _tex:IDirect3DVertexBuffer9[8]
+	
+	Method Copy:TD3D9SurfaceRes()
+		Local res:TD3D9SurfaceRes=New TD3D9SurfaceRes
+		res._vertexcnt=_vertexcnt;res._trianglecnt=_trianglecnt
+		res._pos=_pos;res._nml=_nml;res._clr=_clr;res._tri=_tri;res._tex=_tex[..]
+		Return res
+	End Method
 End Type
 
 Rem

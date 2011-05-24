@@ -24,6 +24,8 @@ Type TMeshLoader3DS Extends TMeshLoader
 	Global _stream:TStream
 	
 	Method Run(mesh:TMesh,stream:TStream,url:Object)	
+		If stream=Null Return False
+		
 		Local io:Lib3dsIo=New Lib3dsIo
 		io.self_= stream ' Only including this to prevent the lib from failing.
 		io.seek_func = a3ds_seek_func
@@ -40,9 +42,12 @@ Type TMeshLoader3DS Extends TMeshLoader
 			Return False
 		EndIf
 		
-		_stream = Null
-		
-		
+		_stream = Null		
+		DebugLog lib3ds_file_get_materials_size (file)
+		Local brush:TBrush[lib3ds_file_get_nmaterials(file)]
+		For Local i=0 To brush.length-1
+			DebugLog "de"
+		Next
 
 		Return True
 	End Method
