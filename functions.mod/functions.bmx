@@ -581,6 +581,12 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function SwapMeshSurface(mesh:TMesh,surface:TSurface,new_surface:TSurface)
+	Return mesh.SwapSurface(surface,new_surface)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function CloneMesh:TMesh(mesh:TMesh,parent:TEntity=Null)
 	Return mesh.Clone(parent)
 End Function
@@ -769,6 +775,12 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function ResizeSurface(surface:TSurface,vertex_count,triangle_count)
+	Return surface.Resize(vertex_count,triangle_count)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function AddSurfaceVertex(surface:TSurface,x#,y#,z#,u#=0.0,v#=0.0)
 	Return surface.AddVertex(x,y,z,u,v)
 End Function
@@ -807,6 +819,18 @@ Rem
 End Rem
 Function SetSurfaceNormal(surface:TSurface,index,nx#,ny#,nz#)
 	Return surface.SetNormal(index,nx,ny,nz)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetSurfaceTexCoord(surface:TSurface,index,u# Var,v# Var,set=0)
+	Return surface.GetTexCoord(index,u,v,set)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetSurfaceTexCoord(surface:TSurface,index,u#,v#,set=0)
+	Return surface.SetTexCoord(index,u,v,set)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO

@@ -15,7 +15,7 @@ Type TMeshLoaderHMAP Extends TMeshLoader
 		Local pixmap:TPixmap=LoadPixmap(stream)
 		If pixmap=Null Return False
 		
-		pixmap=ConvertPixmap(pixmap,PF_I8)
+		pixmap=XFlipPixmap(ConvertPixmap(pixmap,PF_I8))
 		Local width=PixmapWidth(pixmap),height=PixmapHeight(pixmap)
 		
 		Local surface:TSurface=mesh.AddSurface(height*width,height*width*2)		

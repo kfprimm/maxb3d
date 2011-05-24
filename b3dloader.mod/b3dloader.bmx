@@ -87,7 +87,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 					surface.SetTriangle t,tri.vertex_id[t*3+0],tri.vertex_id[t*3+1],tri.vertex_id[t*3+2]
 				Next
 				If vrts.nxyz=Null surface.UpdateNormals			
-				mesh._surfaces.AddLast surface
+				mesh.AppendSurface surface
 			Next
 		Case bonechunk
 			entity=_currentworld.AddBone(parent)

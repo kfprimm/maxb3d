@@ -199,16 +199,10 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	End Method
 	
 	Method SetBrush(brush:TBrush,hasalpha)
-		glDisable(GL_ALPHA_TEST)
-		
+		glDisable GL_ALPHA_TEST
+			
 		Local ambient#[]=[WorldConfig.AmbientRed/255.0,WorldConfig.AmbientGreen/255.0,WorldConfig.AmbientBlue/255.0]			
 					
-		Local no_mat#[]=[0.0,0.0]
-		Local mat_ambient#[]=[brush._r,brush._g,brush._b,brush._a]
-		Local mat_diffuse#[]=[brush._r,brush._g,brush._b,brush._a]
-		Local mat_specular#[]=[brush._shine,brush._shine,brush._shine,brush._shine]
-		Local mat_shininess#[]=[100.0]
-	
 		If brush._fx&FX_FORCEALPHA Or hasalpha
 			glEnable(GL_BLEND)
 			glDepthMask(GL_FALSE)
@@ -259,6 +253,12 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Else
 			glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
 		EndIf			
+		
+		Local no_mat#[]=[0.0,0.0]
+		Local mat_ambient#[]=[brush._r,brush._g,brush._b,brush._a]
+		Local mat_diffuse#[]=[brush._r,brush._g,brush._b,brush._a]
+		Local mat_specular#[]=[brush._shine,brush._shine,brush._shine,brush._shine]
+		Local mat_shininess#[]=[100.0]
 			
 		glMaterialfv(GL_FRONT,GL_AMBIENT,mat_ambient)
 		glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_diffuse)
@@ -389,7 +389,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	
 	Method RenderSprite(sprite:TSprite)
 		glBegin GL_QUADS
-			glNormal3f 0,0,1
+			glNormal3f 0,0,-1
 			glTexCoord2f 0,1
 			glVertex3f 1, -1, 0			
 			glTexCoord2f 0,0

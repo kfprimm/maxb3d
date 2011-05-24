@@ -286,7 +286,7 @@ Type TWorld
 					matrix._m[3,2]=z
 					
 					matrix=TMatrix.YawPitchRoll(180,0,sprite._angle).Multiply(matrix)					
-					'If sprite._sx<>1.0 Or sprite._sy<>1.0 matrix=TMatrix.Scale(sprite._sx,sprite._sy,1.0).Multiply(matrix)					
+					If sprite._sx<>1.0 Or sprite._sy<>1.0 matrix=TMatrix.Scale(sprite._sx,sprite._sy,1.0).Multiply(matrix)					
 					'If sprite._handlex<>0.0 Or sprite._handley<>0.0 matrix=TMatrix.Translation(-sprite._handlex,-sprite._handley,0.0).Multiply(matrix)
 				Else				
 					matrix = sprite.GetMatrix()					
@@ -316,8 +316,8 @@ Type TWorld
 					EndIf
 					If surface._brush._a=0 Continue					
 					Local resource:TSurfaceRes=driver.MergeSurfaceRes(surface,animation_surface,merge_data)				'driver.UpdateSurfaceRes(surface)
-					Local brush:TBrush=driver.MakeBrush(surface._brush,mesh._brush)
-					driver.SetBrush brush,surface.HasAlpha()
+					brush=driver.MakeBrush(surface._brush,mesh._brush)
+					driver.SetBrush brush,surface.HasAlpha() Or brush._fx&FX_FORCEALPHA
 					tricount:+driver.RenderSurface(resource,brush)
 				Next
 			Else

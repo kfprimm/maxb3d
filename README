@@ -1,12 +1,12 @@
 MaxB3D - A 3D rendering engine for BlitzMax inspired by MiniB3D.
 Copyright (C) 2011 by Kevin Primm
 
-Licensed under the 'MIT license.' See COPYING for details.
+Licensed under the 'MIT license.' See LICENSE for details.
 
 Notes
 ===================
 
-In order to compile the Newton module, you will need sys87.Newton. Get it from,
+In order to compile various MaxB3D modules, you will need a few modules. Get them from,
 http://github.com/system87/sys87.mod
 
 In order for the D3D driver to work properly, follow these directions,

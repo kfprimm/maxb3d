@@ -8,7 +8,7 @@ Import "bone.bmx"
 Import "animation.bmx"
 
 Type TMesh Extends TRenderEntity 
-	Field _surfaces:TList=CreateList()
+	Field _surfaces:TSurface[]
 	Field _resetbounds,_minx#,_miny#,_minz#,_maxx#,_maxy#,_maxz#
 
 	Field _animator:TAnimator
@@ -27,17 +27,16 @@ Type TMesh Extends TRenderEntity
 	Method Copy:TMesh(parent:TEntity=Null)
 		Local mesh:TMesh=New TMesh
 		mesh.AddToWorld parent,[WORLDLIST_MESH,WORLDLIST_RENDER]
-		For Local surface:TSurface=EachIn _surfaces
-			mesh._surfaces.AddLast surface
-		Next
+		mesh._surfaces=_surfaces[..]
 		Return mesh
 	End Method
 	
 	Method Clone:TMesh(parent:TEntity=Null)
 		Local mesh:TMesh=New TMesh
 		mesh.AddToWorld parent,[WORLDLIST_MESH,WORLDLIST_RENDER]
-		For Local surface:TSurface=EachIn _surfaces
-			mesh._surfaces.AddLast surface.Copy()
+		mesh._surfaces=New TSurface[_surfaces.length]
+		For Local i=0 To _surfaces.length-1
+			mesh._surfaces[i]=_surfaces[i].Copy()
 		Next
 		Return mesh
 	End Method
@@ -49,12 +48,19 @@ Type TMesh Extends TRenderEntity
 	End Method
 	
 	Method AppendSurface:TSurface(surface:TSurface)
-		_surfaces.AddLast surface
+		_surfaces=_surfaces[.._surfaces.length+1]
+		_surfaces[_surfaces.length-1]=surface
 		Return surface
 	End Method
 	
+	Method SwapSurface(surface:TSurface,new_surface:TSurface)
+		For Local i=0 To _surfaces.length-1
+			If _surfaces[i]=surface _surfaces[i]=new_surface
+		Next
+	End Method
+	
 	Method GetSurface:TSurface(index)
-		Return TSurface(_surfaces.ValueAtIndex(index))
+		Return _surfaces[index]
 	End Method
 	
 	Method GetSize(width# Var,height# Var,depth# Var)
