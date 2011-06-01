@@ -5,7 +5,7 @@
 *.bak
 *.html
 .*.bmx
-/functions.mod/doc/media/
+/*.mod/doc/media/
 /functions.mod/doc/bb/
 /samples/
 !/samples/mak
