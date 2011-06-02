@@ -37,8 +37,21 @@ Type TAnimator
 	End Method
 End Type
 
+Type TKeyframe
+	
+End Type
+
 Type TBonedAnimator Extends TAnimator
-	Field _bones:TBone[]
+	Field _root:TBone
+	
+	Method GetSurface:TSurface(surface:TSurface)
+	End Method
+	Method GetMergeData()
+	End Method
+	Method Update()
+	End Method
+	Method GetFrameCount()
+	End Method
 End Type
 
 Type TFrameAnimator Extends TAnimator

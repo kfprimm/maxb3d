@@ -60,9 +60,14 @@ Type TNewtonPhysicsDriver Extends TPhysicsDriver
   	NewtonUpdate _world, 1.0/30.0
 	End Method
 	
-	Function TransformCallback(body:Byte Ptr,matrix:Float Ptr,thread_index)
+	Function TransformCallback(body:Byte Ptr,matrix_data:Float Ptr,thread_index)
 		Local entity:TBody=TBody(HandleToObject(Int(String.FromCString(NewtonBodyGetUserData(body)))))
-		entity.SetMatrix TMatrix.FromPtr(matrix)
+		Local matrix:TMatrix=TMatrix.FromPtr(matrix_data)
+		Local x#,y#,z#,pitch#,yaw#,roll#
+		matrix.GetPosition x,y,z
+		matrix.GetRotation pitch,yaw,roll
+		entity.SetPosition x,y,z,True
+		entity.SetRotation -pitch,yaw,roll,True 
 		entity._update=False
 	End Function
 	

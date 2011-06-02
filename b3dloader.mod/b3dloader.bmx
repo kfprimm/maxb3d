@@ -12,10 +12,12 @@ Import MaxB3D.Core
 Import MaxB3D.B3DUtils
 
 Type TMeshLoaderB3D Extends TMeshLoader
+	Field _mesh:TMesh
+	
 	Method Run(mesh:TMesh,stream:TStream,url:Object)
 		Local model:TBB3DChunk=TBB3DChunk.Load(url)
-		If model=Null Return False
-				
+		If model=Null Return False	
+		
 		Local olddir$=CurrentDir()
 		If String(url) ChangeDir(ExtractDir(String(url)))
 		
@@ -46,7 +48,9 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		Next		
 		ChangeDir olddir
 		
-		If model.node 
+		model.dump StandardIOStream
+		 
+		If model.node
 			ParseNode model.node,mesh,brush,mesh
 			Return True
 		EndIf
@@ -60,6 +64,8 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		Case meshchunk			
 			If entity=Null entity=_currentworld.AddMesh("*null*",parent)
 			Local mesh:TMesh=TMesh(entity)
+			mesh._animator=New TBonedAnimator
+			_mesh=mesh
 			
 			If meshchunk.brush_id>-1 entity.SetBrush brush[meshchunk.brush_id]
 			
@@ -92,6 +98,14 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		Case bonechunk
 			entity=_currentworld.AddBone(parent)
 			Local bone:TBone=TBone(entity)
+			If TBonedAnimator(_mesh._animator)._root=Null TBonedAnimator(_mesh._animator)._root=bone
+			
+			For Local surface:TSurface=EachIn _mesh._surfaces
+				bone.AddSurface surface
+				For Local i=0 To bonechunk.vertex_id.length-1
+					bone.AddVertex surface,bonechunk.vertex_id[i],bonechunk.weight[i]
+				Next
+			Next			
 		Default
 			entity=_currentworld.AddPivot(parent)
 		End Select		
@@ -106,7 +120,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		For Local child:TNODEChunk=EachIn node.node
 			ParseNode child,entity,brush
 		Next
-		
+		If TMesh(entity) If TBonedAnimator(TMesh(entity)._animator)._root=Null TMesh(entity)._animator=Null
 	End Method
 End Type
 New TMeshLoaderB3D

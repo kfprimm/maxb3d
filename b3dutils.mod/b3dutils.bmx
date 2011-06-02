@@ -235,62 +235,6 @@ Type TMESHChunk Extends TChunk
 	End Method
 End Type
 
-Type TNODEChunk Extends TChunk
-	Field name$
-	Field position#[3]
-	Field scale#[3]
-	Field rotation#[4]
-	Field kind:TChunk
-	Field keys:TKEYSChunk[],node:TNODEChunk[]
-	Field anim:TANIMChunk
-	
-	Method Read(stream:TStream,length Var)
-		name=ReadCString(stream)
-		position[0]=ReadFloat(stream);position[1]=ReadFloat(stream);position[2]=ReadFloat(stream)
-		scale[0]=ReadFloat(stream);scale[1]=ReadFloat(stream);scale[2]=ReadFloat(stream)
-		rotation[0]=ReadFloat(stream);rotation[1]=ReadFloat(stream);rotation[2]=ReadFloat(stream);rotation[3]=ReadFloat(stream)
-		length:-(name.length+1)+(3*4)+(3*4)+(4*4)
-		
-		While length>0
-			Local chunklength,tag$=ReadTag(stream,chunklength)
-			length:-chunklength+8
-			Select tag
-			Case "MESH"				
-				kind=New TMESHChunk
-				kind.Read(stream,chunklength)
-			Case "BONE"
-				kind=New TBONEChunk
-				kind.Read(stream,chunklength)
-			Case "KEYS"
-				Local chunk:TKEYSChunk=New TKEYSChunk
-				chunk.Read(stream,chunklength)
-				keys=keys[..keys.length+1]
-				keys[keys.length-1]=chunk
-			Case "NODE"
-				Local chunk:TNODEChunk=New TNODEChunk
-				chunk.Read(stream,chunklength)
-				node=node[..node.length+1]
-				node[node.length-1]=chunk
-			Case "ANIM"
-				anim=New TANIMChunk
-				anim.Read(stream,chunklength)
-			Default
-				DebugLog "Invalid tag: "+tag
-				SkipChunk stream,chunklength
-			End Select
-		Wend
-	End Method
-	
-	Method Dump(stream:TStream,level=0)
-		WriteDump stream,level,"NODE"
-		WriteDump stream,level,"Name: "+name
-		DumpChunk kind,stream,level+1
-		DumpChunks keys,stream,level+1
-		DumpChunks node,stream,level+1
-		DumpChunk anim,stream,level+1
-	End Method
-End Type
-
 Type TBONEChunk Extends TChunk
 	Field vertex_id[]
 	Field weight#[]
@@ -355,6 +299,62 @@ Type TANIMChunk Extends TChunk
 		WriteDump stream,level,"Flags: "+flags
 		WriteDump stream,level,"Frames: "+frames
 		WriteDump stream,level,"FPS: "+fps
+	End Method
+End Type
+
+Type TNODEChunk Extends TChunk
+	Field name$
+	Field position#[3]
+	Field scale#[3]
+	Field rotation#[4]
+	Field kind:TChunk
+	Field keys:TKEYSChunk[],node:TNODEChunk[]
+	Field anim:TANIMChunk
+	
+	Method Read(stream:TStream,length Var)
+		name=ReadCString(stream)
+		position[0]=ReadFloat(stream);position[1]=ReadFloat(stream);position[2]=ReadFloat(stream)
+		scale[0]=ReadFloat(stream);scale[1]=ReadFloat(stream);scale[2]=ReadFloat(stream)
+		rotation[0]=ReadFloat(stream);rotation[1]=ReadFloat(stream);rotation[2]=ReadFloat(stream);rotation[3]=ReadFloat(stream)
+		length:-(name.length+1)+(3*4)+(3*4)+(4*4)
+		
+		While length>0
+			Local chunklength,tag$=ReadTag(stream,chunklength)
+			length:-chunklength+8
+			Select tag
+			Case "MESH"				
+				kind=New TMESHChunk
+				kind.Read(stream,chunklength)
+			Case "BONE"
+				kind=New TBONEChunk
+				kind.Read(stream,chunklength)
+			Case "KEYS"
+				Local chunk:TKEYSChunk=New TKEYSChunk
+				chunk.Read(stream,chunklength)
+				keys=keys[..keys.length+1]
+				keys[keys.length-1]=chunk
+			Case "NODE"
+				Local chunk:TNODEChunk=New TNODEChunk
+				chunk.Read(stream,chunklength)
+				node=node[..node.length+1]
+				node[node.length-1]=chunk
+			Case "ANIM"
+				anim=New TANIMChunk
+				anim.Read(stream,chunklength)
+			Default
+				DebugLog "Invalid tag: "+tag
+				SkipChunk stream,chunklength
+			End Select
+		Wend
+	End Method
+	
+	Method Dump(stream:TStream,level=0)
+		WriteDump stream,level,"NODE"
+		WriteDump stream,level,"Name: "+name
+		DumpChunk kind,stream,level+1
+		DumpChunks keys,stream,level+1
+		DumpChunks node,stream,level+1
+		DumpChunk anim,stream,level+1
 	End Method
 End Type
 
