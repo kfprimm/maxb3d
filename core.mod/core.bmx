@@ -298,7 +298,7 @@ Type TWorld
 		Next
 		
 		Local tricount
-		For Local entity:TRenderEntity=EachIn _config.List[WORLDLIST_RENDER]
+		For Local entity:TEntity=EachIn _config.List[WORLDLIST_RENDER]
 			If Not entity.GetVisible() Or entity._brush._a=0 Continue
 			Local mesh:TMesh=TMesh(entity),plane:TPlane=TPlane(entity),terrain:TTerrain=TTerrain(entity)
 			Local sprite:TSprite=TSprite(entity)

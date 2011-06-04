@@ -2,11 +2,12 @@
 Strict
 
 Import "entity.bmx"
-Import "surface.bmx"
+Import "animation.bmx"
 
-Type TBone Extends TEntity
+Type TBone Extends TAnimEntity
 	Field _surface:TSurface[]
 	Field _info:TWeightInfo[]
+	Field _key:TAnimKey[]
 		
 	Method Copy:TBone(parent:TEntity=Null)
 		Local bone:TBone=New TBone
@@ -36,6 +37,12 @@ Type TBone Extends TEntity
 	Method AddVertices(surface:TSurface,vertices[],weights#[]=Null)
 		_info[GetSurfaceIndex(surface)].Add(vertices,weights)
 	End Method
+	
+	Method SetAnimKey(frame,key:Object)
+		For Local k:TAnimKey=EachIn _key
+			If k._frame=frame k._object=key;Return
+		Next
+	End Method
 End Type
 
 Type TWeightInfo
@@ -53,5 +60,28 @@ Type TWeightInfo
 				_weight[i]=1.0
 			Next
 		EndIf
+	End Method
+End Type
+
+Type TKeyAnimator Extends TAnimator
+	Field _root:TBone
+	Field _bone:TBone[]
+	Field _key:TAnimKey[]
+	
+	Method AddBone(bone:TBone,keys:TAnimKey)
+	
+	End Method
+	
+	Method GetSurface:TSurface(surface:TSurface)
+	End Method
+	Method GetMergeData()
+	End Method
+	Method Update()
+	End Method
+	Method GetFrameCount()
+	End Method
+	
+	Method SetKey(frame,key:Object)
+		_root.SetAnimKey frame,key
 	End Method
 End Type

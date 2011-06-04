@@ -80,8 +80,8 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 		Next
 				
 		SeekStream stream,offset_frames
-		Local animator:TFrameAnimator=New TFrameAnimator
 		
+		mesh._animator=New TVertexAnimator		
 		For Local i=0 To num_frames-1
 			Local sx#=ReadFloat(stream),sy#=ReadFloat(stream),sz#=ReadFloat(stream)
 			Local tx#=ReadFloat(stream),ty#=ReadFloat(stream),tz#=ReadFloat(stream)
@@ -102,13 +102,10 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 				mesh.AppendSurface master_surface
 			EndIf
 			
-			animator.AddFrame surface
+			mesh._animator.SetKey i,surface
 		Next
-		
-		mesh._animator=animator
-		
-		mesh.UpdateNormals
-		
+			
+		mesh.UpdateNormals		
 		Return True
 	End Method
 End Type

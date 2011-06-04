@@ -349,7 +349,7 @@ Type TEntity
 			Next
 		EndIf
 	End Method
-	
+		
 	Method GetMatrix:TMatrix(alternate=False,copy=True)
 		If copy Return _matrix.Copy()
 		Return _matrix
@@ -402,6 +402,6 @@ Type TEntity
 	End Method	
 End Type
 
-Type TRenderEntity Extends TEntity
-	
+Type TAnimEntity Extends TEntity
+	Method SetAnimKey(frame,key:Object) Abstract
 End Type

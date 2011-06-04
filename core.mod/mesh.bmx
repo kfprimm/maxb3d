@@ -7,7 +7,7 @@ Import "surface.bmx"
 Import "bone.bmx"
 Import "animation.bmx"
 
-Type TMesh Extends TRenderEntity 
+Type TMesh Extends TAnimEntity 
 	Field _surfaces:TSurface[]
 	Field _resetbounds,_minx#,_miny#,_minz#,_maxx#,_maxy#,_maxz#
 
@@ -246,6 +246,10 @@ Type TMesh Extends TRenderEntity
 	End Method
 	Method SetAnimSpeed(speed#)
 		_animator._speed=speed
+	End Method
+	
+	Method SetAnimKey(frame,key:Object)
+		_animator.SetKey(frame,key)
 	End Method
 	
 	Method TreeCheck:Byte Ptr()

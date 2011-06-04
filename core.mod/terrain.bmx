@@ -9,7 +9,7 @@ Import "roamstep4d.c"
 
 Import BRL.Random
 
-Type TTerrain Extends TRenderEntity
+Type TTerrain Extends TEntity
 	Field _heights#[], _size, _lmax, _max_tris, _clmax#
 	Field _handle:Byte Ptr, _data:Float Ptr,_count
 	Field _update

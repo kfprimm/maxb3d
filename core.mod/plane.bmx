@@ -3,7 +3,7 @@ Strict
 
 Import "entity.bmx"
 
-Type TPlane Extends TRenderEntity 
-	Method Copy:TPlane(parent:TEntity=null)
+Type TPlane Extends TEntity 
+	Method Copy:TPlane(parent:TEntity=Null)
 	End Method
 End Type
