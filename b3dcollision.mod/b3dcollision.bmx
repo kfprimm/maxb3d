@@ -1,29 +1,17 @@
 
 Strict
 
-Import "worldconfig.bmx"
-Import "entity.bmx"
-Import "mesh.bmx"
+Rem
+	bbdoc: Provides Blitz3D-style collision detection/handling.
+End Rem
+Module MaxB3D.B3DCollision
+ModuleInfo "Author: Kevin Primm"
+ModuleInfo "License: MIT"
 
-Const BODY_NONE   = 0
-Const BODY_BOX 	  = 1
-Const BODY_SPHERE = 2
+Import MaxB3D.Core
 
-Type TPhysicsDriver 
-	Method Init();End Method
-	
-	Method Update(config:TWorldConfig) Abstract
-	
-	Function QuickCheck(entity:TEntity,entity2:TEntity)
-		Local x#,y#,z#
-		entity.GetPosition x,y,z,True
-		If entity._oldx=x And entity._oldy=y And entity._oldz=z Return False
-		Return True	
-	End Function
-End Type
-
-Type TB3DPhysicsDriver Extends TPhysicsDriver
-	Method Update(config:TWorldConfig)
+Type TB3DCollisionDriver Extends TCollisionDriver
+	Method Update(config:TWorldConfig, speed#)
 		Global c_vec_a:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
 		Global c_vec_b:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
 		Global c_vec_radius:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
@@ -120,55 +108,21 @@ Type TB3DPhysicsDriver Extends TPhysicsDriver
 			Next										
 		Next	
 	End Method
+	
+	Function QuickCheck(entity:TEntity,entity2:TEntity)
+		Local x#,y#,z#
+		entity.GetPosition x,y,z,True
+		If entity._oldx=x And entity._oldy=y And entity._oldz=z Return False
+		Return True	
+	End Function
 End Type
 
-Type TPhysicsData
-End Type
-
-Type TBody Extends TEntity
-	Field _mass#,_shape
-	Field _data:TPhysicsData,_update
-	
-	Method New()
-		_shape = BODY_SPHERE
-	End Method
-	
-	Method Copy:TBody(parent:TEntity=Null)
-		Local body:TBody=New TBody
-		Return body
-	End Method
-	
-	Method SetScale(x#,y#,z#,glob=False)
-		Super.SetScale(x,y,z,glob)
-		_update=True
-	End Method
-	
-	Method SetRotation(x#,y#,z#,glob=False)
-		Super.SetRotation(x,y,z,glob)
-		_update=True
-	End Method
-	
-	Method SetPosition(x#,y#,z#,glob=False)
-		Super.SetPosition(x,y,z,glob)
-		_update=True
-	End Method
-	
-	Method SetBox(x#,y#,z#,width#,height#,depth#)
-		Super.SetBox(x,y,z,width,height,depth)
-		_shape = BODY_BOX
-		_update=True
-	End Method
-
-	Method GetMass#()
-		Return _mass
-	End Method
-	Method SetMass(mass#)
-		_mass=mass
-		_update=True
-	End Method
-End Type
-
-Function B3DPhysicsDriver:TB3DPhysicsDriver()
-	Global _driver:TB3DPhysicsDriver=New TB3DPhysicsDriver
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function B3DCollisionDriver:TB3DCollisionDriver()
+	Global _driver:TB3DCollisionDriver=New TB3DCollisionDriver
 	Return _driver	
 End Function
+
+B3DCollisionDriver()

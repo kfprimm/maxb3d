@@ -8,7 +8,7 @@ Const VIEWMODE_FREE = 2
 Const VIEWMODE_UPRIGHT1 = 3
 Const VIEWMODE_UPRIGHT2 = 4
 
-Type TSprite Extends TRenderEntity
+Type TSprite Extends TEntity
 	Field _angle#
 	Field _handlex#,_handley#
 	Field _viewmode

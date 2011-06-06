@@ -42,7 +42,7 @@ Function SetAmbientLight(red,green,blue)
 	Return _currentworld.SetAmbientLight(red,green,blue)
 End Function
 Rem
-	bbdoc: Needs documentation. #TODO
+	returns: Wireframe rendering state, see #SetWireframe
 End Rem
 Function GetWireFrame()
 	Return _currentworld.GetWireFrame()

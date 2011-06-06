@@ -12,6 +12,7 @@ Local light:TLight=CreateLight()
 SetEntityRotation light,90,0,0
 
 Local plane:TPlane=CreatePlane()
+SetEntityScale plane,1000,1,1000
 Local texture:TTexture=LoadTexture("media/mossyground.bmp")
 SetEntityTexture plane,texture
 

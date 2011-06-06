@@ -4,7 +4,7 @@ Strict
 Import MaxB3D.Core
 Import sys87.Newton
 
-Type TNewtonPhysicsDriver Extends TPhysicsDriver
+Type TNewtonCollisionDriver Extends TCollisionDriver
 	Field _world:Byte Ptr
 	
 	Method Init()
@@ -23,7 +23,7 @@ Type TNewtonPhysicsDriver Extends TPhysicsDriver
 		NewtonDestroy _world
 	End Method
 	
-	Method Update(config:TWorldConfig)
+	Method Update(config:TWorldConfig,speed#)
 		For Local body:TBody=EachIn config.List[WORLDLIST_BODY]
 			If Not body._update And body._data<>Null Continue
 			If Not TNewtonData(body._data) body._data=New TNewtonData
@@ -57,12 +57,17 @@ Type TNewtonPhysicsDriver Extends TPhysicsDriver
 			NewtonReleaseCollision _world,collision
 			body._update=False
 		Next
-  	NewtonUpdate _world, 1.0/30.0
+  	NewtonUpdate _world,speed
 	End Method
 	
-	Function TransformCallback(body:Byte Ptr,matrix:Float Ptr,thread_index)
+	Function TransformCallback(body:Byte Ptr,matrix_data:Float Ptr,thread_index)
 		Local entity:TBody=TBody(HandleToObject(Int(String.FromCString(NewtonBodyGetUserData(body)))))
-		entity.SetMatrix TMatrix.FromPtr(matrix)
+		Local matrix:TMatrix=TMatrix.FromPtr(matrix_data)
+		Local x#,y#,z#,pitch#,yaw#,roll#
+		matrix.GetPosition x,y,z
+		matrix.GetRotation pitch,yaw,roll
+		entity.SetPosition x,y,z,True
+		entity.SetRotation pitch,yaw,roll,True 
 		entity._update=False
 	End Function
 	
@@ -80,7 +85,7 @@ Type TNewtonPhysicsDriver Extends TPhysicsDriver
 	End Function
 End Type
 
-Type TNewtonData Extends TPhysicsData
+Type TNewtonData
 	Field _ptr:Byte Ptr
 End Type
 
