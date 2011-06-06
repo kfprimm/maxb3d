@@ -12,6 +12,13 @@ Import MaxB3D.Core
 Import BRL.Stream
 Import BRL.EndianStream
 
+Private
+Function ModuleLog(message$)
+	_maxb3d_logger.Write "b3dutils",message
+End Function
+
+Public
+
 Type TTEXSChunk Extends TChunk
 	Field file$
 	Field flags=TEXTURE_COLOR|TEXTURE_MIPMAP,blend=BLEND_MULTIPLY
@@ -275,7 +282,7 @@ Type TNODEChunk Extends TChunk
 				anim=New TANIMChunk
 				anim.Read(stream,chunklength)
 			Default
-				DebugLog "Invalid tag: "+tag
+				ModuleLog "Invalid tag: "+tag
 				SkipChunk stream,chunklength
 			End Select
 		Wend

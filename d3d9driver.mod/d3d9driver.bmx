@@ -64,6 +64,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.SetRenderState D3DRS_LIGHTING,False
 		_d3ddev.SetRenderState D3DRS_ZENABLE,False
 		_d3ddev.SetRenderState D3DRS_SCISSORTESTENABLE,_viewporton		
+		
+		_d3ddev.SetRenderState D3DRS_WRAP0, 0
 	End Method
 	
 	Method EndMax2D()
@@ -131,7 +133,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_NONE
 		Else
 			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CCW
-		endif
+		EndIf
 		
 		If brush._fx&FX_WIREFRAME
 			_d3ddev.SetRenderState D3DRS_FILLMODE,D3DFILL_WIREFRAME
@@ -149,7 +151,21 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			Local texture:TTexture=brush._texture[i]
 			If texture=Null Continue
 			
+			If texture._flags&TEXTURE_CLAMPU
+				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSU,D3DTADDRESS_CLAMP
+			Else
+				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSU,D3DTADDRESS_WRAP
+			EndIf
+			
+			If texture._flags&TEXTURE_CLAMPV
+				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSV,D3DTADDRESS_CLAMP
+			Else
+				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSV,D3DTADDRESS_WRAP
+			EndIf
+			
 			_d3ddev.SetTexture i,UpdateTextureRes(texture)._tex
+			Local matrix:TMatrix=TMatrix.Scale(texture._sx,texture._sy,1.0)
+			_d3ddev.SetTransform D3DTS_TEXTURE0+i,matrix.GetPtr()
 		Next
 	End Method
 	
@@ -193,6 +209,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		
 		Local pixmap:TPixmap=texture._pixmap
 		Local tex_width=Pow2Size(pixmap.width),tex_height=Pow2Size(pixmap.height)
+		pixmap=ResizePixmap(pixmap,tex_width,tex_height)
 		If res._tex=Null Assert _d3ddev.CreateTexture(tex_width,tex_height,(texture._flags & TEXTURE_MIPMAP)=0,D3DUSAGE_AUTOGENMIPMAP,D3DFMT_A8R8G8B8,D3DPOOL_MANAGED,res._tex,Null)=D3D_OK
 		
 		Local rect:D3DLOCKED_RECT =New D3DLOCKED_RECT 
