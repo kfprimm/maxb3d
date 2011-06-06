@@ -347,6 +347,7 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	Global _parent:TMax2DDriver
 	
 	Field _texture:TTexture[8],_current:TGraphics
+	Field _prevwidth,_prevheight
 	
 	Method CreateFrameFromPixmap:TImageFrame(pixmap:TPixmap,flags) 
 		Return _parent.CreateFrameFromPixmap(pixmap,flags)
@@ -424,7 +425,9 @@ Type TMaxB3DDriver Extends TMax2DDriver
 		_parent.SetGraphics(g)
 		_current=g
 		WorldConfig.Width=GraphicsWidth()
-		WorldConfig.Height=GraphicsHeight()		
+		WorldConfig.Height=GraphicsHeight()	
+		ScaleViewports	
+		_prevwidth=GraphicsWidth();_prevheight=GraphicsHeight()
 	End Method
 	
 	Method Flip( sync )
@@ -481,6 +484,25 @@ Type TMaxB3DDriver Extends TMax2DDriver
 		
 		Return newbrush
 	End Function
+	
+	Method ScaleViewports()
+		For Local camera:TCamera=EachIn WorldConfig.List[WORLDLIST_CAMERA]
+			Local x,y,width,height
+			camera.GetViewport x,y,width,height
+			Local sx#=WorldConfig.Width/Float(_prevwidth),sy#=WorldConfig.Height/Float(_prevheight)
+			If width=0
+				width=GraphicsWidth()
+			Else
+				x:*sx;width:*sx
+			EndIf
+			If height=0
+				height=GraphicsHeight()
+			Else
+				y:*sy;height:*sy
+			EndIf
+			camera.SetViewport x,y,width,height
+		Next
+	End Method
 End Type
 
 Rem
