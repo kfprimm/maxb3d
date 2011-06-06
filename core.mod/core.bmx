@@ -15,8 +15,9 @@ Import BRL.Max2D
 Import MaxB3D.Logging
 
 Import "texture.bmx"
-Import "physics.bmx"
 Import "camera.bmx"
+Import "collision.bmx"
+Import "body.bmx"
 Import "pivot.bmx"
 Import "light.bmx"
 Import "mesh.bmx"
@@ -31,16 +32,16 @@ End Function
 
 Public
 
-Global _currentworld:TWorld=CreateWorld()
-SetWorld _currentworld
+Global _currentworld:TWorld
 
 Type TWorld
 	Field _config:TWorldConfig=New TWorldConfig
 	Field _resource_path$[],_tmp_res_path$
-	Field _physicsdriver:TPhysicsDriver=B3DPhysicsDriver()
+	Field _collisiondriver:TCollisionDriver
 	
 	Method New()
 		SetAmbientLight 127,127,127
+		SetCollisionDriver TCollisionDriver._default
 	End Method
 	
 	Method AddResourcePath(path$)
@@ -48,9 +49,11 @@ Type TWorld
 		_resource_path[_resource_path.length-1]=path
 	End Method
 	
-	Method SetPhysics(driver:TPhysicsDriver)
-		driver.Init()
-		_physicsdriver=driver
+	Method SetCollisionDriver(driver:TCollisionDriver)
+		If driver
+			driver.Init()
+			_collisiondriver=driver
+		EndIf
 	End Method
 	
 	Method GetAmbientLight(red Var,green Var,blue Var)
@@ -218,7 +221,7 @@ Type TWorld
 	End Method
 	
 	Method Update(anim_speed#,collision_speed#)
-		_physicsdriver.Update _config
+		_collisiondriver.Update _config,collision_speed
 		For Local mesh:TMesh=EachIn _config.List[WORLDLIST_MESH]
 			Local animator:TAnimator=mesh._animator
 			If animator=Null Continue
@@ -410,6 +413,10 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	End Method
 	
 	Method CreateGraphics:TGraphics( width,height,depth,hertz,flags )
+		If Not _currentworld
+			_currentworld=CreateWorld()
+			SetWorld _currentworld
+		EndIf
 		Return MakeGraphics(_parent.CreateGraphics(width,height,depth,hertz,flags))
 	End Method
 	
@@ -489,14 +496,12 @@ Function SetWorld(world:TWorld)
 	_currentworld=world
 	WorldConfig=_currentworld._config
 End Function
-
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function SetPhysicsDriver(driver:TPhysicsDriver)
-	Return _currentworld.SetPhysics(driver)
+Function SetCollisionDriver(driver:TCollisionDriver)
+	Return _currentworld.SetCollisionDriver(driver)
 End Function
-
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem

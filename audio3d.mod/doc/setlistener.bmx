@@ -2,9 +2,11 @@
 Strict
 
 Import MaxB3D.Drivers
+Import MaxB3D.OpenALAudio3D
 
 Graphics 800,600
-SetAudioDriver "OpenAL 3D"
+EnableOpenALAudio
+SetAudioDriver "Audio3D OpenAL"
 
 Local camera:TCamera=CreateCamera()
 SetEntityPosition camera,0,1,-10
@@ -28,8 +30,8 @@ Local sound:TSound=LoadSound("media/ufo.wav")
 
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	
-	If KeyDown(KEY_RIGHT) TurnEntity camera,0,-1,0
-	If KeyDown(KEY_LEFT) TurnEntity camera,0,1,0
+	If KeyDown(KEY_LEFT) TurnEntity camera,0,-1,0
+	If KeyDown(KEY_RIGHT) TurnEntity camera,0,1,0
 	If KeyDown(KEY_DOWN) MoveEntity camera,0,0,-0.05
 	If KeyDown(KEY_UP) MoveEntity camera,0,0,0.05
 	

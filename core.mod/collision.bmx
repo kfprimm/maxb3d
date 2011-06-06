@@ -1,6 +1,8 @@
 
 Strict
 
+Import "worldconfig.bmx"
+
 Const COLLISION_METHOD_SPHERE	= 1
 Const COLLISION_METHOD_POLYGON	= 2
 Const COLLISION_METHOD_BOX		= 3
@@ -22,6 +24,15 @@ Type TCollision
 	Field entity:Object,surface,triangle
 End Type
 
-
+Type TCollisionDriver
+	Global _default:TCollisionDriver
+	
+	Method New()
+		_default=Self
+	End Method
+	
+	Method Init();End Method	
+	Method Update(config:TWorldConfig,speed#) Abstract
+End Type
 
 

@@ -29,7 +29,6 @@ Type TEntity
 	Field _linklist:TList=CreateList()
 	
 	Method New()
-		SetPosition 0,0,0
 		SetScale 1,1,1
 	End Method
 	
@@ -395,9 +394,7 @@ Type TEntity
 	
 	Method UpdateChildren()
 		For Local child:TEntity=EachIn _childlist
-			child._matrix=_matrix
-			child.UpdateMatrix(False)
-			child.UpdateChildren()
+			child.RefreshMatrix()
 		Next
 	End Method	
 End Type

@@ -371,6 +371,21 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	End Method
 	
 	Method RenderPlane(plane:TPlane)
+		Local x#,y#,z#
+		plane.GetScale x,y,z,True
+		
+		For Local i=0 To 7
+			Local texture:TTexture=plane._brush._texture[i]
+			If texture=Null Continue
+			
+			glActiveTextureARB GL_TEXTURE0+i
+			glEnable GL_TEXTURE_2D
+		
+			glMatrixMode GL_TEXTURE
+			glLoadIdentity
+			glScalef x,z,1			
+		Next		
+		
 		glDisable(GL_BLEND)		
 		glDepthMask(GL_TRUE)
 		glBegin(GL_QUADS)	

@@ -14,7 +14,7 @@ Import "driver.bmx"
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function NewtonPhysicsDriver:TNewtonPhysicsDriver()
-	Global _driver:TNewtonPhysicsDriver=New TNewtonPhysicsDriver
+Function NewtonCollisionDriver:TNewtonCollisionDriver()
+	Global _driver:TNewtonCollisionDriver=New TNewtonCollisionDriver
 	Return _driver
 End Function
