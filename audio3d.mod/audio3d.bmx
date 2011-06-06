@@ -1,6 +1,9 @@
 
 Strict
 
+Rem
+	bbdoc: 3D Audio system for MaxB3D
+End Rem
 Module MaxB3D.Audio3D
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"

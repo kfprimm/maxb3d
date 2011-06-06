@@ -5,7 +5,7 @@ Import MaxB3D.Drivers
 Import MaxB3D.Newton
 
 Graphics 800,600
-SetPhysicsDriver NewtonPhysicsDriver()
+SetCollisionDriver NewtonCollisionDriver()
 
 Local light:TLight=CreateLight()
 

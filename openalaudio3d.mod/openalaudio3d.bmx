@@ -14,6 +14,8 @@ Import BRL.OpenALAudio
 Import BRL.Reflection ' Ugh...required for hack.
 
 Type TOpenALAudio3DDriver Extends TAudio3DDriver
+	Field _parentname$
+	
 	Method OnStartup()
 		Return True
 	End Method
@@ -26,8 +28,6 @@ Type TOpenALAudio3DDriver Extends TAudio3DDriver
 		alListenerfv AL_POSITION,[x,y,z]
 		alListenerfv AL_VELOCITY,[0.0,0.0,0.0]
 		alListenerfv AL_ORIENTATION,[dx,dy,dz,0.0,1.0,0.0]
-		
-		DebugLog "eeded"
 	End Method
 
 	Method SetTarget(target:Object,channel:TChannel)
@@ -44,7 +44,14 @@ Type TOpenALAudio3DDriver Extends TAudio3DDriver
 	End Method
 	
 	Method ParentName$()
-		Return "OpenAL"
+		Return _parentname
 	End Method
 End Type
-New TOpenALAudio3DDriver
+
+EnableOpenALAudio
+For Local name$=EachIn AudioDrivers()
+	If name[..6]="OpenAL" 
+		Local driver:TOpenALAudio3DDriver=New TOpenALAudio3DDriver
+		driver._parentname=name
+	EndIf 
+Next

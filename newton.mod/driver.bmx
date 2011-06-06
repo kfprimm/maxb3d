@@ -67,7 +67,7 @@ Type TNewtonCollisionDriver Extends TCollisionDriver
 		matrix.GetPosition x,y,z
 		matrix.GetRotation pitch,yaw,roll
 		entity.SetPosition x,y,z,True
-		entity.SetRotation -pitch,yaw,roll,True 
+		entity.SetRotation pitch,yaw,roll,True 
 		entity._update=False
 	End Function
 	
