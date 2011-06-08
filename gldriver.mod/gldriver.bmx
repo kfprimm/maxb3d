@@ -81,6 +81,17 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		BindTexture -1,0
 	End Function	
 	
+	Method GetCaps:TCaps()
+		Local extensions$=String.FromCString(glGetString(GL_EXTENSIONS))
+		Local caps:TCaps=New TCaps
+		If extensions.Find("GL_ARB_point_sprite")<>-1
+			caps.PointSprites=True
+			glGetFloatv GL_POINT_SIZE_MAX_ARB, Varptr caps.MaxPointSize
+		EndIf
+		caps.extra=extensions
+		Return caps
+	End Method
+	
 	Method BeginMax2D()
 		glPopClientAttrib
 		glPopAttrib
@@ -403,17 +414,37 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	End Method
 	
 	Method RenderSprite(sprite:TSprite)
-		glBegin GL_QUADS
-			glNormal3f 0,0,-1
-			glTexCoord2f 0,1
-			glVertex3f 1, -1, 0			
-			glTexCoord2f 0,0
-			glVertex3f 1, 1, 0			
-			glTexCoord2f 1,0
-			glVertex3f -1,1, 0			
-			glTexCoord2f 1,1
-			glVertex3f -1,-1, 0
-		glEnd
+		If _caps.PointSprites And True=False
+			glPointParameterfvARB GL_POINT_DISTANCE_ATTENUATION_ARB, [0.0, 0.0, 1.0]
+			
+			glPointSize 1.0
+			
+			glPointParameterfARB GL_POINT_FADE_THRESHOLD_SIZE_ARB,60.0
+			glPointParameterfARB GL_POINT_SIZE_MIN_ARB,0.0
+			glPointParameterfARB GL_POINT_SIZE_MAX_ARB,9999.0
+			
+			glTexEnvf GL_POINT_SPRITE_ARB,GL_COORD_REPLACE_ARB,GL_TRUE
+			
+			glEnable GL_POINT_SPRITE_ARB
+			
+			glBegin GL_POINTS			
+			glVertex3f 0,0,0
+			glEnd
+			
+			glDisable GL_POINT_SPRITE_ARB
+		Else
+			glBegin GL_QUADS
+				glNormal3f 0,0,-1
+				glTexCoord2f 0,1
+				glVertex3f 1, -1, 0			
+				glTexCoord2f 0,0
+				glVertex3f 1, 1, 0			
+				glTexCoord2f 1,0
+				glVertex3f -1,1, 0			
+				glTexCoord2f 1,1
+				glVertex3f -1,-1, 0
+			glEnd
+		EndIf
 	End Method
 	
 	Method RenderTerrain(terrain:TTerrain)

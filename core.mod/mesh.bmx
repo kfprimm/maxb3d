@@ -9,7 +9,6 @@ Import "animation.bmx"
 
 Type TMesh Extends TAnimEntity 
 	Field _surfaces:TSurface[]
-	Field _resetbounds,_minx#,_miny#,_minz#,_maxx#,_maxy#,_maxz#
 
 	Field _animator:TAnimator
 	Field _bone:TBone[]
@@ -64,27 +63,16 @@ Type TMesh Extends TAnimEntity
 	End Method
 	
 	Method GetSize(width# Var,height# Var,depth# Var)
-		GetBounds()
-		width=_maxx-_minx;height=_maxy-_miny;depth=_maxz-_minz
-	End Method
-	
-	Method GetBounds()	
-		If _resetbounds		
-			_resetbounds=False
-	
-			_minx#=-999999999;_miny#=-999999999;_minz#=-999999999
-			_maxx#=999999999;_maxy#=999999999;_maxz#=999999999
-			
-			For Local surface:TSurface=EachIn _surfaces		
-				For Local v=0 To surface.CountVertices()-1
-					Local x#,y#,z#
-					surface.GetCoord v,x,y,z				
-					_minx=Min(x,_minx);_maxx=Max(x,_maxx)
-					_miny=Min(x,_miny);_maxy=Max(y,_maxy)
-					_minz=Min(x,_minz);_maxz=Max(z,_maxz)
-				Next			
-			Next
-		EndIf
+		Local minx#=999999999,miny#=999999999,minz#=999999999
+		Local maxx#=-999999999,maxy#=-999999999,maxz#=-999999999
+		
+		For Local surface:TSurface=EachIn _surfaces		
+			surface.UpdateBounds
+			minx=Min(minx,surface._minx);maxx=Max(maxx,surface._maxx)
+			miny=Min(miny,surface._miny);maxy=Max(maxy,surface._maxy)
+			minz=Min(minz,surface._minz);maxz=Max(maxz,surface._maxz)
+		Next
+		width=maxx-minx;height=maxy-miny;depth=maxz-minz
 	End Method
 	
 	Method Fit(x#,y#,z#,width#,height#,depth#,uniform=False)

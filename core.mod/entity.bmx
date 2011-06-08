@@ -382,7 +382,10 @@ Type TEntity
 		Else
 			UpdateMatrix True
 		EndIf		
-		UpdateChildren()
+		
+		For Local child:TEntity=EachIn _childlist
+			child.RefreshMatrix()
+		Next
 	End Method
 	
 	Method UpdateMatrix(loadidentity)
@@ -391,12 +394,6 @@ Type TEntity
 		_matrix=TMatrix.YawPitchRoll(_ry,_rx,_rz).Multiply(_matrix)
 		_matrix=TMatrix.Scale(_sx,_sy,_sz).Multiply(_matrix)
 	End Method
-	
-	Method UpdateChildren()
-		For Local child:TEntity=EachIn _childlist
-			child.RefreshMatrix()
-		Next
-	End Method	
 End Type
 
 Type TAnimEntity Extends TEntity

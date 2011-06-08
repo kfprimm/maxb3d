@@ -60,7 +60,8 @@ Type TMeshLoader3DS Extends TMeshLoader
 		Case LIB3DS_SEEK_CUR
 			pos=StreamPos(_stream)+offset
 		Case LIB3DS_SEEK_END
-			pos=StreamPos(_stream)-offset
+			pos=StreamSize(_stream)-offset
+			debugstop
     End Select
 		SeekStream _stream,pos
 	End Function

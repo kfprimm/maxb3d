@@ -15,15 +15,14 @@ Type TSurface
 	Field _brush:TBrush=New TBrush
 	
 	Field _vertexcnt,_trianglecnt
-	Field _vertexpos#[]
-	Field _vertexnml#[]
-	Field _vertexclr#[]
-	
+	Field _vertexpos#[],_vertexnml#[],_vertexclr#[]	
 	Field _vertextex#[][],_texcoordsize=-1
 	
 	Field _triangle[]
 	
 	Field _res:TSurfaceRes,_reset=-1
+	
+	Field _resetbounds=True,_minx#,_miny#,_minz#,_maxx#,_maxy#,_maxz#
 	
 	Method Copy:TSurface(data=SURFACE_ALL)
 		Local surface:TSurface=New TSurface
@@ -73,7 +72,7 @@ Type TSurface
 		_vertexpos[index*3+0]=x
 		_vertexpos[index*3+1]=y
 		_vertexpos[index*3+2]=z		
-		_reset:|1
+		_reset:|1;_resetbounds=True
 	End Method
 	
 	Method GetNormal(index,nx# Var,ny# Var,nz# Var)
@@ -163,6 +162,20 @@ Type TSurface
 			matrix.TransformVector _vertexpos[i*3+0],_vertexpos[i*3+1],_vertexpos[i*3+2],w
 			'matrix.TransformVector _vertexnml[i+0],_vertexnml[i+1],_vertexnml[i+2],w
 		Next
+	End Method
+	
+	Method UpdateBounds()
+		If Not _resetbounds Return
+		_minx=999999999;_miny=999999999;_minz=999999999
+		_maxx=-999999999;_maxy=-999999999;_maxz=-999999999
+		For Local v=0 To _vertexcnt-1
+			Local x#,y#,z#
+			GetCoord v,x,y,z				
+			_minx=Min(x,_minx);_maxx=Max(x,_maxx)
+			_miny=Min(x,_miny);_maxy=Max(y,_maxy)
+			_minz=Min(x,_minz);_maxz=Max(z,_maxz)
+		Next
+		_resetbounds=False
 	End Method
 	
 	Method UpdateNormals()

@@ -277,29 +277,8 @@ Type TWorld
 			driver.SetLight light,i
 		Next
 		
-		For Local sprite:TSprite=EachIn _config.List[WORLDLIST_SPRITE]
-				Local matrix:TMatrix
-				If sprite._viewmode<>VIEWMODE_FREE		
-					Local x#,y#,z#
-					sprite.GetPosition x,y,z,True
+		UpdateSprites _config.List[WORLDLIST_SPRITE],driver,camera
 				
-					matrix = camera.GetMatrix()'.Inverse()
-					matrix._m[3,0]=x
-					matrix._m[3,1]=y
-					matrix._m[3,2]=z
-					
-					matrix=TMatrix.YawPitchRoll(180,0,sprite._angle).Multiply(matrix)					
-					If sprite._sx<>1.0 Or sprite._sy<>1.0 matrix=TMatrix.Scale(sprite._sx,sprite._sy,1.0).Multiply(matrix)					
-					'If sprite._handlex<>0.0 Or sprite._handley<>0.0 matrix=TMatrix.Translation(-sprite._handlex,-sprite._handley,0.0).Multiply(matrix)
-				Else				
-					matrix = sprite.GetMatrix()					
-					'If sprite.scale_x#<>1.0 Or sprite.scale_y#<>1.0
-					'	sprite.mat_sp.Scale(sprite.scale_x#,sprite.scale_y#,1.0)
-					'EndIf		
-				EndIf		
-				sprite._view_matrix = matrix	
-		Next
-		
 		Local tricount
 		For Local entity:TEntity=EachIn _config.List[WORLDLIST_RENDER]
 			If Not entity.GetVisible() Or entity._brush._a=0 Continue
@@ -341,12 +320,41 @@ Type TWorld
 		Next
 		Return tricount
 	End Method
+	
+	Method UpdateSprites(sprites:TList,driver:TMaxB3DDriver,camera:TCamera)	
+		For Local sprite:TSprite=EachIn sprites
+			Local matrix:TMatrix
+			If Not driver._caps.PointSprites And True=false
+				If sprite._viewmode<>VIEWMODE_FREE		
+					Local x#,y#,z#
+					sprite.GetPosition x,y,z,True
+				
+					matrix = camera.GetMatrix()'.Inverse()
+					matrix._m[3,0]=x
+					matrix._m[3,1]=y
+					matrix._m[3,2]=z
+					
+					matrix=TMatrix.YawPitchRoll(180,0,sprite._angle).Multiply(matrix)					
+					If sprite._sx<>1.0 Or sprite._sy<>1.0 matrix=TMatrix.Scale(sprite._sx,sprite._sy,1.0).Multiply(matrix)					
+					'If sprite._handlex<>0.0 Or sprite._handley<>0.0 matrix=TMatrix.Translation(-sprite._handlex,-sprite._handley,0.0).Multiply(matrix)
+				Else				
+					matrix = sprite.GetMatrix()					
+					'If sprite.scale_x#<>1.0 Or sprite.scale_y#<>1.0
+					'	sprite.mat_sp.Scale(sprite.scale_x#,sprite.scale_y#,1.0)
+					'EndIf		
+				EndIf
+			Else
+				matrix=sprite._matrix
+			EndIf
+			sprite._view_matrix=matrix	
+		Next
+	End Method
 End Type
 
 Type TMaxB3DDriver Extends TMax2DDriver
 	Global _parent:TMax2DDriver
 	
-	Field _texture:TTexture[8],_current:TGraphics
+	Field _texture:TTexture[8],_current:TGraphics,_caps:TCaps
 	Field _prevwidth,_prevheight
 	
 	Method CreateFrameFromPixmap:TImageFrame(pixmap:TPixmap,flags) 
@@ -428,6 +436,7 @@ Type TMaxB3DDriver Extends TMax2DDriver
 		WorldConfig.Height=GraphicsHeight()	
 		ScaleViewports	
 		_prevwidth=GraphicsWidth();_prevheight=GraphicsHeight()
+		_caps=GetCaps()
 	End Method
 	
 	Method Flip( sync )
@@ -438,6 +447,8 @@ Type TMaxB3DDriver Extends TMax2DDriver
 		TMax2DGraphics(g)._driver=Self
 		Return g
 	End Method
+	
+	Method GetCaps:TCaps() Abstract
 	
 	Method BeginMax2D() Abstract
 	Method EndMax2D() Abstract
@@ -457,7 +468,7 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	Method UpdateTextureRes:TTextureRes(texture:TTexture) Abstract
 	Method UpdateSurfaceRes:TSurfaceRes(surface:TSurface) Abstract
 	Method MergeSurfaceRes:TSurfaceRes(base:TSurface,animation:TSurface,data) Abstract
-	
+		
 	Function MakeBrush:TBrush(brush:TBrush,master:TBrush)
 		Local red#,green#,blue#,alpha#,shine#,blend,fx
 		red=master._r;green=master._g;blue=master._b;alpha=master._a
@@ -502,6 +513,20 @@ Type TMaxB3DDriver Extends TMax2DDriver
 			EndIf
 			camera.SetViewport x,y,width,height
 		Next
+	End Method
+End Type
+
+Type TCaps
+	Field PointSprites
+	Field MaxPointSize#
+	Field Extra:Object
+	
+	Method Copy:TCaps()
+		Local caps:TCaps=New TCaps
+		caps.PointSprites=PointSprites
+		caps.MaxPointSize=MaxPointSize
+		caps.Extra=Extra
+		Return caps
 	End Method
 End Type
 

@@ -611,7 +611,7 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function GetMeshSize(mesh:TMesh,width#,height#,depth#)
+Function GetMeshSize(mesh:TMesh,width# Var,height# var,depth# Var)
 	Return mesh.GetSize(width,height,depth)
 End Function
 Rem
