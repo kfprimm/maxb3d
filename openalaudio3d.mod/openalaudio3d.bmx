@@ -13,6 +13,13 @@ Import BRL.OpenALAudio
 
 Import BRL.Reflection ' Ugh...required for hack.
 
+Private
+Function ModuleLog(message$)
+	TMaxB3DLogger.Write "openalaudio3d",message
+End Function
+
+Public
+
 Type TOpenALAudio3DDriver Extends TAudio3DDriver
 	Field _parentname$
 	
@@ -37,7 +44,10 @@ Type TOpenALAudio3DDriver Extends TAudio3DDriver
 			TEntity.GetTargetPosition target,x,y,z
 			
 			alDistanceModel AL_INVERSE_DISTANCE_CLAMPED
-			alSourcefv source,AL_POSITION, [x,y,z]			
+			alSourcefv source,AL_POSITION,[x,y,z]			
+			alSourcei source,AL_SOURCE_RELATIVE,False
+			alSourcef source,AL_MIN_GAIN,0.0
+			alSourcef source,AL_MAX_GAIN,100.0
 		Else
 			alDistanceModel AL_NONE
 		EndIf
@@ -48,10 +58,14 @@ Type TOpenALAudio3DDriver Extends TAudio3DDriver
 	End Method
 End Type
 
-EnableOpenALAudio
-For Local name$=EachIn AudioDrivers()
-	If name[..6]="OpenAL" 
-		Local driver:TOpenALAudio3DDriver=New TOpenALAudio3DDriver
-		driver._parentname=name
-	EndIf 
-Next
+If OpenALInstalled()
+	EnableOpenALAudio
+	For Local name$=EachIn AudioDrivers()
+		If name[..6]="OpenAL" 
+			Local driver:TOpenALAudio3DDriver=New TOpenALAudio3DDriver
+			driver._parentname=name
+		EndIf 
+	Next
+Else
+	ModuleLog "OpenAL not installed on system. No AL drivers available."
+EndIf

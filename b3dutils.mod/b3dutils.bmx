@@ -14,7 +14,7 @@ Import BRL.EndianStream
 
 Private
 Function ModuleLog(message$)
-	_maxb3d_logger.Write "b3dutils",message
+	TMaxB3DLogger.Write "b3dutils",message
 End Function
 
 Public

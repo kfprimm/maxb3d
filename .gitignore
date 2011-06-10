@@ -5,9 +5,7 @@
 *.bak
 *.html
 .*.bmx
-/*.mod/doc/media/
 /functions.mod/doc/bb/
-/samples/
-!/samples/mak
-!/samples/kfprimm
 .bmx/
+
+media/

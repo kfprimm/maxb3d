@@ -47,7 +47,6 @@ Type TMeshLoaderBunny Extends TMeshLoader
 					surface.SetNormal i*3+j,n[0],n[1],n[2] 
 	     	Next
 				surface.SetTriangle i,i*3+2,i*3+1,i*3+0
-				DebugLog (i*3+0)+","+(i*3+1)+","+(i*3+2)
 			Next
 		EndIf
 		

@@ -27,7 +27,7 @@ Import "terrain.bmx"
 
 Private
 Function ModuleLog(message$)
-	_maxb3d_logger.Write "core",message
+	TMaxB3DLogger.Write "core",message
 End Function
 
 Public
@@ -324,7 +324,7 @@ Type TWorld
 	Method UpdateSprites(sprites:TList,driver:TMaxB3DDriver,camera:TCamera)	
 		For Local sprite:TSprite=EachIn sprites
 			Local matrix:TMatrix
-			If Not driver._caps.PointSprites And True=false
+			If Not driver._caps.PointSprites And True=False
 				If sprite._viewmode<>VIEWMODE_FREE		
 					Local x#,y#,z#
 					sprite.GetPosition x,y,z,True

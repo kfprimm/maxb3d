@@ -14,7 +14,7 @@ Import PUB.GLew
 
 Private
 Function ModuleLog(message$)
-	_maxb3d_logger.Write "gldriver",message
+	TMaxB3DLogger.Write "gldriver",message
 End Function
 
 Public

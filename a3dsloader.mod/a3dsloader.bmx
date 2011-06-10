@@ -15,7 +15,7 @@ Import sys87.lib3ds
 
 Private
 Function ModuleLog(message$)
-	_maxb3d_logger.Write "a3dsloader",message
+	TMaxB3DLogger.Write "a3dsloader",message
 End Function
 
 Public
@@ -61,7 +61,7 @@ Type TMeshLoader3DS Extends TMeshLoader
 			pos=StreamPos(_stream)+offset
 		Case LIB3DS_SEEK_END
 			pos=StreamSize(_stream)-offset
-			debugstop
+			DebugStop
     End Select
 		SeekStream _stream,pos
 	End Function

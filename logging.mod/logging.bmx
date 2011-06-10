@@ -14,15 +14,29 @@ Import BRL.StandardIO
 ' Example function
 Private
 Function ModuleLog(message$)
-	_maxb3d_logger.Write "logging",message
+	TMaxB3DLogger.Write "logging",message
 End Function
 
 Public
 
 Type TMaxB3DLogger
-	Method Write(id$,message$)
-		Print "["+id+"] "+CurrentDate()+"-"+CurrentTime()+": "+message
-	End Method
+	Global _stream:TStream
+	
+	Function SetStream(stream:TStream)
+		_stream=stream
+	End Function
+	
+	Function Write(id$,message$)
+		_stream.WriteLine "["+id+"] "+CurrentDate()+"-"+CurrentTime()+": "+message
+		_stream.Flush
+	End Function
 End Type
 
-Global _maxb3d_logger:TMaxB3DLogger=New TMaxB3DLogger
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetLoggingStream(stream:TStream)
+	Return TMaxB3DLogger.SetStream(stream)
+End Function
+
+SetLoggingStream StandardIOStream

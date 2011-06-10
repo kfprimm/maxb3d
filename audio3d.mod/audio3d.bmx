@@ -76,7 +76,7 @@ Type TSound3D Extends TSound
 	Method Emit(target:Object)
 		Local channel:TChannel=_parent.Cue()
 		_driver.SetTarget target,channel
-		_parent.Play 
+		channel.SetPaused False
 	End Method
 	
 	Method Play:TChannel( alloced_channel:TChannel=Null )
@@ -142,5 +142,5 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function EmitSound(sound:TSound,target:Object)
-	_audio3ddriver.EmitSound(sound,target)
+	Return _audio3ddriver.EmitSound(sound,target)
 End Function
