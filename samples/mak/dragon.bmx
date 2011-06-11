@@ -74,9 +74,10 @@ While Not KeyHit(KEY_ESCAPE) And Not AppTerminate()
 	MoveEntity camera,0,0,cam_z
 
 	UpdateWorld
-	RenderWorld
+	Local info:TRenderInfo=RenderWorld()
 	BeginMax2D
 	DrawText "Use arrows keys to pan, A/Z to zoom",0,0
+	DrawText "FPS: "+info.FPS,0,15
 	EndMax2D
 	
 	Flip

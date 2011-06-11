@@ -19,8 +19,8 @@ SetEntityTexture plane,texture
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	If KeyDown(KEY_LEFT) TurnEntity camera,0,-1,0
 	If KeyDown(KEY_RIGHT) TurnEntity camera,0,1,0
-	If KeyDown(KEY_UP) MoveEntity camera,0,0,1
-	If KeyDown(KEY_DOWN) MoveEntity camera,0,0,-1
+	If KeyDown(KEY_UP) MoveEntity camera,0,0,0.05
+	If KeyDown(KEY_DOWN) MoveEntity camera,0,0,-0.05
 	
 	RenderWorld
 	

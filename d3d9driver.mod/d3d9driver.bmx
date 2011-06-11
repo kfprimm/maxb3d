@@ -59,8 +59,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		 -1-(1.0/width),1+(1.0/height),1.0,1.0]
 		
 		_d3ddev.SetTransform D3DTS_PROJECTION,matrix
-		_d3ddev.SetTransform D3DTS_WORLD,identity.GetPtr()
-		_d3ddev.SetTransform D3DTS_VIEW,identity.GetPtr()		
+		_d3ddev.SetTransform D3DTS_WORLD,identity.ToPtr()
+		_d3ddev.SetTransform D3DTS_VIEW,identity.ToPtr()		
 		
 		_d3ddev.SetVertexDeclaration Null
 		_d3ddev.SetIndices Null
@@ -73,6 +73,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE,True
 		
 		_d3ddev.SetRenderState D3DRS_WRAP0, 0
+		
+		_d3ddev.SetRenderState D3DRS_FOGENABLE,False
 	End Method
 	
 	Method EndMax2D()
@@ -93,7 +95,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		'_d3ddev.SetRenderState D3DRS_ALPHAREF, 1
 		'_d3ddev.SetRenderState D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL
 		
-		_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CCW		
+		_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CW		
 	End Method
 	
 	Method SetCamera(camera:TCamera)
@@ -104,12 +106,23 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		Local viewport[]=[camera._viewx,camera._viewy,camera._viewwidth-camera._viewx,camera._viewheight-camera._viewy]
 		_d3ddev.SetScissorRect viewport
 		_d3ddev.Clear(1,viewport,clearflags,D3DCOLOR_XRGB(camera._brush._r*255,camera._brush._g*255,camera._brush._b*255),1.0,0)
-
+		
+		Select camera._fogmode
+		Case FOGMODE_LINEAR
+			_d3ddev.SetRenderState D3DRS_FOGENABLE,True
+			_d3ddev.SetRenderState D3DRS_FOGSTART,Int(Varptr camera._fognear)
+			_d3ddev.SetRenderState D3DRS_FOGEND,Int(Varptr camera._fogfar)
+		Default
+			_d3ddev.SetRenderState D3DRS_FOGENABLE,False
+		End Select
+		
 		Local ratio#=(Float(camera._viewwidth)/camera._viewheight)		
-		_d3ddev.SetTransform D3DTS_PROJECTION,TMatrix.PerspectiveFovLH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).GetPtr()
+		Local proj_matrix:TMatrix=TMatrix.PerspectiveFovLH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far)
+		proj_matrix=TMatrix.Scale(-1,1,1).Multiply(proj_matrix)
+		_d3ddev.SetTransform D3DTS_PROJECTION,proj_matrix.ToPtr()
 		
 		Local matrix:TMatrix=camera._matrix.Inverse()
-		_d3ddev.SetTransform D3DTS_VIEW,matrix.GetPtr()
+		_d3ddev.SetTransform D3DTS_VIEW,matrix.ToPtr()
 	End Method
 	
 	Method SetLight(light:TLight,index)
@@ -126,7 +139,10 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		'd3dlight.Ambient_r=WorldConfig.AmbientRed/255.0;d3dlight.Ambient_g=WorldConfig.AmbientGreen/255.0;d3dlight.Ambient_b=WorldConfig.AmbientBlue/255.0;d3dlight.Ambient_a=1.0
 		
 		d3dlight.Direction_x=0.0;d3dlight.Direction_y=0.0;d3dlight.Direction_z=1.0
-		light.GetPosition d3dlight.Position_x,d3dlight.Position_y,d3dlight.Position_z,True
+				
+		Local matrix:TMatrix=light._matrix,w#=1
+		matrix.TransformVector d3dlight.Direction_x,d3dlight.Direction_y,d3dlight.Direction_z,w
+		matrix.GetPosition d3dlight.Position_x,d3dlight.Position_y,d3dlight.Position_z		
 		
 		d3dlight.Range=light._range		
 		
@@ -150,10 +166,10 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		If brush._fx&FX_NOCULLING
 			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_NONE
 		Else
-			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CCW
+			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CW
 		EndIf
 		
-		If brush._fx&FX_WIREFRAME
+		If brush._fx&FX_WIREFRAME Or WorldConfig.Wireframe
 			_d3ddev.SetRenderState D3DRS_FILLMODE,D3DFILL_WIREFRAME
 		Else
 			_d3ddev.SetRenderState D3DRS_FILLMODE,D3DFILL_SOLID
@@ -167,14 +183,17 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		
 		For Local i=0 To 7
 			Local texture:TTexture=brush._texture[i]
-			If texture=Null Continue
+			If texture=Null 
+				_d3ddev.SetTexture i,Null
+				Continue
+			EndIf
 			
 			_d3ddev.SetTextureStageState i,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2
-						
+			
 			_d3ddev.SetSamplerState i,D3DSAMP_MAGFILTER,D3DTEXF_LINEAR
 			_d3ddev.SetSamplerState i,D3DSAMP_MINFILTER,D3DTEXF_LINEAR
-			
-			_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE, texture._flags&TEXTURE_ALPHA
+
+			_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE, texture._flags&TEXTURE_ALPHA			
 			
 			If texture._flags&TEXTURE_MIPMAP				
 				_d3ddev.SetSamplerState i,D3DSAMP_MIPFILTER,D3DTEXF_LINEAR
@@ -182,24 +201,40 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 				_d3ddev.SetSamplerState i,D3DSAMP_MIPFILTER,D3DTEXF_NONE
 			EndIf
 			
-			_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSU,D3DTADDRESS_WRAP
-			_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSV,D3DTADDRESS_WRAP
-			_d3ddev.SetRenderState D3DRENDERSTATE_WRAPBIAS+i,(D3DWRAP_U*((texture._flags&TEXTURE_CLAMPU)=0))|(D3DWRAP_V*((texture._flags&TEXTURE_CLAMPV)=0))
-
+			If texture._flags&TEXTURE_CLAMPU
+				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSU,D3DTADDRESS_CLAMP
+			Else
+				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSU,D3DTADDRESS_WRAP
+			EndIf
+			
+			If texture._flags&TEXTURE_CLAMPV
+				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSU,D3DTADDRESS_CLAMP
+			Else
+				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSV,D3DTADDRESS_WRAP
+			EndIf
+			
+			If texture._flags&TEXTURE_SPHMAP
+				_d3ddev.SetTextureStageState i,D3DTSS_TEXCOORDINDEX,D3DTSS_TCI_SPHEREMAP
+			Else
+				_d3ddev.SetTextureStageState i,D3DTSS_TEXCOORDINDEX,texture._coords
+			EndIf
+			
 			_d3ddev.SetTexture i,UpdateTextureRes(texture)._tex
+
 			
 			Local matrix:TMatrix
 			matrix=TMatrix.Translation(texture._px,texture._py,0)
 			matrix=TMatrix.YawPitchRoll(0,texture._r,0).Multiply(matrix)
 			matrix=TMatrix.Scale(texture._sx,texture._sy,1).Multiply(matrix)
 			
-			_d3ddev.SetTransform D3DTS_TEXTURE0+i,matrix.GetPtr()
+			_d3ddev.SetTransform D3DTS_TEXTURE0+i,matrix.ToPtr()
 		Next
 	End Method
 	
 	Method RenderSurface(resource:TSurfaceRes,brush:TBrush)
 		Local res:TD3D9SurfaceRes=TD3D9SurfaceRes(resource)
 		
+		_d3ddev.SetFVF 0
 		_d3ddev.SetVertexDeclaration GetD3D9MaxB3DVertexDecl(_d3ddev)
 		_d3ddev.SetStreamSource 0,res._pos,0,12
 		_d3ddev.SetStreamSource 1,res._nml,0,12
@@ -211,18 +246,36 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		Return res._trianglecnt
 	End Method
 	
-	Method RenderSprite(sprite:TSprite)
-	
+	Method RenderSprite(sprite:TSprite)	
+		Global _data#[]=[ -1.0, 1.0,0.0, 0.0,0.0,1.0, 0.0,0.0, ..
+		                   1.0, 1.0,0.0, 0.0,0.0,1.0, 1.0,0.0, ..
+		                  -1.0,-1.0,0.0, 0.0,0.0,1.0, 0.0,1.0, ..
+		                   1.0,-1.0,0.0, 0.0,0.0,1.0, 1.0,1.0     ]
+		
+		_d3ddev.SetVertexDeclaration Null
+		_d3ddev.SetFVF D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX1
+		_d3ddev.DrawPrimitiveUP D3DPT_TRIANGLESTRIP,2,_data,8*4
 	End Method
 	
 	Method BeginEntityRender(entity:TEntity)
-		_d3ddev.SetTransform D3DTS_WORLD,entity._matrix.GetPtr()
+		_d3ddev.SetTransform D3DTS_WORLD,entity.GetMatrix(True).ToPtr()
 	End Method
 	
 	Method EndEntityRender(entity:TEntity)
 	End Method
 	
 	Method RenderPlane(plane:TPlane)
+		Local x#,y#,z#
+		plane.GetScale x,y,z,True
+
+		Global _data#[]=[ -1.0,0.0, 1.0, 0.0,1.0,0.0, 0.0,0.0, ..
+		                   1.0,0.0, 1.0, 0.0,1.0,0.0,   x,0.0, ..
+		                  -1.0,0.0,-1.0, 0.0,1.0,0.0, 0.0,  z, ..
+		                   1.0,0.0,-1.0, 0.0,1.0,0.0,   x,  z     ]		
+		
+		_d3ddev.SetVertexDeclaration Null
+		_d3ddev.SetFVF D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX1
+		_d3ddev.DrawPrimitiveUP D3DPT_TRIANGLESTRIP,2,_data,8*4
 	End Method
 	
 	Method RenderTerrain(terrain:TTerrain)
@@ -231,20 +284,22 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	Method UpdateTextureRes:TD3D9TextureRes(texture:TTexture)
 		Local res:TD3D9TextureRes=TD3D9TextureRes(texture._res)
 		If res And texture._updateres=False Return res
-		
+
 		If res=Null res=New TD3D9TextureRes
 		texture._res=res
 		
 		Local pixmap:TPixmap=texture._pixmap
 		Local tex_width=Pow2Size(pixmap.width),tex_height=Pow2Size(pixmap.height)
-		pixmap=ResizePixmap(pixmap,tex_width,tex_height)
+		pixmap=ConvertPixmap(ResizePixmap(pixmap,tex_width,tex_height),PF_BGRA8888)
 		If res._tex=Null Assert _d3ddev.CreateTexture(tex_width,tex_height,(texture._flags & TEXTURE_MIPMAP)=0,D3DUSAGE_AUTOGENMIPMAP,D3DFMT_A8R8G8B8,D3DPOOL_MANAGED,res._tex,Null)=D3D_OK
 		
-		Local rect:D3DLOCKED_RECT =New D3DLOCKED_RECT 
+		Local rect:D3DLOCKED_RECT=New D3DLOCKED_RECT 
 		res._tex.LockRect 0,rect,Null,0
 		MemCopy rect.pBits,pixmap.pixels,pixmap.width*pixmap.height*4
 		res._tex.UnlockRect 0
 		
+		texture._updateres=False
+				
 		Return res
 	End Method
 	

@@ -14,7 +14,7 @@ Rem
 	bbdoc: Draws the world in its current state.
 	about: Tweening is not yet implemented.
 End Rem
-Function RenderWorld(tween#=1.0)
+Function RenderWorld:TRenderInfo(tween#=1.0)
 	Return _currentworld.Render(tween)
 End Function
 Rem
@@ -611,7 +611,7 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function GetMeshSize(mesh:TMesh,width# Var,height# var,depth# Var)
+Function GetMeshSize(mesh:TMesh,width# Var,height# Var,depth# Var)
 	Return mesh.GetSize(width,height,depth)
 End Function
 Rem

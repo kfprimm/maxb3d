@@ -2,7 +2,7 @@
 Strict
 
 Import MaxB3D.Drivers
-Import MaxB3D.Loaders
+Import MaxB3D.MD2Loader
 
 Graphics 800,600
 
@@ -17,7 +17,7 @@ Local garg_tex:TTexture=LoadTexture( "gargoyle.bmp" )
 SetEntityTexture gargoyle,garg_tex
 
 Local walking_seq:TAnimSeq=ExtractMeshAnimSeq(gargoyle,32,46)
-SetMeshAnim gargoyle,walking_seq,ANIMATION_LOOP,0.1 '1,0.1,32,46
+SetMeshAnim gargoyle,walking_seq,ANIMATION_LOOP,0.1
 
 SetEntityPosition gargoyle,0,-45,100
 SetEntityRotation gargoyle,0,180,0 

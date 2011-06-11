@@ -72,11 +72,11 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 		For Local i=0 To num_tris-1
 			Local v0=tri[(i*6)+0],v1=tri[(i*6)+1],v2=tri[(i*6)+2]
 			Local tc0=tri[(i*6)+3],tc1=tri[(i*6)+4],tc2=tri[(i*6)+5]
-			
+						
 			master_surface.SetTriangle i,v2,v1,v0
-			master_surface.SetTexCoord v0,Float(skinwidth)/st[(tc0*2)+0],Float(skinheight)/st[(tc0*2)+1]
-			master_surface.SetTexCoord v1,Float(skinwidth)/st[(tc1*2)+0],Float(skinheight)/st[(tc1*2)+1]
-			master_surface.SetTexCoord v2,Float(skinwidth)/st[(tc2*2)+0],Float(skinheight)/st[(tc2*2)+1]
+			master_surface.SetTexCoord v0,st[(tc0*2)+0]/Float(skinwidth),st[(tc0*2)+1]/Float(skinheight)
+			master_surface.SetTexCoord v1,st[(tc1*2)+0]/Float(skinwidth),st[(tc1*2)+1]/Float(skinheight)
+			master_surface.SetTexCoord v2,st[(tc2*2)+0]/Float(skinwidth),st[(tc2*2)+1]/Float(skinheight)
 		Next
 				
 		SeekStream stream,offset_frames

@@ -175,7 +175,7 @@ Type TMatrix
 		w=_m[0,3]*_x+_m[1,3]*_y+_m[2,3]*_z+_m[3,3]*_w
 	End Method
 	
-	Method GetPtr:Float Ptr(transposed=False)
+	Method ToPtr:Float Ptr(transposed=False)
 		If transposed
 			For Local i=0 To 3
 				For Local j=0 To 3

@@ -57,7 +57,6 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	Function EnableStates()	
 		glEnable GL_LIGHTING
 		glEnable GL_DEPTH_TEST
-		glEnable GL_FOG
 		glEnable GL_CULL_FACE
 		glEnable GL_SCISSOR_TEST
 		
@@ -67,7 +66,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glEnableClientState GL_COLOR_ARRAY
 		glEnableClientState GL_NORMAL_ARRAY
 		
-		glFrontFace GL_CW
+		glFrontFace GL_CCW
 		
 		glLightModeli GL_LIGHT_MODEL_COLOR_CONTROL,GL_SEPARATE_SPECULAR_COLOR
 		glLightModeli GL_LIGHT_MODEL_LOCAL_VIEWER,GL_TRUE
@@ -125,39 +124,39 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glClearColor(camera._brush._r,camera._brush._g,camera._brush._b,1.0)
 		
 		If camera._clsmode&CLSMODE_COLOR And camera._clsmode&CLSMODE_DEPTH
-			glDepthMask(GL_TRUE)
-			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+			glDepthMask GL_TRUE
+			glClear GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT
 		Else
 			If camera._clsmode&CLSMODE_COLOR
-				glClear(GL_COLOR_BUFFER_BIT)
+				glClear GL_COLOR_BUFFER_BIT
 			Else
 				If camera._clsmode&CLSMODE_DEPTH
-					glDepthMask(GL_TRUE)
-					glClear(GL_DEPTH_BUFFER_BIT)
+					glDepthMask GL_TRUE
+					glClear GL_DEPTH_BUFFER_BIT
 				EndIf
 			EndIf
 		EndIf
 
-		If camera._fogmode>FOGMODE_NONE
-			glEnable(GL_FOG)
-			glFogi(GL_FOG_MODE,GL_LINEAR)
-			glFogf(GL_FOG_START,camera._fognear)
-			glFogf(GL_FOG_END,camera._fogfar)
+		If camera._fogmode<>FOGMODE_NONE
+			glEnable GL_FOG
+			glFogi GL_FOG_MODE,GL_LINEAR
+			glFogf GL_FOG_START,camera._fognear
+			glFogf GL_FOG_END,camera._fogfar
 			Local rgb#[]=[camera._fogr,camera._fogg,camera._fogb]
-			glFogfv(GL_FOG_COLOR,rgb)
+			glFogfv GL_FOG_COLOR,rgb
 		Else
-			glDisable(GL_FOG)
+			glDisable GL_FOG
 		EndIf
 
 		Local ratio#=(Float(camera._viewwidth)/camera._viewheight)
 		
 		glMatrixMode GL_PROJECTION
 		glLoadIdentity
-		glLoadMatrixf TMatrix.PerspectiveFovRH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).GetPtr()
-		glScalef 1,1,-1
+		glLoadMatrixf TMatrix.PerspectiveFovRH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).ToPtr()
+		glScalef -1,1,-1
 		
 		glMatrixMode GL_MODELVIEW		
-		glLoadMatrixf camera._matrix.Inverse().GetPtr()
+		glLoadMatrixf camera._matrix.Inverse().ToPtr()
 		
 		glGetFloatv GL_MODELVIEW_MATRIX,camera._lastmodelview._m
 		glGetFloatv GL_PROJECTION_MATRIX,camera._lastprojection._m
@@ -174,12 +173,11 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		
 		glEnable GL_LIGHT[index]
 		
-		glPushMatrix()
-
-		glMultMatrixf(light._matrix.GetPtr())
+		glPushMatrix
+		glMultMatrixf light.GetMatrix(True).ToPtr()
 		
 		Local white_light#[]=[1.0,1.0,1.0,1.0]
-		glLightfv(GL_LIGHT[index],GL_SPECULAR,white_light)
+		glLightfv GL_LIGHT[index],GL_SPECULAR,white_light
 		
 		Local z#=1.0
 		Local w#=0.0
@@ -191,22 +189,22 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Local rgba#[]=[light._brush._r,light._brush._g,light._brush._b,1.0]
 		Local pos#[]=[0.0,0.0,-z,w]
 		
-		glLightfv(GL_LIGHT[index],GL_POSITION,pos#)
-		glLightfv(GL_LIGHT[index],GL_DIFFUSE,rgba#)
+		glLightfv GL_LIGHT[index],GL_POSITION,pos#
+		glLightfv GL_LIGHT[index],GL_DIFFUSE,rgba#
 
 		If light._mode>LIGHT_DIRECTIONAL		
 			Local range#[]=[light._range]			
-			glLightfv(GL_LIGHT[index],GL_LINEAR_ATTENUATION,range)
+			glLightfv GL_LIGHT[index],GL_LINEAR_ATTENUATION,range
 		EndIf
 
 		If light._mode=LIGHT_SPOT		
 			Local dir#[]=[0.0,0.0,-1.0]
 			Local outer#[]=[light._outer]		
-			glLightfv(GL_LIGHT[index],GL_SPOT_DIRECTION,dir)
-			glLightfv(GL_LIGHT[index],GL_SPOT_CUTOFF,outer)		
+			glLightfv GL_LIGHT[index],GL_SPOT_DIRECTION,dir
+			glLightfv GL_LIGHT[index],GL_SPOT_CUTOFF,outer
 		EndIf
 		
-		glPopMatrix()
+		glPopMatrix
 	End Method
 	
 	Method SetBrush(brush:TBrush,hasalpha)
@@ -238,25 +236,25 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		EndIf
 		
 		If brush._fx&FX_VERTEXCOLOR
-			glEnable(GL_COLOR_MATERIAL)
+			glEnable GL_COLOR_MATERIAL
 		Else
-			glDisable(GL_COLOR_MATERIAL)
+			glDisable GL_COLOR_MATERIAL
 		EndIf
 		
 		If brush._fx&FX_FLATSHADED
-			glShadeModel(GL_FLAT)
+			glShadeModel GL_FLAT
 		Else
-			glShadeModel(GL_SMOOTH)
+			glShadeModel GL_SMOOTH
 		EndIf
 
 		If brush._fx&FX_NOFOG
-			glDisable(GL_FOG)
+			glDisable GL_FOG
 		EndIf
 		
 		If brush._fx&FX_NOCULLING
-			glDisable(GL_CULL_FACE)
+			glDisable GL_CULL_FACE
 		Else
-			glEnable(GL_CULL_FACE)
+			glEnable GL_CULL_FACE
 		EndIf
 		
 		If brush._fx&FX_WIREFRAME Or WorldConfig.Wireframe
@@ -365,56 +363,42 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	
 	Method BeginEntityRender(entity:TEntity)		
 		If entity._order<>0
-			glDisable(GL_DEPTH_TEST)
-			glDepthMask(GL_FALSE)
+			glDisable GL_DEPTH_TEST
+			glDepthMask GL_FALSE
 		Else
-			glEnable(GL_DEPTH_TEST)
-			glDepthMask(GL_TRUE)
+			glEnable GL_DEPTH_TEST
+			glDepthMask GL_TRUE
 		EndIf
 		
-		glMatrixMode(GL_MODELVIEW)
-		glPushMatrix()
-		glMultMatrixf(entity.GetMatrix(True,False).GetPtr())
+		glMatrixMode GL_MODELVIEW
+		glPushMatrix
+		glMultMatrixf entity.GetMatrix(True,False).ToPtr()
 	End Method
 	Method EndEntityRender(entity:TEntity)
-		glMatrixMode(GL_MODELVIEW)
-		glPopMatrix()
+		glMatrixMode GL_MODELVIEW
+		glPopMatrix
 	End Method
 	
 	Method RenderPlane(plane:TPlane)
 		Local x#,y#,z#
 		plane.GetScale x,y,z,True
 		
-		For Local i=0 To 7
-			Local texture:TTexture=plane._brush._texture[i]
-			If texture=Null Continue
-			
-			glActiveTextureARB GL_TEXTURE0+i
-			glEnable GL_TEXTURE_2D
-		
-			glMatrixMode GL_TEXTURE
-			glLoadIdentity
-			glScalef x,z,1			
-		Next		
-		
-		glDisable(GL_BLEND)		
-		glDepthMask(GL_TRUE)
-		glBegin(GL_QUADS)	
+		glBegin GL_QUADS
 			glNormal3f 0,1,0
 			glTexCoord2f 0,0
-			glVertex3f(-1,0, 1)				
-			glTexCoord2f 1,0	
-			glVertex3f(1, 0, 1)			
-			glTexCoord2f 1,1
-			glVertex3f(1, 0, -1)
-			glTexCoord2f 0,1
-			glVertex3f(-1,0, -1)			
-		glEnd()
+			glVertex3f -1,0, 1
+			glTexCoord2f x,0	
+			glVertex3f 1, 0, 1
+			glTexCoord2f x,z
+			glVertex3f 1, 0, -1
+			glTexCoord2f 0,z
+			glVertex3f -1,0, -1
+		glEnd
 		Return 2
 	End Method
 	
 	Method RenderSprite(sprite:TSprite)
-		If _caps.PointSprites And True=False
+		If False
 			glPointParameterfvARB GL_POINT_DISTANCE_ATTENUATION_ARB, [0.0, 0.0, 1.0]
 			
 			glPointSize 1.0
@@ -566,7 +550,7 @@ End Function
 Rem
 	bbdoc: Utility function that sets the MaxB3D GL driver and calls Graphics.
 End Rem
-Function GLGraphics3D:TGraphics(width,height,depth=0,hertz=0,flags=0)
+Function GLGraphics3D:TGraphics(width,height,depth=0,hertz=60,flags=0)
 	SetGraphicsDriver GLMaxB3DDriver(),GRAPHICS_BACKBUFFER|GRAPHICS_DEPTHBUFFER
 	Return Graphics(width,height,depth,hertz,flags)
 End Function

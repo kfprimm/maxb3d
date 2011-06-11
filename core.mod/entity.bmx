@@ -377,7 +377,7 @@ Type TEntity
 	Method RefreshMatrix()
 		If _lockmatrix Return
 		If _parent<>Null
-			_matrix=_parent._matrix
+			_matrix.Overwrite _parent._matrix
 			UpdateMatrix False
 		Else
 			UpdateMatrix True

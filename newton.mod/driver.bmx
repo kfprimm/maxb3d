@@ -29,18 +29,18 @@ Type TNewtonCollisionDriver Extends TCollisionDriver
 			If Not TNewtonData(body._data) body._data=New TNewtonData
 			Local data:TNewtonData=TNewtonData(body._data)
 			
-			Local collision:Byte Ptr,offset:TMatrix
-			offset=TMatrix.Translation(body._boxx,body._boxy,body._boxz)
+			Local collision:Byte Ptr
 			Select body._shape
 			Case BODY_SPHERE,BODY_NONE
-				collision=NewtonCreateSphere(_world,body._radiusx,body._radiusy,body._radiusx,0,offset.GetPtr())
+				collision=NewtonCreateSphere(_world,body._radiusx,body._radiusy,body._radiusx,0,Null)
 			Case BODY_BOX
-				collision=NewtonCreateBox(_world,body._boxwidth,body._boxheight,body._boxdepth,0,offset.GetPtr())
+				'Local offset:TMatrix=TMatrix.Translation((body._boxwidth/2.0)-body._boxx,(body._boxheight/2.0)-body._boxy,(body._boxdepth/2.0)-body._boxz)
+				collision=NewtonCreateBox(_world,body._boxwidth,body._boxheight,body._boxdepth,0,null)
 			End Select			
 
 			If data._ptr NewtonDestroyBody(_world,data._ptr)
 
-			data._ptr=NewtonCreateBody(_world,collision,body._matrix.GetPtr())
+			data._ptr=NewtonCreateBody(_world,collision,body._matrix.ToPtr())
 			NewtonBodySetUserData data._ptr, String(HandleFromObject(body)).ToCString()
 			
 			If body._mass>0

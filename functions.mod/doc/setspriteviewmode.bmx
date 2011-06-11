@@ -34,10 +34,10 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	If KeyDown(KEY_A) Then roll=roll+1
 	If KeyDown(KEY_S) Then roll=roll-1
 	
-	If KeyHit(KEY_1) view_mode=1 ; view_mode_info="FIXED"
-	If KeyHit(KEY_2) view_mode=2 ; view_mode_info="FREE"
-	If KeyHit(KEY_3) view_mode=3 ; view_mode_info="UPRIGHT1"
-	If KeyHit(KEY_4) view_mode=4 ; view_mode_info="UPRIGHT2"
+	If KeyHit(KEY_1) view_mode=1;view_mode_info="FIXED"
+	If KeyHit(KEY_2) view_mode=2;view_mode_info="FREE"
+	If KeyHit(KEY_3) view_mode=3;view_mode_info="UPRIGHT1"
+	If KeyHit(KEY_4) view_mode=4;view_mode_info="UPRIGHT2"
 	
 	SetSpriteViewMode sprite,view_mode
 	

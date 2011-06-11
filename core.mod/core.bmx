@@ -208,16 +208,30 @@ Type TWorld
 		Return bone
 	End Method
 	
-	Method Render(tween#=1.0)
+	Method Render:TRenderInfo(tween#=1.0)
 		Local driver:TMaxB3DDriver=TMaxB3DDriver(GetGraphicsDriver())
 		Assert driver,"MaxB3D driver not set!"
 		Assert driver._current,"Graphics not set!"
 		
+		Global info:TRenderInfo=New TRenderInfo
+		Global _ticks,_lastupdate
+		
+		If _lastupdate+1000<MilliSecs()
+			info.FPS=_ticks
+			_ticks=0
+			_lastupdate=MilliSecs()
+		Else
+			_ticks:+1
+		EndIf
+		
 		Local tricount
 		For Local camera:TCamera=EachIn _config.List[WORLDLIST_CAMERA]
-			If camera.GetVisible() tricount:+RenderCamera(driver,camera)
+			If camera.GetVisible()
+				Local i:TRenderInfo=RenderCamera(driver,camera)
+				info.Triangles:+i.Triangles
+			EndIf
 		Next
-		Return tricount
+		Return info
 	End Method
 	
 	Method Update(anim_speed#,collision_speed#)
@@ -263,7 +277,7 @@ Type TWorld
 		_config.CollisionPairs.AddLast pair
 	End Method
 	
-	Method RenderCamera(driver:TMaxB3DDriver,camera:TCamera)
+	Method RenderCamera:TRenderInfo(driver:TMaxB3DDriver,camera:TCamera)
 		driver.SetCamera camera
 		Local index
 		For Local i=0 To 7
@@ -272,14 +286,15 @@ Type TWorld
 				Repeat 
 					light=TLight(_config.List[WORLDLIST_LIGHT].ValueAtIndex(index))
 					index:+1
-				Until light.GetVisible()
+				Until light.GetVisible() Or index>=CountList(_config.List[WORLDLIST_LIGHT])
+				If light=Null Exit
 			EndIf
 			driver.SetLight light,i
 		Next
 		
 		UpdateSprites _config.List[WORLDLIST_SPRITE],driver,camera
 				
-		Local tricount
+		Global info:TRenderInfo=New TRenderInfo
 		For Local entity:TEntity=EachIn _config.List[WORLDLIST_RENDER]
 			If Not entity.GetVisible() Or entity._brush._a=0 Continue
 			Local mesh:TMesh=TMesh(entity),plane:TPlane=TPlane(entity),terrain:TTerrain=TTerrain(entity)
@@ -300,31 +315,31 @@ Type TWorld
 					Local resource:TSurfaceRes=driver.MergeSurfaceRes(surface,animation_surface,merge_data)				'driver.UpdateSurfaceRes(surface)
 					brush=driver.MakeBrush(surface._brush,mesh._brush)
 					driver.SetBrush brush,surface.HasAlpha() Or brush._fx&FX_FORCEALPHA
-					tricount:+driver.RenderSurface(resource,brush)
+					info.Triangles:+driver.RenderSurface(resource,brush)
 				Next
 			Else
 				driver.SetBrush brush,brush._a<>1
 				If plane					
-					tricount:+driver.RenderPlane(plane)
+					info.Triangles:+driver.RenderPlane(plane)
 				ElseIf sprite				
 					driver.RenderSprite(sprite)
-					tricount:+4+(4*(brush._fx&FX_NOCULLING<>0))
+					info.Triangles:+4+(4*(brush._fx&FX_NOCULLING<>0))
 				ElseIf terrain
 					Local x#,y#,z#
 					camera.GetPosition x,y,z,True
 					terrain.Update x,y,z,camera._lastfrustum
-					tricount:+driver.RenderTerrain(terrain)
+					info.Triangles:+driver.RenderTerrain(terrain)
 				EndIf	
 			EndIf
 			driver.EndEntityRender entity		
 		Next
-		Return tricount
+		Return info
 	End Method
 	
 	Method UpdateSprites(sprites:TList,driver:TMaxB3DDriver,camera:TCamera)	
 		For Local sprite:TSprite=EachIn sprites
 			Local matrix:TMatrix
-			If Not driver._caps.PointSprites And True=False
+			If True
 				If sprite._viewmode<>VIEWMODE_FREE		
 					Local x#,y#,z#
 					sprite.GetPosition x,y,z,True
@@ -514,6 +529,11 @@ Type TMaxB3DDriver Extends TMax2DDriver
 			camera.SetViewport x,y,width,height
 		Next
 	End Method
+End Type
+
+Type TRenderInfo
+	Field FPS
+	Field Triangles
 End Type
 
 Type TCaps

@@ -6,6 +6,7 @@ Import MaxB3D.Newton
 
 Graphics 800,600
 SetCollisionDriver NewtonCollisionDriver()
+SeedRnd MilliSecs()
 
 Local light:TLight=CreateLight()
 
@@ -16,8 +17,6 @@ SetEntityBox floor_body,-3,-.05,-3,6,0.1,6
 Local floor_mesh:TMesh=CreateCube(floor_body)
 SetEntityScale floor_mesh,3,.05,3
 
-Local texture:TTexture=LoadTexture("media/crate.jpg")
-
 For Local y=0 To 99
 	Local cube_body:TBody=CreateBody()
 	SetEntityPosition cube_body,0,.3+(2*y),5
@@ -25,7 +24,7 @@ For Local y=0 To 99
 	SetBodyMass cube_body, 4
 	
 	Local cube_mesh:TMesh=CreateCube(cube_body)
-	SetEntityTexture cube_mesh,texture
+	SetEntityColor cube_mesh,Rand(255),Rand(255),Rand(255)
 Next
 
 Local camera:TCamera=CreateCamera()
@@ -33,13 +32,25 @@ SetEntityPosition camera,0,3,-4
 
 PointEntity camera, floor_mesh
 
+Local run_physics=True
+
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	FlyCam camera
-	UpdateWorld
+	
+	If KeyHit(KEY_P) run_physics=Not run_physics
+	
+	If run_physics UpdateWorld
 	RenderWorld
 	Flip
 Wend
 
 Function FlyCam(camera:TCamera)
+	Global _lastx,_lasty
+	Local pitch#,yaw#,roll#
+	Local halfx=GraphicsWidth()/2,halfy=GraphicsHeight()/2
+	GetEntityRotation camera,pitch,yaw,roll
+	
 	MoveEntity camera,0,0,KeyDown(KEY_W)-KeyDown(KEY_S)
+	SetEntityRotation camera,pitch-(halfy-MouseY()),yaw+(halfx-MouseX()),0
+	MoveMouse halfx,halfy
 End Function

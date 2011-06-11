@@ -8,9 +8,9 @@ Graphics 800,600
 Local mesh:TMesh=CreateMesh()
 Local surface:TSurface=AddMeshSurface(mesh)
 
-AddSurfaceVertex surface,-5,-5,0,  0,0
-AddSurfaceVertex surface, 5,-5,0,  1,0
-AddSurfaceVertex surface, 0, 5,0,0.5,1
+AddSurfaceVertex surface,-5,-5,0,   0,0
+AddSurfaceVertex surface, 5,-5,0,   1,0
+AddSurfaceVertex surface, 0, 5,0, 0.5,1
 
 AddSurfaceTriangle surface,0,2,1
 

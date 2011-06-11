@@ -2,15 +2,15 @@
 Strict
 
 Import MaxB3D.Drivers
-Import MaxB3D.Loaders
+Import MaxB3D.TeapotLoader
 
 Graphics 800,600
 
-Local texture:TTexture=LoadTexture("media/spheremap.bmp", TEXTURE_COLOR|TEXTURE_SPHMAP)
+Local texture:TTexture=LoadTexture("media/spheremap.bmp", TEXTURE_COLOR)
 
-Local teapot:TMesh=CreateTeapot()
+Local teapot:TMesh=CreateCube()'Teapot()
 SetEntityTexture teapot,texture
-SetEntityFX teapot, FX_FULLBRIGHT
+'SetEntityFX teapot, FX_FULLBRIGHT
 
 Local camera:TCamera=CreateCamera()
 SetEntityPosition camera,0,0,-3
