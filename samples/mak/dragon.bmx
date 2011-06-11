@@ -15,6 +15,7 @@ SetEntityAlpha room,.4
 SetEntityFX room,1
 FitMesh room,-250,0,-250,500,500,500
 FlipMesh room
+
 'Local mirror:TMirror=CreateMirror()
 
 Local light:TLight=CreateLight()

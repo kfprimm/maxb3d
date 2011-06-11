@@ -494,7 +494,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		
 		If res._vbo[0]=0 glGenBuffersARB(4,res._vbo)
 	
-		If surface._reset=-1 Then surface._reset=1|2|4|8|16
+		If surface._reset=-1 Then surface._reset=1|2|4|8|16|32|64|128|256
 	
 		If surface._reset&1 UploadVertexBuffer res._vbo[0],surface._vertexpos
 		If surface._reset&2 UploadVertexNormals res._vbo[1],surface._vertexnml
@@ -517,8 +517,8 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	
 	Method MergeSurfaceRes:TGLSurfaceRes(base:TSurface,animation:TSurface,data)
 		If animation=Null Return UpdateSurfaceRes(base)
-		Local res_base:TGLSurfaceRes=TGLSurfaceRes(UpdateSurfaceRes(base))
-		Local res_anim:TGLSurfaceRes=TGLSurfaceRes(UpdateSurfaceRes(animation))
+		Local res_base:TGLSurfaceRes=UpdateSurfaceRes(base)
+		Local res_anim:TGLSurfaceRes=UpdateSurfaceRes(animation)
 		Local res:TGLSurfaceRes=res_base.Copy()
 		res._vbo[0]=res_anim._vbo[0]
 		Return res

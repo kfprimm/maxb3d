@@ -44,6 +44,11 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		If _d3ddev<>Null EndMax2D ' TODO: Figure out when this needs to be called. Most likely NOT always!
 	End Method
 	
+	Method GetCaps:TCaps()
+		Local caps:TCaps=New TCaps
+		Return caps
+	End Method
+	
 	Method BeginMax2D()
 		Global identity:TMatrix=TMatrix.Identity()
 		Local width=GraphicsWidth(),height=GraphicsHeight()
@@ -65,6 +70,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.SetRenderState D3DRS_ZENABLE,False
 		_d3ddev.SetRenderState D3DRS_SCISSORTESTENABLE,_viewporton		
 		
+		_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE,True
+		
 		_d3ddev.SetRenderState D3DRS_WRAP0, 0
 	End Method
 	
@@ -80,7 +87,12 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(WorldConfig.AmbientRed,WorldConfig.AmbientGreen,WorldConfig.AmbientBlue)
 		_d3ddev.SetRenderState D3DRS_COLORVERTEX, True
 		_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE,D3DMCS_MATERIAL
-
+		
+		_d3ddev.SetRenderState D3DRS_SHADEMODE,D3DSHADE_GOURAUD
+		
+		'_d3ddev.SetRenderState D3DRS_ALPHAREF, 1
+		'_d3ddev.SetRenderState D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL
+		
 		_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CCW		
 	End Method
 	
@@ -122,7 +134,13 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.LightEnable index,True
 	End Method
 	
-	Method SetBrush(brush:TBrush,hasalpha) 
+	Method SetBrush(brush:TBrush,hasalpha)
+		_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE,False
+		
+		Local alpha_blending = (brush._fx&FX_FORCEALPHA Or hasalpha)>0
+		_d3ddev.SetRenderState D3DRS_ALPHABLENDENABLE,alpha_blending 
+		_d3ddev.SetRenderState D3DRS_ZWRITEENABLE,Not alpha_blending 
+		
 		If brush._fx&FX_FULLBRIGHT
 			_d3ddev.SetRenderState D3DRS_AMBIENT,$ffffffff
 		Else
@@ -151,20 +169,30 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			Local texture:TTexture=brush._texture[i]
 			If texture=Null Continue
 			
-			If texture._flags&TEXTURE_CLAMPU
-				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSU,D3DTADDRESS_CLAMP
+			_d3ddev.SetTextureStageState i,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2
+						
+			_d3ddev.SetSamplerState i,D3DSAMP_MAGFILTER,D3DTEXF_LINEAR
+			_d3ddev.SetSamplerState i,D3DSAMP_MINFILTER,D3DTEXF_LINEAR
+			
+			_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE, texture._flags&TEXTURE_ALPHA
+			
+			If texture._flags&TEXTURE_MIPMAP				
+				_d3ddev.SetSamplerState i,D3DSAMP_MIPFILTER,D3DTEXF_LINEAR
 			Else
-				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSU,D3DTADDRESS_WRAP
+				_d3ddev.SetSamplerState i,D3DSAMP_MIPFILTER,D3DTEXF_NONE
 			EndIf
 			
-			If texture._flags&TEXTURE_CLAMPV
-				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSV,D3DTADDRESS_CLAMP
-			Else
-				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSV,D3DTADDRESS_WRAP
-			EndIf
-			
+			_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSU,D3DTADDRESS_WRAP
+			_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSV,D3DTADDRESS_WRAP
+			_d3ddev.SetRenderState D3DRENDERSTATE_WRAPBIAS+i,(D3DWRAP_U*((texture._flags&TEXTURE_CLAMPU)=0))|(D3DWRAP_V*((texture._flags&TEXTURE_CLAMPV)=0))
+
 			_d3ddev.SetTexture i,UpdateTextureRes(texture)._tex
-			Local matrix:TMatrix=TMatrix.Scale(texture._sx,texture._sy,1.0)
+			
+			Local matrix:TMatrix
+			matrix=TMatrix.Translation(texture._px,texture._py,0)
+			matrix=TMatrix.YawPitchRoll(0,texture._r,0).Multiply(matrix)
+			matrix=TMatrix.Scale(texture._sx,texture._sy,1).Multiply(matrix)
+			
 			_d3ddev.SetTransform D3DTS_TEXTURE0+i,matrix.GetPtr()
 		Next
 	End Method
@@ -227,10 +255,10 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		If surface._reset=0 Return res		
 		If surface._reset=-1 surface._reset=1|2|4|8|16|32|64|128|256
 
-		If surface._reset&1 UploadVertexData res._pos,surface._vertexpos
-		If surface._reset&2 UploadVertexData res._nml,surface._vertexnml
-		If surface._reset&4 UploadVertexData res._clr,surface._vertexclr
-		If surface._reset&8
+		If surface._reset&1 And surface._vertexpos UploadVertexData res._pos,surface._vertexpos
+		If surface._reset&2 And surface._vertexnml UploadVertexData res._nml,surface._vertexnml
+		If surface._reset&4 And surface._vertexclr UploadVertexData res._clr,surface._vertexclr
+		If surface._reset&8 And surface._triangle
 			If res._tri=Null _d3ddev.CreateIndexBuffer(surface._triangle.length*4,0,D3DFMT_INDEX32,D3DPOOL_MANAGED,res._tri,Null)
 			Local dataptr:Byte Ptr
 			Assert res._tri.Lock(0,0,dataptr,0)=D3D_OK,"Failed to lock index buffer."
@@ -240,8 +268,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		
 		For Local i=0 To surface._vertextex.length-1
 			If surface._reset&Int(2^(4+i)) UploadVertexData res._tex[i],surface._vertextex[i]
-		Next	
-
+		Next
 		
 		res._trianglecnt=surface._trianglecnt
 		res._vertexcnt=surface._vertexcnt
@@ -253,7 +280,12 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	End Method
 
 	Method MergeSurfaceRes:TSurfaceRes(base:TSurface,animation:TSurface,data)
-		Return UpdateSurfaceRes(base)
+		If animation=Null Return UpdateSurfaceRes(base)
+		Local base_res:TD3D9SurfaceRes=UpdateSurfaceRes(base)
+		Local anim_res:TD3D9SurfaceRes=UpdateSurfaceRes(animation)
+		Local res:TD3D9SurfaceRes=base_res.Copy()
+		res._pos=anim_res._pos
+		Return res
 	End Method
 	
 	Method UploadVertexData(buffer:IDirect3DVertexBuffer9 Var,data#[])
@@ -280,7 +312,10 @@ Type TD3D9SurfaceRes Extends TSurfaceRes
 	Method Copy:TD3D9SurfaceRes()
 		Local res:TD3D9SurfaceRes=New TD3D9SurfaceRes
 		res._vertexcnt=_vertexcnt;res._trianglecnt=_trianglecnt
-		res._pos=_pos;res._nml=_nml;res._clr=_clr;res._tri=_tri;res._tex=_tex[..]
+		res._pos=_pos;res._nml=_nml;res._clr=_clr;res._tri=_tri;
+		For Local i=0 To 7
+			res._tex[i]=_tex[i]
+		Next
 		Return res
 	End Method
 End Type
