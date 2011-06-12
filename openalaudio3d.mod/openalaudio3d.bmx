@@ -28,9 +28,11 @@ Type TOpenALAudio3DDriver Extends TAudio3DDriver
 	End Method
 	
 	Method SetListener(matrix:TMatrix)	
-  	Local x#,y#,z#,dx#,dy#,dz#=1.0,dw#=1.0
+  		Local x#,y#,z#,dx#,dy#,dz#=1.0,dw#=1.0
 		matrix.GetPosition x,y,z
 		matrix.TransformVector dx,dy,dz,dw
+		
+		dx:-x;dy:-y;dz:-z
 		
 		alListenerfv AL_POSITION,[x,y,z]
 		alListenerfv AL_VELOCITY,[0.0,0.0,0.0]

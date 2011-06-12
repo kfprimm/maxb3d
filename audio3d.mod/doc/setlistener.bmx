@@ -4,7 +4,7 @@ Strict
 Import MaxB3D.Drivers
 Import MaxB3D.OpenALAudio3D
 
-Graphics 800,600
+GLGraphics3D 800,600
 SetAudioDriver "Audio3D OpenAL"
 
 Local camera:TCamera=CreateCamera()

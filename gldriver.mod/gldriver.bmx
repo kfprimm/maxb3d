@@ -169,6 +169,11 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		If light=Null
 			glDisable GL_LIGHT[index]
 			Return
+		Else
+			If light._hidden=true 
+				glDisable GL_LIGHT[index]
+				Return False
+			EndIf
 		EndIf
 		
 		glEnable GL_LIGHT[index]
@@ -189,19 +194,26 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Local rgba#[]=[light._brush._r,light._brush._g,light._brush._b,1.0]
 		Local pos#[]=[0.0,0.0,-z,w]
 		
-		glLightfv GL_LIGHT[index],GL_POSITION,pos#
-		glLightfv GL_LIGHT[index],GL_DIFFUSE,rgba#
-
-		If light._mode>LIGHT_DIRECTIONAL		
-			Local range#[]=[light._range]			
+		glLightfv GL_LIGHT[index],GL_POSITION,pos
+		glLightfv GL_LIGHT[index],GL_DIFFUSE,rgba
+	
+		If light._mode<>LIGHT_DIRECTIONAL
+			Local light_range#[]=[0.0]
+			Local range#[]=[light._range]
+			glLightfv GL_LIGHT[index],GL_CONSTANT_ATTENUATION,light_range
 			glLightfv GL_LIGHT[index],GL_LINEAR_ATTENUATION,range
+		EndIf		
+
+		If light._mode<>LIGHT_DIRECTIONAL		
 		EndIf
 
 		If light._mode=LIGHT_SPOT		
 			Local dir#[]=[0.0,0.0,-1.0]
-			Local outer#[]=[light._outer]		
+			Local outer#[]=[light._outer/2.0]
+			Local exponent#[]=[10.0]	
 			glLightfv GL_LIGHT[index],GL_SPOT_DIRECTION,dir
 			glLightfv GL_LIGHT[index],GL_SPOT_CUTOFF,outer
+			glLightfv GL_LIGHT[index],GL_SPOT_EXPONENT,exponent
 		EndIf
 		
 		glPopMatrix

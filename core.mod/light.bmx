@@ -3,13 +3,19 @@ Strict
 
 Import "entity.bmx"
 
-Const LIGHT_DIRECTIONAL		= 1
-Const LIGHT_POINT			= 2
-Const LIGHT_SPOT			= 3
+Const LIGHT_DIRECTIONAL = 1
+Const LIGHT_POINT       = 2
+Const LIGHT_SPOT        = 3
 
 Type TLight Extends TEntity
 	Field _range#,_inner#,_outer#
 	Field _mode
+	
+	Method New()
+		SetRange 1000
+		SetAngles 0,90
+		SetMode LIGHT_DIRECTIONAL
+	End Method
 	
 	Method Copy:TLight(parent:TEntity=Null)
 		Local light:TLight=New TLight

@@ -8,9 +8,9 @@ Graphics 800,600
 
 Local texture:TTexture=LoadTexture("media/spheremap.bmp", TEXTURE_COLOR)
 
-Local teapot:TMesh=CreateCube()'Teapot()
+Local teapot:TMesh=CreateTeapot()
 SetEntityTexture teapot,texture
-'SetEntityFX teapot, FX_FULLBRIGHT
+SetEntityFX teapot, FX_FULLBRIGHT
 
 Local camera:TCamera=CreateCamera()
 SetEntityPosition camera,0,0,-3

@@ -97,7 +97,7 @@ Type TWorld
 			If arr.length=0 Return Null
 			If arr.length=1 width=arr[0];height=arr[0]
 			If arr.length>1 width=arr[0];height=arr[1]		
-			pixmap=CreatePixmap(width,height,PF_RGBA8888)
+			pixmap=CreatePixmap(width,height,PF_BGRA8888)
 		ElseIf TPixmap(url) 
 			pixmap=TPixmap(url)
 		Else
@@ -287,7 +287,6 @@ Type TWorld
 					light=TLight(_config.List[WORLDLIST_LIGHT].ValueAtIndex(index))
 					index:+1
 				Until light.GetVisible() Or index>=CountList(_config.List[WORLDLIST_LIGHT])
-				If light=Null Exit
 			EndIf
 			driver.SetLight light,i
 		Next

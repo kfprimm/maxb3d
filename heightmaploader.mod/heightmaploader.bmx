@@ -12,7 +12,8 @@ Import MaxB3D.Core
 
 Type TMeshLoaderHMAP Extends TMeshLoader
 	Method Run(mesh:TMesh,stream:TStream,url:Object)
-		Local pixmap:TPixmap=LoadPixmap(stream)
+		Local pixmap:TPixmap=TPixmap(url)
+		If pixmap=Null pixmap=LoadPixmap(stream)
 		If pixmap=Null Return False
 		
 		pixmap=XFlipPixmap(ConvertPixmap(pixmap,PF_I8))
