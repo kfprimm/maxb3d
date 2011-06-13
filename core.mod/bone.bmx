@@ -5,6 +5,7 @@ Import "entity.bmx"
 Import "animation.bmx"
 
 Type TBone Extends TAnimEntity
+	Field _start_matrix:TMatrix
 	Field _surface:TSurface[]
 	Field _info:TWeightInfo[]
 	Field _key:TAnimKey[]
@@ -43,6 +44,11 @@ Type TBone Extends TAnimEntity
 			If k._frame=frame k._object=key;Return
 		Next
 	End Method
+	
+	Method Set(matrix:TMatrix=Null)
+		If matrix=Null matrix=_start_matrix
+		SetMatrix matrix
+	End Method
 End Type
 
 Type TWeightInfo
@@ -60,28 +66,5 @@ Type TWeightInfo
 				_weight[i]=1.0
 			Next
 		EndIf
-	End Method
-End Type
-
-Type TKeyAnimator Extends TAnimator
-	Field _root:TBone
-	Field _bone:TBone[]
-	Field _key:TAnimKey[]
-	
-	Method AddBone(bone:TBone,keys:TAnimKey)
-	
-	End Method
-	
-	Method GetSurface:TSurface(surface:TSurface)
-	End Method
-	Method GetMergeData()
-	End Method
-	Method Update()
-	End Method
-	Method GetFrameCount()
-	End Method
-	
-	Method SetKey(frame,key:Object)
-		_root.SetAnimKey frame,key
 	End Method
 End Type

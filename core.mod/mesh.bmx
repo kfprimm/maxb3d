@@ -6,6 +6,8 @@ Import "entity.bmx"
 Import "surface.bmx"
 Import "bone.bmx"
 Import "animation.bmx"
+Import "bone_animator.bmx"
+Import "vertex_animator.bmx"
 
 Type TMesh Extends TAnimEntity 
 	Field _surfaces:TSurface[]
@@ -170,18 +172,18 @@ Type TMesh Extends TAnimEntity
 	End Method
 	
 	Method Scale(x#,y#,z#)
-		Return Transform(TMatrix.Scale(x,y,z))
+		Return Morph(TMatrix.Scale(x,y,z))
 	End Method
 	
 	Method Rotate(pitch#,yaw#,roll#)
-		Return Transform(TMatrix.YawPitchRoll(yaw,pitch,roll))
+		Return Morph(TMatrix.YawPitchRoll(yaw,pitch,roll))
 	End Method
 	
 	Method Position(x#,y#,z#)
-		Return Transform(TMatrix.Translation(x#,y#,z#))
+		Return Morph(TMatrix.Translation(x#,y#,z#))
 	End Method
 	
-	Method Transform(matrix:TMatrix)
+	Method Morph(matrix:TMatrix)
 		For Local surface:TSurface=EachIn _surfaces
 			surface.Transform matrix
 		Next
@@ -235,6 +237,10 @@ Type TMesh Extends TAnimEntity
 	Method SetAnimSpeed(speed#)
 		_animator._speed=speed
 	End Method
+	
+	Method GetFrame#()
+		Return _animator._frame
+	End method
 	
 	Method SetAnimKey(frame,key:Object)
 		_animator.SetKey(frame,key)

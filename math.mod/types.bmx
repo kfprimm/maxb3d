@@ -175,6 +175,14 @@ Type TMatrix
 		w=_m[0,3]*_x+_m[1,3]*_y+_m[2,3]*_z+_m[3,3]*_w
 	End Method
 	
+	Method Interpolate:TMatrix(matrix:TMatrix,t#)
+		Local out:TMatrix=TMatrix.Identity()
+		out._m[3,0]=matrix._m[3,0]+(_m[3,0]-matrix._m[3,0])*t
+		out._m[3,1]=matrix._m[3,1]+(_m[3,1]-matrix._m[3,1])*t
+		out._m[3,2]=matrix._m[3,2]+(_m[3,2]-matrix._m[3,2])*t
+		Return out
+	End Method
+	
 	Method ToPtr:Float Ptr(transposed=False)
 		If transposed
 			For Local i=0 To 3

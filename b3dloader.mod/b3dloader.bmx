@@ -64,7 +64,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		Case meshchunk			
 			If entity=Null entity=_currentworld.AddMesh("*null*",parent)
 			Local mesh:TMesh=TMesh(entity)
-			mesh._animator=New TKeyAnimator
+			mesh._animator=New TBoneAnimator
 			_mesh=mesh
 			
 			If meshchunk.brush_id>-1 entity.SetBrush brush[meshchunk.brush_id]
@@ -98,7 +98,6 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		Case bonechunk
 			entity=_currentworld.AddBone(parent)
 			Local bone:TBone=TBone(entity)
-			If TKeyAnimator(_mesh._animator)._root=Null TKeyAnimator(_mesh._animator)._root=bone
 			
 			For Local surface:TSurface=EachIn _mesh._surfaces
 				bone.AddSurface surface
@@ -106,6 +105,27 @@ Type TMeshLoaderB3D Extends TMeshLoader
 					bone.AddVertex surface,bonechunk.vertex_id[i],bonechunk.weight[i]
 				Next
 			Next			
+			
+			Local ident_matrix:TMatrix=TMatrix.Identity()
+			For Local chunk:TKEYSChunk=EachIn node.keys
+				Local keys:TAnimKey[chunk.frame.length]
+				Local pos#[]=chunk.position,rot#[]=chunk.rotation,scl#[]=chunk.scale
+				For Local i=0 To chunk.frame.length-1
+					Local trans_matrix:TMatrix=ident_matrix
+					Local rotation_matrix:TMatrix=ident_matrix
+					Local scale_matrix:TMatrix=ident_matrix
+					
+					If pos.length>0 trans_matrix=TMatrix.Translation(pos[i*3+0],pos[i*3+1],pos[i*3+2])
+					If rot.length>0 rotation_matrix=TQuaternion.Matrix(rot[i*4+0],rot[i*4+1],rot[i*4+2],rot[i*4+3])
+					If scl.length>0 scale_matrix=TMatrix.Scale(scl[i*3+0],scl[i*3+1],scl[i*3+2])
+														
+					Local key:TAnimKey=New TAnimKey
+					key._frame=chunk.frame[i]
+					key._object=scale_matrix.Multiply(rotation_matrix.Multiply(trans_matrix))
+					keys[i]=key
+				Next
+				TBoneAnimator(_mesh._animator).AddBone bone,keys
+			Next
 		Default
 			entity=_currentworld.AddPivot(parent)
 		End Select		
@@ -120,7 +140,8 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		For Local child:TNODEChunk=EachIn node.node
 			ParseNode child,entity,brush
 		Next
-		If TMesh(entity) If TKeyAnimator(TMesh(entity)._animator)._root=Null TMesh(entity)._animator=Null
+		If TMesh(entity) If TBoneAnimator(TMesh(entity)._animator)._root=Null TMesh(entity)._animator=Null
+		If TBone(entity) TBone(entity)._start_matrix=entity.GetMatrix()
 	End Method
 End Type
 New TMeshLoaderB3D

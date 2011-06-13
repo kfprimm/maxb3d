@@ -469,6 +469,12 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function TransformEntity(entity:TEntity,matrix:TMatrix,glob=False)
+	Return entity.Transform(matrix,glob)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function GetEntityCollisions:TCollision[](entity:TEntity)
 	Return entity.GetCollisions()
 End Function

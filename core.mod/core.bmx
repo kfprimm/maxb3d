@@ -214,6 +214,8 @@ Type TWorld
 		Assert driver._current,"Graphics not set!"
 		
 		Global info:TRenderInfo=New TRenderInfo
+		info.Triangles=0
+		
 		Global _ticks,_lastupdate
 		
 		If _lastupdate+1000<MilliSecs()
@@ -294,6 +296,7 @@ Type TWorld
 		UpdateSprites _config.List[WORLDLIST_SPRITE],driver,camera
 				
 		Global info:TRenderInfo=New TRenderInfo
+		info.Triangles=0
 		For Local entity:TEntity=EachIn _config.List[WORLDLIST_RENDER]
 			If Not entity.GetVisible() Or entity._brush._a=0 Continue
 			Local mesh:TMesh=TMesh(entity),plane:TPlane=TPlane(entity),terrain:TTerrain=TTerrain(entity)

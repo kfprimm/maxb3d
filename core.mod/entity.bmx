@@ -177,6 +177,10 @@ Type TEntity
 		RefreshMatrix()	
 	End Method
 	
+	Method Transform(matrix:TMatrix,glob=False)
+		SetMatrix matrix.Multiply(_matrix),glob
+	End Method
+	
 	Method Turn(pitch#,yaw#,roll#,glob=False)
 		_rx:-pitch;_ry:+yaw;_rz:+roll
 		RefreshMatrix()
@@ -353,16 +357,16 @@ Type TEntity
 		If copy Return _matrix.Copy()
 		Return _matrix
 	End Method
-	Method SetMatrix(matrix:TMatrix)
+	Method SetMatrix(matrix:TMatrix,glob=True)
 		Local x#,y#,z#,pitch#,yaw#,roll#,sx#,sy#,sz#
 		matrix.GetPosition x,y,z
 		matrix.GetRotation pitch,yaw,roll
 		matrix.GetScale sx,sy,sz
 		
 		LockMatrix
-		SetPosition x,y,z,True
-		SetRotation pitch,yaw,roll,True
-		'SetScale sx,sy,sz,True
+		SetPosition x,y,z,glob
+		SetRotation pitch,yaw,roll,glob
+		SetScale sx,sy,sz,glob
 		UnlockMatrix
 	End Method
 	
@@ -393,6 +397,29 @@ Type TEntity
 		_matrix=TMatrix.Translation(_px,_py,_pz).Multiply(_matrix)
 		_matrix=TMatrix.YawPitchRoll(_ry,_rx,_rz).Multiply(_matrix)
 		_matrix=TMatrix.Scale(_sx,_sy,_sz).Multiply(_matrix)
+	End Method
+	
+	Method ObjectEnumerator:Object()
+		Return TChildrenEnumerator.Create(_childlist)
+	End Method
+End Type
+
+Type TChildrenEnumerator
+	Field _children:TEntity[],_index=-1
+	
+	Function Create:TChildrenEnumerator(list:TList)
+		Local enum:TChildrenEnumerator=New TChildrenEnumerator
+		enum._children=TEntity[](list.ToArray())
+		Return enum
+	End Function
+	
+	Method HasNext()
+		Return _index>=_children.length-1
+	End Method
+	
+	Method NextObject:Object()
+		_index:+1
+		Return _children[_index]
 	End Method
 End Type
 
