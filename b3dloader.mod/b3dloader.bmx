@@ -111,17 +111,15 @@ Type TMeshLoaderB3D Extends TMeshLoader
 				Local keys:TAnimKey[chunk.frame.length]
 				Local pos#[]=chunk.position,rot#[]=chunk.rotation,scl#[]=chunk.scale
 				For Local i=0 To chunk.frame.length-1
-					Local trans_matrix:TMatrix=ident_matrix
-					Local rotation_matrix:TMatrix=ident_matrix
-					Local scale_matrix:TMatrix=ident_matrix
-					
-					If pos.length>0 trans_matrix=TMatrix.Translation(pos[i*3+0],pos[i*3+1],pos[i*3+2])
-					If rot.length>0 rotation_matrix=TQuaternion.Matrix(rot[i*4+0],rot[i*4+1],rot[i*4+2],rot[i*4+3])
-					If scl.length>0 scale_matrix=TMatrix.Scale(scl[i*3+0],scl[i*3+1],scl[i*3+2])
+					Local bonekey:TBoneKey=New TBoneKey
+										
+					If pos.length>0 bonekey._px=pos[i*3+0];bonekey._py=pos[i*3+1];bonekey._pz=pos[i*3+2]
+					If rot.length>0 bonekey._rw=rot[i*4+0];bonekey._rx=rot[i*4+1];bonekey._ry=rot[i*4+2];bonekey._rz=rot[i*4+3]
+					If scl.length>0 bonekey._sx=scl[i*3+0];bonekey._sy=scl[i*3+1];bonekey._sz=scl[i*3+2]
 														
 					Local key:TAnimKey=New TAnimKey
 					key._frame=chunk.frame[i]
-					key._object=scale_matrix.Multiply(rotation_matrix.Multiply(trans_matrix))
+					key._object=bonekey
 					keys[i]=key
 				Next
 				TBoneAnimator(_mesh._animator).AddBone bone,keys

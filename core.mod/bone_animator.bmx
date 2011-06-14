@@ -33,18 +33,21 @@ Type TBoneAnimator Extends TAnimator
 				EndIf
 			Next
 			
+			debugstop
+			
 			Local key0:TAnimKey=_key[i][frame0]
 			Local key1:TAnimKey=_key[i][frame1]
 						
-			Local matrix:TMatrix
+			Local key:TBoneKey=New TBoneKey
 			If key0=key1
-				matrix=TMatrix(key0._object)
+				key=TBoneKey(key0._object)
 			Else
 				Local t#=key0._frame+(key1._frame-key0._frame)*(_frame-key0._frame)
-				matrix=TMatrix(key1._object).Interpolate(TMatrix(key0._object),t)
+				
+				key=TBoneKey(key0._object)
 			EndIf
-
-			_bone[i].Transform matrix
+			
+			_bone[i].Transform key.ToMatrix()
 		Next
 	End Method
 	Method GetFrameCount()

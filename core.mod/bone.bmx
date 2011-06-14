@@ -51,6 +51,22 @@ Type TBone Extends TAnimEntity
 	End Method
 End Type
 
+Type TBoneKey
+	Field _px#,_py#,_pz#
+	Field _sx#=1.0,_sy#=1.0,_sz#=1.0
+	Field _rw#=1.0,_rx#,_ry#,_rz#
+	Field _matrix:TMatrix
+	
+	Method ToMatrix:TMatrix()
+		Local trans_matrix:TMatrix,rotation_matrix:TMatrix,scale_matrix:TMatrix
+		trans_matrix=TMatrix.Translation(_px,_py,_pz)
+		rotation_matrix=TQuaternion.Matrix(_rw,_rx,_ry,_rz)
+		scale_matrix=TMatrix.Scale(_sx,_sy,_sz)
+		_matrix=scale_matrix.Multiply(rotation_matrix.Multiply(trans_matrix))
+		Return _matrix
+	End Method
+End Type
+
 Type TWeightInfo
 	Field _vertex[]
 	Field _weight#[]
