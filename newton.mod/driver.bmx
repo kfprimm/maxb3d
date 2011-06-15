@@ -35,7 +35,7 @@ Type TNewtonCollisionDriver Extends TCollisionDriver
 				collision=NewtonCreateSphere(_world,body._radiusx,body._radiusy,body._radiusx,0,Null)
 			Case BODY_BOX
 				'Local offset:TMatrix=TMatrix.Translation((body._boxwidth/2.0)-body._boxx,(body._boxheight/2.0)-body._boxy,(body._boxdepth/2.0)-body._boxz)
-				collision=NewtonCreateBox(_world,body._boxwidth,body._boxheight,body._boxdepth,0,null)
+				collision=NewtonCreateBox(_world,body._boxwidth,body._boxheight,body._boxdepth,0,Null)
 			End Select			
 
 			If data._ptr NewtonDestroyBody(_world,data._ptr)

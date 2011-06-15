@@ -34,6 +34,12 @@ End Rem
 Function CreateSphere:TMesh(segments=8,parent:TEntity=Null)
 	Return _currentworld.AddMesh("*sphere*("+segments+")",parent)
 End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function CreateTorus:TMesh(radius#,width#,segments,sides,parent:TEntity=Null)
+	Return _currentworld.AddMesh("*torus*("+radius+","+width+","+segments+","+sides+")",parent)
+End Function
 
 Type TMeshLoaderPrimitives Extends TMeshLoader
 	Method Run(mesh:TMesh,stream:TStream,url:Object)
@@ -430,6 +436,40 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			surface.SetTriangle(10,20,21,22)
 			surface.SetTriangle(11,23,20,22)	
 			Return True
+		Case "torus"
+			'torrad#,torwidth#,segments,sides
+			Local torrad#=Float(params[0]),torwidth#=Float(params[1]),segments=Int(params[2]),sides=Int(params[3])
+			
+			Local surface:TSurface=mesh.AddSurface(segments*sides,segments*sides*2)
+			
+			Local FATSTEP#=360.0/sides
+			Local DEGSTEP#=360.0/segments
+			
+			Local radius#=0,x#=0,y#=0,z#=0
+			For Local f=0 To sides-1
+				Local fat#=FATSTEP*f
+				radius = torrad + torwidth*Sin(fat)
+				z=torwidth*Cos(fat)
+				For Local d=0 To segments-1
+					Local deg#=DEGSTEP*f
+					x=radius*Cos(deg)
+					y=radius*Sin(deg)
+					surface.SetCoord f*segments+d,x,y,z
+					surface.SetTexCoord f*segments+d,x,y				
+				Next
+			Next
+			
+			For Local v=0 To segments*sides-1
+				Local v0=v,v1=v+segments,v2=v+1,v3=v+1+segments
+				
+				If v1>=segments*sides v1:-(segments*sides)
+				If v2>=segments*sides v2:-(segments*sides)
+				If v3>=segments*sides v3:-(segments*sides)
+				
+				surface.SetTriangle v*2+0,v0,v1,v2
+				surface.SetTriangle v*2+1,v1,v3,v2	
+			Next
+
 		Default
 			Return False
 		End Select

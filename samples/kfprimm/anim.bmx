@@ -33,7 +33,7 @@ SetMeshAnim zombie,walk1
 
 ' temp
 Function MakeBones(bone:TBone)
-	Local sphere:TMesh=CreateSphere(8,bone)
+	Local sphere:TMesh=CreateSphere(2,bone)
 	For Local bone2:TBone=EachIn bone._childlist
 		MakeBones bone2
 	Next
@@ -46,7 +46,7 @@ Next
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	SetWireFrame KeyDown(KEY_W)
 	
-	If KeyHit(KEY_SPACE) UpdateWorld
+	If KeyDown(KEY_D) UpdateWorld
 	Local info:TRenderInfo=RenderWorld()
 	BeginMax2D
 	DrawText "Triangles: "+info.Triangles,0,0

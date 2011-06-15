@@ -33,8 +33,6 @@ Type TBoneAnimator Extends TAnimator
 				EndIf
 			Next
 			
-			debugstop
-			
 			Local key0:TAnimKey=_key[i][frame0]
 			Local key1:TAnimKey=_key[i][frame1]
 						
@@ -47,7 +45,15 @@ Type TBoneAnimator Extends TAnimator
 				key=TBoneKey(key0._object)
 			EndIf
 			
-			_bone[i].Transform key.ToMatrix()
+			Local x#,y#,z#,w#=1
+			
+			_bone[i].GetPosition x,y,z
+			
+			x:+key._px;y:+key._py;z:+key._pz
+			TQuaternion.Matrix(key._rw,key._rx,key._ry,key._rz).TransformVector x,y,z,w
+			
+			
+			_bone[i].SetPosition x,y,z
 		Next
 	End Method
 	Method GetFrameCount()

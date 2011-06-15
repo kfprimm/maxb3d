@@ -199,6 +199,7 @@ Type TMesh Extends TAnimEntity
 		_animator._current=seq
 		_animator._mode=mode
 		_animator._speed=speed
+		If seq _animator._frame=seq._start
 	End Method
 	
 	Method AddAnimSeq:TAnimSeq(start_frame,end_frame)
@@ -240,7 +241,7 @@ Type TMesh Extends TAnimEntity
 	
 	Method GetFrame#()
 		Return _animator._frame
-	End method
+	End Method
 	
 	Method SetAnimKey(frame,key:Object)
 		_animator.SetKey(frame,key)

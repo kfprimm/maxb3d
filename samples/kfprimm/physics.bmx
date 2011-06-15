@@ -12,10 +12,10 @@ Local light:TLight=CreateLight()
 
 Local floor_body:TBody=CreateBody()
 SetEntityPosition floor_body,0,0,5
-SetEntityBox floor_body,-3,-.05,-3,6,0.1,6
+SetEntityBox floor_body,-32,-.05,-32,64,0.1,64
 
 Local floor_mesh:TMesh=CreateCube(floor_body)
-SetEntityScale floor_mesh,3,.05,3
+SetEntityScale floor_mesh,32,.05,32
 
 For Local y=0 To 99
 	Local cube_body:TBody=CreateBody()
@@ -39,7 +39,7 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	
 	If KeyHit(KEY_P) run_physics=Not run_physics
 	
-	If run_physics UpdateWorld
+	If run_physics UpdateWorld ,4
 	RenderWorld
 	Flip
 Wend
@@ -50,7 +50,7 @@ Function FlyCam(camera:TCamera)
 	Local halfx=GraphicsWidth()/2,halfy=GraphicsHeight()/2
 	GetEntityRotation camera,pitch,yaw,roll
 	
-	MoveEntity camera,0,0,KeyDown(KEY_W)-KeyDown(KEY_S)
+	MoveEntity camera,KeyDown(KEY_A)-KeyDown(KEY_D),0,KeyDown(KEY_W)-KeyDown(KEY_S)
 	SetEntityRotation camera,pitch-(halfy-MouseY()),yaw+(halfx-MouseX()),0
 	MoveMouse halfx,halfy
 End Function

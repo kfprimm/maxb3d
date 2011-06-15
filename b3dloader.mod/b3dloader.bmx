@@ -112,7 +112,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 				Local pos#[]=chunk.position,rot#[]=chunk.rotation,scl#[]=chunk.scale
 				For Local i=0 To chunk.frame.length-1
 					Local bonekey:TBoneKey=New TBoneKey
-										
+					
 					If pos.length>0 bonekey._px=pos[i*3+0];bonekey._py=pos[i*3+1];bonekey._pz=pos[i*3+2]
 					If rot.length>0 bonekey._rw=rot[i*4+0];bonekey._rx=rot[i*4+1];bonekey._ry=rot[i*4+2];bonekey._rz=rot[i*4+3]
 					If scl.length>0 bonekey._sx=scl[i*3+0];bonekey._sy=scl[i*3+1];bonekey._sz=scl[i*3+2]
