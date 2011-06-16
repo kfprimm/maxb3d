@@ -475,6 +475,14 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 		End Select
 	End Method
 	
+	Method Name$()
+		Return "Primitives"
+	End Method
+	Method ModuleName$()
+		Return "primitives"
+	End Method
+
+	
 	Function FlipNormals(surface:TSurface)
 		For Local v=0 To surface._vertexcnt-1
 			Local nx#,ny#,nz#

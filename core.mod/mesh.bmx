@@ -9,6 +9,15 @@ Import "animation.bmx"
 Import "bone_animator.bmx"
 Import "vertex_animator.bmx"
 
+Import MaxB3D.Logging
+
+Private
+Function ModuleLog(message$)
+	TMaxB3DLogger.Write "core/mesh",message
+End Function
+
+Public
+
 Type TMesh Extends TAnimEntity 
 	Field _surfaces:TSurface[]
 
@@ -17,6 +26,8 @@ Type TMesh Extends TAnimEntity
 	
 	Field _tree:Byte Ptr
 	Field _resettree
+	
+	Field _minx#,_miny#,_minz#,_maxx#,_maxy#,_maxz#
 	
 	Method HasAlpha()
 		If _brush._a<>1 Or _brush._fx&FX_FORCEALPHA Return True
@@ -64,25 +75,29 @@ Type TMesh Extends TAnimEntity
 		Return _surfaces[index]
 	End Method
 	
+	Method CountSurfaces()
+		Return _surfaces.length
+	End Method
+	
 	Method GetSize(width# Var,height# Var,depth# Var)
-		Local minx#=999999999,miny#=999999999,minz#=999999999
-		Local maxx#=-999999999,maxy#=-999999999,maxz#=-999999999
+		_minx=999999999;_miny=999999999;_minz=999999999
+		_maxx=-999999999;_maxy=-999999999;_maxz=-999999999
 		
 		For Local surface:TSurface=EachIn _surfaces		
 			surface.UpdateBounds
-			minx=Min(minx,surface._minx);maxx=Max(maxx,surface._maxx)
-			miny=Min(miny,surface._miny);maxy=Max(maxy,surface._maxy)
-			minz=Min(minz,surface._minz);maxz=Max(maxz,surface._maxz)
+			_minx=Min(_minx,surface._minx);_maxx=Max(_maxx,surface._maxx)
+			_miny=Min(_miny,surface._miny);_maxy=Max(_maxy,surface._maxy)
+			_minz=Min(_minz,surface._minz);_maxz=Max(_maxz,surface._maxz)
 		Next
-		width=maxx-minx;height=maxy-miny;depth=maxz-minz
+		width=_maxx-_minx;height=_maxy-_miny;depth=_maxz-_minz
 	End Method
 	
 	Method Fit(x#,y#,z#,width#,height#,depth#,uniform=False)
 		Local mw#,mh#,md#,wr#,hr#,dr#
-		GetSize mw,mw,mw	
+		GetSize mw,mh,md
 		If uniform=True									
 			wr=mw/width;hr=mh/height;dr=md/depth
-		
+			
 			If wr>=hr And wr>=dr	
 				y=y+((height-(mh/wr))/2.0)
 				z=z+((depth-(md/wr))/2.0)
@@ -103,44 +118,32 @@ Type TMesh Extends TAnimEntity
 				height=mh/dr								
 			EndIf
 		EndIf
-		
+				
 		wr=mw/width;hr=mh/height;dr=md/depth
-			
-		Local minx#=9999999999,miny#=9999999999,minz#=9999999999
-		Local maxx#=-9999999999,maxy#=-9999999999,maxz#=-9999999999
-	
-		For Local surface:TSurface=EachIn _surfaces				
-			For Local v=0 To surface.CountVertices()-1		
-				Local vx#,vy#,vz#
-				surface.GetCoord v,vx,vy,vz				
-				minx=Min(vx,minx);miny=Min(vy,miny);minz=Min(vz,minz)
-				maxx=Max(vx,maxx);maxy=Max(vy,maxy);maxz=Max(vz,maxz)
-			Next							
-		Next
 		
 		For Local surface:TSurface=EachIn _surfaces				
 			For Local v=0 To surface.CountVertices()-1
-				Local vx#,vy#,vz#
+				Local vx#,vy#,vz#,ux#,uy#,uz#,nx#,ny#,nz#
 				surface.GetCoord v,vx,vy,vz
-								
-				Local mx#=maxx-minx,my#=maxy-miny,mz#=maxz-minz
-				
-				Local ux#,uy#,uz#
-				
-				If mx<0.0001 And mx>-0.0001 Then ux=0.0 Else ux=(vx-minx)/mx ' 0-1
-				If my<0.0001 And my>-0.0001 Then uy=0.0 Else uy=(vy-miny)/my ' 0-1
-				If mz<0.0001 And mz>-0.0001 Then uz=0.0 Else uz=(vz-minz)/mz ' 0-1
-										
-				vx=x+(ux*width);vy=y+(uy*height);vz=z+(uz*depth)				
-				surface.SetCoord(v,vx,vy,vz)
-				
-				Local nx#,ny#,nz#
 				surface.GetNormal v,nx,ny,nz				
+
+				If mw<0.0001 And mw>-0.0001 ux=0.0 Else ux=(vx-_minx)/mw
+				If mh<0.0001 And mh>-0.0001 uy=0.0 Else uy=(vy-_miny)/mh
+				If md<0.0001 And md>-0.0001 uz=0.0 Else uz=(vz-_minz)/md
+										
+				vx=x+(ux*width);vy=y+(uy*height);vz=z+(uz*depth)			
 				nx:*wr;ny:*hr;nz:*dr				
-				surface.SetNormal(v,nx#,ny#,nz#)
+			
+				surface.SetCoord v,vx,vy,vz				
+				surface.SetNormal v,nx,ny,nz
 			Next			
-			surface._reset:|1|2
 		Next		
+	End Method
+	
+	Method Center()
+		Local w#,h#,d#
+		GetSize w,h,d
+		Fit -w/2.0,-h/2.0,-d/2.0,w,h,d
 	End Method
 	
 	Method Flip()
@@ -309,7 +312,15 @@ Type TMeshLoader
 		If stream=Null stream=ReadStream(stream)
 		While loader<>Null
 			If stream SeekStream stream,0
-			If loader.Run(mesh,stream,url) Return True
+?Not Debug
+			Try
+?
+				If loader.Run(mesh,stream,url) Return True
+?Not Debug
+			Catch a$
+				ModuleLog "Exception throw from "+loader.ModuleName()+"."
+			EndTry		
+?	
 			loader=loader._next
 		Wend
 		If stream CloseStream stream
@@ -317,12 +328,22 @@ Type TMeshLoader
 	End Function
 	
 	Method Run(mesh:TMesh,stream:TStream,url:Object) Abstract
+	
+	Method Name$() Abstract
+	Method ModuleName$() Abstract
 End Type
 
 Type TMeshLoaderNull Extends TMeshLoader
 	Method Run(mesh:TMesh,stream:TStream,url:Object)
 		If String(url)="*null*" Return True
 		Return False
+	End Method
+	
+	Method Name$()
+		Return "Null"
+	End Method
+	Method ModuleName$()
+		Return "core"
 	End Method
 End Type
 New TMeshLoaderNull

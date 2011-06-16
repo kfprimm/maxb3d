@@ -170,7 +170,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			glDisable GL_LIGHT[index]
 			Return
 		Else
-			If light._hidden=true 
+			If light._hidden=True 
 				glDisable GL_LIGHT[index]
 				Return False
 			EndIf

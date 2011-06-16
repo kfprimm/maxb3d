@@ -81,5 +81,12 @@ Type TMeshLoader3DS Extends TMeshLoader
 	Function a3ds_log_func(self_:Byte Ptr, level, indent, msg:Byte Ptr)
 		ModuleLog String.FromCString(msg)
 	End Function
+	
+	Method Name$()
+		Return "Autodesk 3DS"
+	End Method
+	Method ModuleName$()
+		Return "a3dsloader"
+	End Method
 End Type
 New TMeshLoader3DS

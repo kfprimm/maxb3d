@@ -15,6 +15,13 @@ Type TMeshLoaderX Extends TMeshLoader
 		' TODO: Use the XFile data to construct the mesh!
 		Return True
 	End Method	
+	
+	Method Name$()
+		Return "DirectX"
+	End Method
+	Method ModuleName$()
+		Return "xloader"
+	End Method
 End Type
 New TMeshLoaderX
 

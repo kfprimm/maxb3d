@@ -196,9 +196,17 @@ Type TMatrix
 		Return Varptr _m[0,0]
 	End Method
 	
-	Function FromPtr:TMatrix(matrix_ptr:Float Ptr)
+	Function FromPtr:TMatrix(matrix_ptr:Float Ptr,transposed=False)
 		Local matrix:TMatrix=New TMatrix
-		MemCopy matrix._m,matrix_ptr,64
+		If Not transposed
+			MemCopy matrix._m,matrix_ptr,64
+		Else
+			For Local i=0 To 3
+				For Local j=0 To 3
+					matrix._m[j,i]=matrix_ptr[i*3+j]
+				Next
+			Next
+		EndIf
 		Return matrix
 	End Function
 End Type

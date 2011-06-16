@@ -50,6 +50,13 @@ Type TMeshLoaderTeapot Extends TMeshLoader
 		mesh.AppendSurface _surface.Copy()
 		Return True
 	End Method
+	
+	Method Name$()
+		Return "Utah teapot"
+	End Method
+	Method ModuleName$()
+		Return "teapotloader"
+	End Method
 End Type
 
 New TMeshLoaderTeapot

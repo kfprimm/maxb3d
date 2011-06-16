@@ -62,12 +62,7 @@ Type TNewtonCollisionDriver Extends TCollisionDriver
 	
 	Function TransformCallback(body:Byte Ptr,matrix_data:Float Ptr,thread_index)
 		Local entity:TBody=TBody(HandleToObject(Int(String.FromCString(NewtonBodyGetUserData(body)))))
-		Local matrix:TMatrix=TMatrix.FromPtr(matrix_data)
-		Local x#,y#,z#,pitch#,yaw#,roll#
-		matrix.GetPosition x,y,z
-		matrix.GetRotation pitch,yaw,roll
-		entity.SetPosition x,y,z,True
-		entity.SetRotation pitch,yaw,roll,True 
+		entity.SetMatrix TMatrix.FromPtr(matrix_data)
 		entity._update=False
 	End Function
 	

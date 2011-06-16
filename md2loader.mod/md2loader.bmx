@@ -108,6 +108,13 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 		mesh.UpdateNormals		
 		Return True
 	End Method
+
+	Method Name$()
+		Return "MD2"
+	End Method
+	Method ModuleName$()
+		Return "md2loader"
+	End Method
 End Type
 New TMeshLoaderMD2
 

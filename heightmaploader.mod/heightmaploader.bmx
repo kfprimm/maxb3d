@@ -47,5 +47,13 @@ Type TMeshLoaderHMAP Extends TMeshLoader
 		
 		Return True
 	End Method
+	
+	Method Name$()
+		Return "Heightmap"
+	End Method
+	Method ModuleName$()
+		Return "heightmaploader"
+	End Method
+
 End Type
 New TMeshLoaderHMAP

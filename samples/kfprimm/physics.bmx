@@ -11,20 +11,23 @@ SeedRnd MilliSecs()
 Local light:TLight=CreateLight()
 
 Local floor_body:TBody=CreateBody()
-SetEntityPosition floor_body,0,0,5
 SetEntityBox floor_body,-32,-.05,-32,64,0.1,64
 
 Local floor_mesh:TMesh=CreateCube(floor_body)
 SetEntityScale floor_mesh,32,.05,32
 
-For Local y=0 To 99
-	Local cube_body:TBody=CreateBody()
-	SetEntityPosition cube_body,0,.3+(2*y),5
-	SetEntityBox cube_body,-1,-1,-1,2,2,2
-	SetBodyMass cube_body, 4
-	
-	Local cube_mesh:TMesh=CreateCube(cube_body)
-	SetEntityColor cube_mesh,Rand(255),Rand(255),Rand(255)
+For Local z=0 To 9
+	For Local x=0 To 9
+		For Local y=0 To 9
+			Local cube_body:TBody=CreateBody()
+			SetEntityPosition cube_body,(x-5)*2.1,.3+(2*y),(z-5)*2.1
+			SetEntityBox cube_body,-1,-1,-1,2,2,2
+			SetBodyMass cube_body, 4
+			
+			Local cube_mesh:TMesh=CreateCube(cube_body)
+			SetEntityColor cube_mesh,Rand(255),Rand(255),Rand(255)
+		Next
+	Next
 Next
 
 Local camera:TCamera=CreateCamera()
@@ -40,7 +43,11 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	If KeyHit(KEY_P) run_physics=Not run_physics
 	
 	If run_physics UpdateWorld ,4
-	RenderWorld
+	Local info:TRenderInfo=RenderWorld()
+	BeginMax2D
+	DrawText "FPS: "+info.FPS,0,0
+	DrawText "Triangles: "+info.Triangles,0,13
+	EndMax2D
 	Flip
 Wend
 

@@ -56,7 +56,12 @@ Type TSurface
 		EndIf
 	End Method
 	
-	Method AddVertex(x#,y#,z#,u#,v#)
+	Method GetSize(vertices Var,triangles Var)
+		vertices=_vertexcnt
+		triangles=_trianglecnt
+	End Method
+
+	Method AddVertex(x#,y#,z#,u#=0.0,v#=0.0)
 		Resize(_vertexcnt+1,-1)
 		SetCoord(_vertexcnt-1,x,y,z)
 		SetTexCoord(_vertexcnt-1,u,v)
@@ -196,7 +201,7 @@ Type TSurface
 	Method CountTriangles()
 		Return _trianglecnt
 	End Method
-	
+		
 	Method HasAlpha()
 		Return _brush._a<>1 Or _brush._fx&FX_FORCEALPHA
 	End Method	
