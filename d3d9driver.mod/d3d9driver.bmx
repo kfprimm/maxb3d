@@ -127,8 +127,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		End Select
 		
 		Local ratio#=(Float(camera._viewwidth)/camera._viewheight)		
-		Local proj_matrix:TMatrix=TMatrix.PerspectiveFovLH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far)
-		proj_matrix=TMatrix.Scale(-1,1,1).Multiply(proj_matrix)
+		Local proj_matrix:TMatrix=TMatrix.PerspectiveFovRH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,Max(0,camera._near-0.396250010),camera._far) ' Ugly hack. Real cause needs investigation.
+		proj_matrix=TMatrix.Scale(-1,1,-1).Multiply(proj_matrix)
 		_d3ddev.SetTransform D3DTS_PROJECTION,proj_matrix.ToPtr()
 		
 		Local matrix:TMatrix=camera._matrix.Inverse()

@@ -96,7 +96,7 @@ Type TCamera Extends TEntity
 		near=_near;far=_far
 	End Method
 	Method SetRange(near#,far#)
-		_near=near;_far=far
+		_near=Max(0,near);_far=Max(0,far)
 	End Method	
 	
 	Method GetZoom#()
