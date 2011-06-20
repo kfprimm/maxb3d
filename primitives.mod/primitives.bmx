@@ -381,8 +381,8 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			Next
 			surface.SetCoord( 0, 1.0, 1.0,-1.0);surface.SetTexCoord( 0, 0.0, 0.0)
 			surface.SetCoord( 1,-1.0, 1.0,-1.0);surface.SetTexCoord( 1, 0.0, 1.0)
-			surface.SetCoord( 2,-1.0, 1.0, 1.0);surface.SetTexCoord( 2, 1.0, 1.0)
-			surface.SetCoord( 3, 1.0, 1.0, 1.0);surface.SetTexCoord( 3, 1.0, 0.0)
+			surface.SetCoord( 2,-1.0, 1.0, 1.0);surface.SetTexCoord( 2,-1.0, 1.0)
+			surface.SetCoord( 3, 1.0, 1.0, 1.0);surface.SetTexCoord( 3,-1.0, 0.0)
 			surface.SetTriangle( 0, 0, 1, 2)
 			surface.SetTriangle( 1, 3, 0, 2)			
 			
@@ -391,18 +391,18 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			Next
 			surface.SetCoord( 4, 1.0,-1.0, 1.0);surface.SetTexCoord( 4, 0.0, 0.0)
 			surface.SetCoord( 5,-1.0,-1.0, 1.0);surface.SetTexCoord( 5, 0.0, 1.0)
-			surface.SetCoord( 6,-1.0,-1.0,-1.0);surface.SetTexCoord( 6, 1.0, 1.0)
-			surface.SetCoord( 7, 1.0,-1.0,-1.0);surface.SetTexCoord( 7, 1.0, 0.0)
+			surface.SetCoord( 6,-1.0,-1.0,-1.0);surface.SetTexCoord( 6,-1.0, 1.0)
+			surface.SetCoord( 7, 1.0,-1.0,-1.0);surface.SetTexCoord( 7,-1.0, 0.0)
 			surface.SetTriangle( 2, 4, 5, 6)
 			surface.SetTriangle( 3, 7, 4, 6)	
 			
 			For Local i=8 To 11
 				surface.SetNormal(i,0,0,-1)
 			Next
-			surface.SetCoord( 8, 1.0, 1.0, 1.0);surface.SetTexCoord( 8, 1.0, 0.0)
+			surface.SetCoord( 8, 1.0, 1.0, 1.0);surface.SetTexCoord( 8,-1.0, 0.0)
 			surface.SetCoord( 9,-1.0, 1.0, 1.0);surface.SetTexCoord( 9, 0.0, 0.0)
 			surface.SetCoord(10,-1.0,-1.0, 1.0);surface.SetTexCoord(10, 0.0, 1.0)
-			surface.SetCoord(11, 1.0,-1.0, 1.0);surface.SetTexCoord(11, 1.0, 1.0)
+			surface.SetCoord(11, 1.0,-1.0, 1.0);surface.SetTexCoord(11,-1.0, 1.0)
 			surface.SetTriangle( 4,8 , 9,10)
 			surface.SetTriangle( 5,11, 8,10)	
 	
@@ -410,8 +410,8 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 				surface.SetNormal(i,0,0,1)
 			Next
 			surface.SetCoord(12, 1.0,-1.0,-1.0);surface.SetTexCoord(12, 0.0, 1.0)
-			surface.SetCoord(13,-1.0,-1.0,-1.0);surface.SetTexCoord(13, 1.0, 1.0)
-			surface.SetCoord(14,-1.0, 1.0,-1.0);surface.SetTexCoord(14, 1.0, 0.0)
+			surface.SetCoord(13,-1.0,-1.0,-1.0);surface.SetTexCoord(13,-1.0, 1.0)
+			surface.SetCoord(14,-1.0, 1.0,-1.0);surface.SetTexCoord(14,-1.0, 0.0)
 			surface.SetCoord(15, 1.0, 1.0,-1.0);surface.SetTexCoord(15, 0.0, 0.0)
 			surface.SetTriangle( 6,12,13,14)
 			surface.SetTriangle( 7,15,12,14)	
@@ -419,20 +419,20 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			For Local i=16 To 19
 				surface.SetNormal(i,1,0,0)
 			Next
-			surface.SetCoord(16,-1.0, 1.0, 1.0);surface.SetTexCoord(16, 1.0, 0.0)
+			surface.SetCoord(16,-1.0, 1.0, 1.0);surface.SetTexCoord(16,-1.0, 0.0)
 			surface.SetCoord(17,-1.0, 1.0,-1.0);surface.SetTexCoord(17, 0.0, 0.0)
 			surface.SetCoord(18,-1.0,-1.0,-1.0);surface.SetTexCoord(18, 0.0, 1.0)
-			surface.SetCoord(19,-1.0,-1.0, 1.0);surface.SetTexCoord(19, 1.0, 1.0)
+			surface.SetCoord(19,-1.0,-1.0, 1.0);surface.SetTexCoord(19,-1.0, 1.0)
 			surface.SetTriangle( 8,16,17,18)
 			surface.SetTriangle( 9,19,16,18)	
 			
 			For Local i=20 To 23
 				surface.SetNormal(i,-1,0,0)
 			Next
-			surface.SetCoord(20, 1.0, 1.0,-1.0);surface.SetTexCoord(20, 1.0, 0.0)
+			surface.SetCoord(20, 1.0, 1.0,-1.0);surface.SetTexCoord(20,-1.0, 0.0)
 			surface.SetCoord(21, 1.0, 1.0, 1.0);surface.SetTexCoord(21, 0.0, 0.0)
 			surface.SetCoord(22, 1.0,-1.0, 1.0);surface.SetTexCoord(22, 0.0, 1.0)
-			surface.SetCoord(23, 1.0,-1.0,-1.0);surface.SetTexCoord(23, 1.0, 1.0)
+			surface.SetCoord(23, 1.0,-1.0,-1.0);surface.SetTexCoord(23,-1.0, 1.0)
 			surface.SetTriangle(10,20,21,22)
 			surface.SetTriangle(11,23,20,22)	
 			Return True

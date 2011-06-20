@@ -329,7 +329,7 @@ Type TWorld
 				ElseIf terrain
 					Local x#,y#,z#
 					camera.GetPosition x,y,z,True
-					terrain.Update x,y,z,camera._lastfrustum
+					terrain.Update x,y,z,camera._lastfrustum.ToPtr()
 					info.Triangles:+driver.RenderTerrain(terrain)
 				EndIf	
 			EndIf
@@ -531,7 +531,13 @@ Type TMaxB3DDriver Extends TMax2DDriver
 			camera.SetViewport x,y,width,height
 		Next
 	End Method
+	
+	'Method SetRenderTarget(target:TRenderTarget) Abstract
 End Type
+
+'Type TRenderTarget
+	
+'End Type
 
 Type TRenderInfo
 	Field FPS
@@ -583,3 +589,6 @@ End Rem
 Function EndMax2D()
 	Return TMaxB3DDriver(GetGraphicsDriver()).EndMax2D()
 End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem

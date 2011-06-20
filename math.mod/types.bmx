@@ -4,7 +4,7 @@ Strict
 Import BRL.Math
 
 Type TMatrix
-	Field _m#[4,4],_t#[4,4]
+	Field _m#[4,4]
 	
 	Method ToString$()
 		Return "["+_m[0,0]+","+_m[1,0]+","+_m[2,0]+","+_m[3,0]+"]~n["+_m[0,1]+","+_m[1,1]+","+_m[2,1]+","+_m[3,1]+"]~n["+_m[0,2]+","+_m[1,2]+","+_m[2,2]+","+_m[3,2]+"]~n["+_m[0,3]+","+_m[1,3]+","+_m[2,3]+","+_m[3,3]+"]"
@@ -183,16 +183,7 @@ Type TMatrix
 		Return out
 	End Method
 	
-	Method ToPtr:Float Ptr(transposed=False)
-		If transposed
-			For Local i=0 To 3
-				For Local j=0 To 3
-					_t[i,j]=_m[j,i]
-				Next
-			Next
-			Return Varptr _t[0,0]
-		EndIf
-		
+	Method ToPtr:Float Ptr()
 		Return Varptr _m[0,0]
 	End Method
 	
@@ -298,5 +289,90 @@ Type TQuaternion
 		cz#=scale0#*Az#+scale1#*scaler_z#
 		
 	End Function
+End Type
+
+Type TFrustum
+	Field _m#[6,4]
+	
+	Function Extract:TFrustum(modelview:TMatrix,projection:TMatrix)
+		Local clip#[16],t#		
 		
+		Local modl:Float Ptr=modelview._m,proj:Float Ptr=projection._m
+		
+		clip[ 0] = modl[ 0] * proj[ 0] + modl[ 1] * proj[ 4] + modl[ 2] * proj[ 8] + modl[ 3] * proj[12]
+		clip[ 1] = modl[ 0] * proj[ 1] + modl[ 1] * proj[ 5] + modl[ 2] * proj[ 9] + modl[ 3] * proj[13]
+		clip[ 2] = modl[ 0] * proj[ 2] + modl[ 1] * proj[ 6] + modl[ 2] * proj[10] + modl[ 3] * proj[14]
+		clip[ 3] = modl[ 0] * proj[ 3] + modl[ 1] * proj[ 7] + modl[ 2] * proj[11] + modl[ 3] * proj[15]
+		
+		clip[ 4] = modl[ 4] * proj[ 0] + modl[ 5] * proj[ 4] + modl[ 6] * proj[ 8] + modl[ 7] * proj[12]
+		clip[ 5] = modl[ 4] * proj[ 1] + modl[ 5] * proj[ 5] + modl[ 6] * proj[ 9] + modl[ 7] * proj[13]
+		clip[ 6] = modl[ 4] * proj[ 2] + modl[ 5] * proj[ 6] + modl[ 6] * proj[10] + modl[ 7] * proj[14]
+		clip[ 7] = modl[ 4] * proj[ 3] + modl[ 5] * proj[ 7] + modl[ 6] * proj[11] + modl[ 7] * proj[15]
+		
+		clip[ 8] = modl[ 8] * proj[ 0] + modl[ 9] * proj[ 4] + modl[10] * proj[ 8] + modl[11] * proj[12]
+		clip[ 9] = modl[ 8] * proj[ 1] + modl[ 9] * proj[ 5] + modl[10] * proj[ 9] + modl[11] * proj[13]
+		clip[10] = modl[ 8] * proj[ 2] + modl[ 9] * proj[ 6] + modl[10] * proj[10] + modl[11] * proj[14]
+		clip[11] = modl[ 8] * proj[ 3] + modl[ 9] * proj[ 7] + modl[10] * proj[11] + modl[11] * proj[15]
+		
+		clip[12] = modl[12] * proj[ 0] + modl[13] * proj[ 4] + modl[14] * proj[ 8] + modl[15] * proj[12]
+		clip[13] = modl[12] * proj[ 1] + modl[13] * proj[ 5] + modl[14] * proj[ 9] + modl[15] * proj[13]
+		clip[14] = modl[12] * proj[ 2] + modl[13] * proj[ 6] + modl[14] * proj[10] + modl[15] * proj[14]
+		clip[15] = modl[12] * proj[ 3] + modl[13] * proj[ 7] + modl[14] * proj[11] + modl[15] * proj[15]
+		
+		Local frustum:TFrustum=New TFrustum
+		
+		frustum._m[0,0] = clip[ 3] - clip[ 0]
+		frustum._m[0,1] = clip[ 7] - clip[ 4]
+		frustum._m[0,2] = clip[11] - clip[ 8]
+		frustum._m[0,3] = clip[15] - clip[12]
+		
+		frustum._m[1,0] = clip[ 3] + clip[ 0]
+		frustum._m[1,1] = clip[ 7] + clip[ 4]
+		frustum._m[1,2] = clip[11] + clip[ 8]
+		frustum._m[1,3] = clip[15] + clip[12]
+		
+		frustum._m[2,0] = clip[ 3] + clip[ 1]
+		frustum._m[2,1] = clip[ 7] + clip[ 5]
+		frustum._m[2,2] = clip[11] + clip[ 9]
+		frustum._m[2,3] = clip[15] + clip[13]
+				
+		frustum._m[3,0] = clip[ 3] - clip[ 1]
+		frustum._m[3,1] = clip[ 7] - clip[ 5]
+		frustum._m[3,2] = clip[11] - clip[ 9]
+		frustum._m[3,3] = clip[15] - clip[13]
+		
+		frustum._m[4,0] = clip[ 3] - clip[ 2]
+		frustum._m[4,1] = clip[ 7] - clip[ 6]
+		frustum._m[4,2] = clip[11] - clip[10]
+		frustum._m[4,3] = clip[15] - clip[14]
+		
+		frustum._m[5,0] = clip[ 3] + clip[ 2]
+		frustum._m[5,1] = clip[ 7] + clip[ 6]
+		frustum._m[5,2] = clip[11] + clip[10]
+		frustum._m[5,3] = clip[15] + clip[14]
+		
+		frustum.Normalize
+		
+		Return frustum
+	End Function
+	
+	Method Normalize()
+		For Local i=0 To 5
+			Local t# = Sqr( _m[i,0]*_m[i,0] + _m[i,1]*_m[i,1] + _m[i,2]*_m[i,2] )
+			_m[i,0]:/t;_m[i,1]:/t;_m[i,2]:/t;_m[i,3]:/t
+		Next
+	End Method
+	
+	Method IntersectsPoint#(x#,y#,z#,radius#=0.001)
+		Local d#
+		For Local p=0 To 5
+			d# = _m[p,0] * x + _m[p,1] * y + _m[p,2] * -z + _m[p,3]
+			If d <= -radius Then Return 0
+		Next
+		Return d + radius
+	End Method
+	
+	Method ToPtr:Float Ptr()
+		Return Varptr _m[0,0]
+	End Method
 End Type

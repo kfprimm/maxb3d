@@ -266,6 +266,18 @@ End Rem
 Function SetCameraZoom(camera:TCamera,zoom#)
 	Return camera.SetZoom(zoom)
 End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function CameraInView#(camera:TCamera,target:Object)
+	Return camera.InView(target)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function CameraProject(camera:TCamera,target:Object,x# Var,y# Var)
+	Return camera.Project(target,x,y)
+End Function
 
 'Entities
 Rem
@@ -391,8 +403,8 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function SetEntityTexture(entity:TEntity,texture:TTexture,index=0)
-	Return entity.SetTexture(texture,index)
+Function SetEntityTexture(entity:TEntity,texture:TTexture,index=0,frame=0)
+	Return entity.SetTexture(texture,index,frame)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -981,4 +993,28 @@ Rem
 End Rem
 Function SetTextureScale(texture:TTexture,x#,y#)
 	Return texture.SetScale(x,y)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetTextureRotation#(texture:TTexture)
+	Return texture.GetRotation()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetTextureRotation(texture:TTexture,rotation#)
+	Return texture.SetRotation(rotation)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetTexturePosition(texture:TTexture,x# Var,y# Var)
+	Return texture.GetPosition(x,y)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetTexturePosition(texture:TTexture,x#,y#)
+	Return texture.SetPosition(x,y)
 End Function

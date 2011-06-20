@@ -5,7 +5,7 @@ Import MaxB3D.Drivers
 
 Const SEGS=128,WIDTH#=4.0,DEPTH#=.125
 
-Graphics 800,600
+GLGraphics3D 800,600
 
 Local mesh:TMesh=CreateMesh()
 SetEntityFX mesh, FX_NOCULLING
@@ -33,11 +33,9 @@ SetEntityPosition camera,0,0,-5
 Local light:TLight=CreateLight()
 TurnEntity light,45,45,0
 
-
 While Not KeyHit(KEY_ESCAPE) And Not AppTerminate()
 	Local ph#=MilliSecs()/4
-	Local cnt=CountSurfaceVertices(surf)-1
-	For Local k=0 To cnt
+	For Local k=0 To CountSurfaceVertices(surf)-1
 		Local x#,y#,z#
 		GetSurfaceCoord surf,k,x,y,z
 		z=Sin(ph+x*300)*DEPTH

@@ -5,7 +5,6 @@ Import "worldconfig.bmx"
 Import "entity.bmx"
 Import "surface.bmx"
 Import "bone.bmx"
-Import "animation.bmx"
 Import "bone_animator.bmx"
 Import "vertex_animator.bmx"
 
@@ -21,12 +20,12 @@ Public
 Type TMesh Extends TAnimEntity 
 	Field _surfaces:TSurface[]
 
-	Field _animator:TAnimator
 	Field _bone:TBone[]
 	
 	Field _tree:Byte Ptr
 	Field _resettree
 	
+	Field _width,_height,_depth
 	Field _minx#,_miny#,_minz#,_maxx#,_maxy#,_maxz#
 	
 	Method HasAlpha()
@@ -79,7 +78,7 @@ Type TMesh Extends TAnimEntity
 		Return _surfaces.length
 	End Method
 	
-	Method GetSize(width# Var,height# Var,depth# Var)
+	Method UpdateBounds()
 		_minx=999999999;_miny=999999999;_minz=999999999
 		_maxx=-999999999;_maxy=-999999999;_maxz=-999999999
 		
@@ -89,7 +88,14 @@ Type TMesh Extends TAnimEntity
 			_miny=Min(_miny,surface._miny);_maxy=Max(_maxy,surface._maxy)
 			_minz=Min(_minz,surface._minz);_maxz=Max(_maxz,surface._maxz)
 		Next
-		width=_maxx-_minx;height=_maxy-_miny;depth=_maxz-_minz
+		
+		_width=_maxx-_minx;_height=_maxy-_miny;_depth=_maxz-_minz
+		If _cullradius>0 _cullradius=Max(Max(_width,_height),_depth)/2.0
+	End Method
+	
+	Method GetSize(width# Var,height# Var,depth# Var)
+		UpdateBounds
+		width=_width;height=_height;_depth=depth
 	End Method
 	
 	Method Fit(x#,y#,z#,width#,height#,depth#,uniform=False)
@@ -290,6 +296,26 @@ Type TMesh Extends TAnimEntity
 			C_DeleteMeshInfo(info)
 		EndIf
 		Return _tree
+	End Method
+	
+	Method GetCullParams(x# Var,y# Var,z# Var,radius# Var)		
+		UpdateBounds
+		
+		x=_minx;y=_miny;z=_minz
+		x=x+(_maxx-_minx)/2.0
+		y=y+(_maxy-_miny)/2.0
+		z=z+(_maxz-_minz)/2.0
+		
+		Local w#=1.0
+		_matrix.TransformVector x,y,z,w
+		
+		Local sx#,sy#,sz#
+		GetScale sx,sy,sz,True
+		
+		radius=GetCullRadius()
+		
+		Local rx#=radius*sx,ry#=radius*sy,rz#=radius*sz
+		radius=Max(Max(rx,ry),rz)
 	End Method
 End Type
 

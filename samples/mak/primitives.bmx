@@ -33,7 +33,7 @@ Local cube:TMesh,sphere:TMesh,cylinder:TMesh,cone:TMesh
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	If KeyHit(KEY_W)
 		wireframe = Not wireframe
-		SetWireframe wireframe
+		SetWireFrame wireframe
 	EndIf
 	
 	If KeyHit(KEY_OPENBRACKET)
@@ -67,7 +67,7 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 		SetEntityPosition sphere,3,0,0
 		
 		rebuild=False
-	End	If
+	EndIf
 	
 	If KeyDown(KEY_LEFT) TurnEntity pivot,0,-3,0
 	If KeyDown(KEY_RIGHT) TurnEntity pivot,0,+3,0

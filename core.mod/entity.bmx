@@ -26,6 +26,8 @@ Type TEntity
 	Field _boxx#,_boxy#,_boxz#,_boxwidth#,_boxheight#,_boxdepth#
 	Field _type,_typelink:TLink
 	
+	Field _cullradius#
+	
 	Field _linklist:TList=CreateList()
 	
 	Method New()
@@ -352,7 +354,18 @@ Type TEntity
 			Next
 		EndIf
 	End Method
-		
+	
+	Method GetCullRadius#()
+		Return -_cullradius
+	End Method
+	Method SetCullRadius(radius#)
+		_cullradius=-radius
+	End Method
+	Method GetCullParams(x# Var,y# Var,z# Var,radius# Var)
+		GetPosition x,y,z,True
+		radius=Abs(_cullradius)
+	End Method
+	
 	Method GetMatrix:TMatrix(alternate=False,copy=True)
 		If copy Return _matrix.Copy()
 		Return _matrix
@@ -421,8 +434,4 @@ Type TChildrenEnumerator
 		_index:+1
 		Return _children[_index]
 	End Method
-End Type
-
-Type TAnimEntity Extends TEntity
-	Method SetAnimKey(frame,key:Object) Abstract
 End Type

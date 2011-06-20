@@ -17,13 +17,15 @@ Const TEXTURE_HIGHCLR	= 512
 Const TEXTURE_DEFAULT	= TEXTURE_COLOR|TEXTURE_MIPMAP
 Const TEXTURE_CLAMPUV	= TEXTURE_CLAMPU|TEXTURE_CLAMPV
 
-Const BLEND_NONE		= 0
-Const BLEND_ALPHA		= 1
-Const BLEND_MULTIPLY	= 2
-Const BLEND_ADD			= 3
+Const BLEND_NONE      = 0
+Const BLEND_ALPHA	     = 1
+Const BLEND_MULTIPLY  = 2
+Const BLEND_ADD       = 3
+Const BLEND_DOT3      = 4
+Const BLEND_MULTIPLY2 = 5
 
 Type TTexture
-	Field _blend,_coords,_flags
+	Field _blend=BLEND_MULTIPLY,_coords,_flags
 	Field _px#,_py#,_r#,_sx#=1.0,_sy#=1.0
 	Field _width,_height
 	Field _name$

@@ -162,7 +162,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glGetFloatv GL_PROJECTION_MATRIX,camera._lastprojection._m
 		glGetIntegerv GL_VIEWPORT,camera._lastviewport
 
-		camera.ExtractFrustum
+		camera._lastfrustum=TFrustum.Extract(camera._lastmodelview,camera._lastprojection)
 	End Method	
 	
 	Method SetLight(light:TLight,index)
@@ -225,20 +225,20 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Local ambient#[]=[WorldConfig.AmbientRed/255.0,WorldConfig.AmbientGreen/255.0,WorldConfig.AmbientBlue/255.0]			
 					
 		If brush._fx&FX_FORCEALPHA Or hasalpha
-			glEnable(GL_BLEND)
-			glDepthMask(GL_FALSE)
+			glEnable GL_BLEND
+			glDepthMask GL_FALSE
 		Else
-			glDisable(GL_BLEND)
-			glDepthMask(GL_TRUE)
+			glDisable GL_BLEND
+			glDepthMask GL_TRUE
 		EndIf
 		
 		Select brush._blend
 			Case BLEND_NONE,BLEND_ALPHA
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
+				glBlendFunc GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA
 			Case BLEND_MULTIPLY
-				glBlendFunc(GL_DST_COLOR,GL_ZERO)
+				glBlendFunc GL_DST_COLOR,GL_ZERO
 			Case BLEND_ADD
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE)
+				glBlendFunc GL_SRC_ALPHA,GL_ONE
 		End Select
 		
 		If brush._fx&FX_FULLBRIGHT
@@ -270,9 +270,9 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		EndIf
 		
 		If brush._fx&FX_WIREFRAME Or WorldConfig.Wireframe
-			glPolygonMode(GL_FRONT_AND_BACK,GL_LINE)
+			glPolygonMode GL_FRONT_AND_BACK,GL_LINE
 		Else
-			glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
+			glPolygonMode GL_FRONT_AND_BACK,GL_FILL
 		EndIf			
 		
 		Local no_mat#[]=[0.0,0.0]
@@ -281,18 +281,18 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Local mat_specular#[]=[brush._shine,brush._shine,brush._shine,brush._shine]
 		Local mat_shininess#[]=[100.0]
 			
-		glMaterialfv(GL_FRONT,GL_AMBIENT,mat_ambient)
-		glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_diffuse)
-		glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular)
-		glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess)
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT,ambient)	
-				
-		glDisable GL_TEXTURE_2D
+		glMaterialfv GL_FRONT,GL_AMBIENT,mat_ambient
+		glMaterialfv GL_FRONT,GL_DIFFUSE,mat_diffuse
+		glMaterialfv GL_FRONT,GL_SPECULAR,mat_specular
+		glMaterialfv GL_FRONT,GL_SHININESS,mat_shininess
+		glLightModelfv GL_LIGHT_MODEL_AMBIENT,ambient
+		
 		For Local i=0 To 7
-			glActiveTextureARB(GL_TEXTURE0+i)
+			glActiveTextureARB GL_TEXTURE0+i
 
 			Local texture:TTexture=brush._texture[i]
-			If texture=Null
+			If texture=Null Or texture._blend=BLEND_NONE
+				glDisable GL_TEXTURE_2D
 				BindTexture i,0
 				Continue
 			EndIf
@@ -305,70 +305,91 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			
 			glMatrixMode GL_TEXTURE
 			glLoadIdentity
-			glScalef texture._sx,texture._sy,1
+			glTranslatef texture._px,-texture._py,0
+			glScalef -texture._sx,texture._sy,1
 			
 			If texture._flags&TEXTURE_ALPHA
-				glEnable(GL_ALPHA_TEST)
+				glEnable GL_ALPHA_TEST
 			Else
-				glDisable(GL_ALPHA_TEST)
+				glDisable GL_ALPHA_TEST
 			EndIf
 		
 			If texture._flags&TEXTURE_MIPMAP
-				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR)
-				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR)
+				glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR
+				glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR
 			Else
-				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR)
-				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR)
+				glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR
+				glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR
 			EndIf
 			
 			If texture._flags&TEXTURE_CLAMPU
-				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE)
+				glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE
 			Else						
-				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT)
+				glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT
 			EndIf
 			
 			If texture._flags&TEXTURE_CLAMPV
-				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE)
+				glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE
 			Else
-				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT)
+				glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT
 			EndIf
 	
 			If texture._flags&TEXTURE_SPHMAP				
-				glEnable(GL_TEXTURE_GEN_S)
-				glEnable(GL_TEXTURE_GEN_T)
-				glTexGeni(GL_S,GL_TEXTURE_GEN_MODE,GL_SPHERE_MAP)
-				glTexGeni(GL_T,GL_TEXTURE_GEN_MODE,GL_SPHERE_MAP)
+				glEnable GL_TEXTURE_GEN_S
+				glEnable GL_TEXTURE_GEN_T
+				glTexGeni GL_S,GL_TEXTURE_GEN_MODE,GL_SPHERE_MAP
+				glTexGeni GL_T,GL_TEXTURE_GEN_MODE,GL_SPHERE_MAP
 			Else
-				glDisable(GL_TEXTURE_GEN_S)
-				glDisable(GL_TEXTURE_GEN_T)
-			EndIf						
+				glDisable GL_TEXTURE_GEN_S 
+				glDisable GL_TEXTURE_GEN_T
+			EndIf
+			
+			Select texture._blend
+			Case BLEND_NONE glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE)
+			Case BLEND_ALPHA 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE)
+			Case BLEND_MULTIPLY glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE)
+			'Case BLEND_MULTIPLY glTexEnvf(GL_TEXTURE_ENV,GL_COMBINE_RGB_EXT,GL_MODULATE)
+			Case BLEND_ADD glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_ADD)
+			Case BLEND_DOT3
+				glTexEnvf GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT
+				glTexEnvf GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_DOT3_RGB_EXT
+			Case BLEND_MULTIPLY2
+				glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE)
+				glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE)
+				glTexEnvi(GL_TEXTURE_ENV,GL_RGB_SCALE,2.0)
+			Default glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE)
+			End Select			
 		Next		
 	End Method
 	
 	Method RenderSurface(resource:TSurfaceRes,brush:TBrush)
 		Local res:TGLSurfaceRes=TGLSurfaceRes(resource)	
 		
-		glDisableClientState GL_TEXTURE_COORD_ARRAY
 		For Local i=0 To 7
+			glClientActiveTextureARB GL_TEXTURE0+i
+			
 			Local texture:TTexture=brush._texture[i]
-			If texture=Null Continue
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-			glClientActiveTextureARB(GL_TEXTURE0+i)
-			glBindBufferARB(GL_ARRAY_BUFFER_ARB,res._vbo[4+texture._coords])
-			glTexCoordPointer(2,GL_FLOAT,0,Null)
+			If texture=Null 
+				glDisableClientState GL_TEXTURE_COORD_ARRAY
+				Continue
+			EndIf
+			
+			glEnableClientState GL_TEXTURE_COORD_ARRAY
+			glBindBufferARB GL_ARRAY_BUFFER_ARB,res._vbo[4+texture._coords]
+			glTexCoordPointer 2,GL_FLOAT,0,Null
 		Next
 		
-		glBindBufferARB(GL_ARRAY_BUFFER_ARB,res._vbo[0])
-		glVertexPointer(3,GL_FLOAT,0,Null)		
+		glBindBufferARB GL_ARRAY_BUFFER_ARB,res._vbo[0]
+		glVertexPointer 3,GL_FLOAT,0,Null
 		
-		glBindBufferARB(GL_ARRAY_BUFFER_ARB,res._vbo[1])
-		glNormalPointer(GL_FLOAT,0,Null)
+		glBindBufferARB GL_ARRAY_BUFFER_ARB,res._vbo[1]
+		glNormalPointer GL_FLOAT,0,Null
 		
-		glBindBufferARB(GL_ARRAY_BUFFER_ARB,res._vbo[2])
-		glColorPointer(4,GL_FLOAT,0,Null)
+		glBindBufferARB GL_ARRAY_BUFFER_ARB,res._vbo[2]
+		glColorPointer 4,GL_FLOAT,0,Null
 	
-		glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,res._vbo[3])
-		glDrawElements(GL_TRIANGLES,res._trianglecnt*3,GL_UNSIGNED_INT,Null)
+		glBindBufferARB GL_ELEMENT_ARRAY_BUFFER_ARB,res._vbo[3]
+		glDrawElements GL_TRIANGLES,res._trianglecnt*3,GL_UNSIGNED_INT,Null
 		
 		Return res._trianglecnt
 	End Method

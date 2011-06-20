@@ -1,8 +1,7 @@
 
 Strict
 
-Import "entity.bmx"
-Import "animation.bmx"
+Import "anim_entity.bmx"
 
 Type TBone Extends TAnimEntity
 	Field _start_matrix:TMatrix

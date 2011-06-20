@@ -60,7 +60,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		
 		_d3ddev.SetTransform D3DTS_PROJECTION,matrix
 		_d3ddev.SetTransform D3DTS_WORLD,identity.ToPtr()
-		_d3ddev.SetTransform D3DTS_VIEW,identity.ToPtr()		
+		_d3ddev.SetTransform D3DTS_VIEW,identity.ToPtr()
+		_d3ddev.SetTransform D3DTS_TEXTURE0,identity.ToPtr()
 		
 		_d3ddev.SetVertexDeclaration Null
 		_d3ddev.SetIndices Null
@@ -75,6 +76,15 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.SetRenderState D3DRS_WRAP0, 0
 		
 		_d3ddev.SetRenderState D3DRS_FOGENABLE,False
+		
+		For Local i=2 To 7
+			_d3ddev.SetTexture i,Null
+		Next
+		
+		_d3ddev.SetTextureStageState 0,D3DTSS_COLOROP,D3DTOP_MODULATE
+		_d3ddev.SetTextureStageState 0,D3DTSS_ALPHAOP,D3DTOP_MODULATE
+		
+		_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_NONE
 	End Method
 	
 	Method EndMax2D()
@@ -94,7 +104,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		
 		'_d3ddev.SetRenderState D3DRS_ALPHAREF, 1
 		'_d3ddev.SetRenderState D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL
-		
+				
 		_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CW		
 	End Method
 	
@@ -117,12 +127,22 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		End Select
 		
 		Local ratio#=(Float(camera._viewwidth)/camera._viewheight)		
-		Local proj_matrix:TMatrix=TMatrix.PerspectiveFovLH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far)
+		Local proj_matrix:TMatrix=TMatrix.PerspectiveFovRH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far)
 		proj_matrix=TMatrix.Scale(-1,1,1).Multiply(proj_matrix)
 		_d3ddev.SetTransform D3DTS_PROJECTION,proj_matrix.ToPtr()
 		
 		Local matrix:TMatrix=camera._matrix.Inverse()
 		_d3ddev.SetTransform D3DTS_VIEW,matrix.ToPtr()
+		
+		camera._lastmodelview=matrix
+		camera._lastprojection=proj_matrix
+		
+		camera._lastviewport[0]=camera._viewx
+		camera._lastviewport[1]=camera._viewy
+		camera._lastviewport[2]=camera._viewwidth
+		camera._lastviewport[3]=camera._viewheight
+		
+		camera._lastfrustum=TFrustum.Extract(camera._lastmodelview,camera._lastprojection)
 	End Method
 	
 	Method SetLight(light:TLight,index)
@@ -183,16 +203,28 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		
 		For Local i=0 To 7
 			Local texture:TTexture=brush._texture[i]
-			If texture=Null 
+			If texture=Null Or texture._blend=BLEND_NONE 
 				_d3ddev.SetTexture i,Null
 				Continue
 			EndIf
 			
+			_d3ddev.SetTexture i,UpdateTextureRes(texture)._tex
+
+			Local matrix:TMatrix=TMatrix.Identity()
+			'matrix._m[0,0]=-texture._sx
+			'matrix._m[1,1]=texture._sy
+			matrix=TMatrix.YawPitchRoll(0,0,-texture._r).Multiply(matrix)
+			matrix=TMatrix.Scale(-texture._sx,texture._sy,1).Multiply(matrix)
+			matrix._m[2,0]=-texture._px
+			matrix._m[2,1]=-texture._py
+			
+			_d3ddev.SetTransform D3DTS_TEXTURE0+i,matrix.ToPtr()
+
 			_d3ddev.SetTextureStageState i,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2
 			
 			_d3ddev.SetSamplerState i,D3DSAMP_MAGFILTER,D3DTEXF_LINEAR
 			_d3ddev.SetSamplerState i,D3DSAMP_MINFILTER,D3DTEXF_LINEAR
-
+						
 			_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE, texture._flags&TEXTURE_ALPHA			
 			
 			If texture._flags&TEXTURE_MIPMAP				
@@ -219,15 +251,28 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 				_d3ddev.SetTextureStageState i,D3DTSS_TEXCOORDINDEX,texture._coords
 			EndIf
 			
-			_d3ddev.SetTexture i,UpdateTextureRes(texture)._tex
-
+			'_d3ddev.SetTextureStageState i,D3DTSS_COLOROP,D3DTOP_SELECTARG1
+			'_d3ddev.SetTextureStageState i,D3DTSS_ALPHAOP,D3DTOP_SELECTARG2
 			
-			Local matrix:TMatrix
-			matrix=TMatrix.Translation(texture._px,texture._py,0)
-			matrix=TMatrix.YawPitchRoll(0,texture._r,0).Multiply(matrix)
-			matrix=TMatrix.Scale(texture._sx,texture._sy,1).Multiply(matrix)
-			
-			_d3ddev.SetTransform D3DTS_TEXTURE0+i,matrix.ToPtr()
+			Select texture._blend
+			Case BLEND_ALPHA
+				'glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_DECAL)
+			Case BLEND_MULTIPLY
+				_d3ddev.SetTextureStageState i,D3DTSS_COLOROP,D3DTOP_MODULATE
+				_d3ddev.SetTextureStageState i,D3DTSS_ALPHAOP,D3DTOP_MODULATE
+			Case BLEND_ADD
+				_d3ddev.SetTextureStageState i,D3DTSS_COLOROP,D3DTOP_ADD
+				_d3ddev.SetTextureStageState i,D3DTSS_ALPHAOP,D3DTOP_ADD
+			Case BLEND_DOT3
+				_d3ddev.SetTextureStageState i,D3DTSS_COLOROP,D3DTOP_DOTPRODUCT3
+				_d3ddev.SetTextureStageState i,D3DTSS_ALPHAOP,D3DTOP_DOTPRODUCT3
+			Case BLEND_MULTIPLY2
+				_d3ddev.SetTextureStageState i,D3DTSS_COLOROP,D3DTOP_MODULATE2X
+				_d3ddev.SetTextureStageState i,D3DTSS_ALPHAOP,D3DTOP_MODULATE2X
+			Default
+				_d3ddev.SetTextureStageState i,D3DTSS_COLOROP,D3DTOP_MODULATE
+				_d3ddev.SetTextureStageState i,D3DTSS_ALPHAOP,D3DTOP_MODULATE
+			End Select			
 		Next
 	End Method
 	
