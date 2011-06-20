@@ -2,6 +2,7 @@
 Strict
 
 Import MaxB3D.Math
+Import BRL.Hook
 Import "brush.bmx"
 
 Const SURFACE_POS = 1
@@ -23,6 +24,7 @@ Type TSurface
 	Field _res:TSurfaceRes,_reset=-1
 	
 	Field _resetbounds=True,_minx#,_miny#,_minz#,_maxx#,_maxy#,_maxz#
+	Field _updateboundshook=AllocHookId()
 	
 	Method Copy:TSurface(data=SURFACE_ALL)
 		Local surface:TSurface=New TSurface
@@ -180,6 +182,7 @@ Type TSurface
 			_miny=Min(x,_miny);_maxy=Max(y,_maxy)
 			_minz=Min(x,_minz);_maxz=Max(z,_maxz)
 		Next
+		RunHooks _updateboundshook,Self
 		_resetbounds=False
 	End Method
 	
@@ -207,7 +210,7 @@ Type TSurface
 	End Method	
 End Type
 
-Type TSurfaceRes
+Type TSurfaceRes Extends TDriverResource
 	Field _vertexcnt
 	Field _trianglecnt
 	

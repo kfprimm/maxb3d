@@ -5,20 +5,20 @@ Import MaxB3D.Drivers
 
 Graphics 800,600
 
-local camera:TCamera=CreateCamera()
+Local camera:TCamera=CreateCamera()
 SetEntityPosition camera,0,2,-10
 
-local light:TLight=CreateLight()
+Local light:TLight=CreateLight()
 SetEntityRotation light,90,0,0
 
-local ground_tex:TTexture=LoadTexture("media/Chorme-2.bmp")
+Local ground_tex:TTexture=LoadTexture("media/Chorme-2.bmp")
 
 Local plane:TPlane=CreatePlane()
 SetEntityScale plane,1000,1,1000
 SetEntityTexture plane,ground_tex
 
-local cube:TMesh=CreateCube()
-local cube_tex:TTexture=LoadTexture("media/b3dlogo.jpg")
+Local cube:TMesh=CreateCube()
+Local cube_tex:TTexture=LoadTexture("media/b3dlogo.jpg")
 SetEntityTexture cube,cube_tex
 SetEntityPosition cube,0,1,0
 
@@ -29,7 +29,7 @@ While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
 	If KeyDown( KEY_DOWN ) MoveEntity camera,0,0,-0.05
 	If KeyDown( KEY_UP ) MoveEntity camera,0,0,0.05
 	
-	local x#,y#
+	Local x#,y#
 	CameraProject camera,cube,x,y
 	
 	RenderWorld

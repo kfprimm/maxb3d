@@ -535,6 +535,18 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function GetEntityCullRadius#(entity:TEntity)
+	Return entity.GetCullRadius()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetEntityCullRadius#(entity:TEntity,radius#)
+	Return entity.SetCullRadius(radius)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function GetEntityDistance(entity:TEntity,target:Object)
 	Return entity.GetDistance(target)
 End Function

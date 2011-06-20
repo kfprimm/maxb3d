@@ -2,6 +2,7 @@
 Strict
 
 Import "texture.bmx"
+Import "shader.bmx"
 
 Const FX_NONE			= 0
 Const FX_FULLBRIGHT		= 1
@@ -18,6 +19,7 @@ Type TBrush
 	Field _shine#
 	Field _texture:TTexture[8],_textureframe[8]
 	Field _blend,_fx
+	Field _shader:TShader
 	
 	Method Copy:TBrush()
 		Local newbrush:TBrush=New TBrush

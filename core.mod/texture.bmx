@@ -2,6 +2,7 @@
 Strict
 
 Import BRL.Pixmap
+Import "resource.bmx"
 
 Const TEXTURE_COLOR		= 1
 Const TEXTURE_ALPHA		= 2
@@ -104,7 +105,7 @@ Type TTexture
 	End Method
 End Type
 
-Type TTextureRes
+Type TTextureRes Extends TDriverResource
 
 End Type
 

@@ -25,7 +25,7 @@ Type TMesh Extends TAnimEntity
 	Field _tree:Byte Ptr
 	Field _resettree
 	
-	Field _width,_height,_depth
+	Field _width,_height,_depth,_updatebounds
 	Field _minx#,_miny#,_minz#,_maxx#,_maxy#,_maxz#
 	
 	Method HasAlpha()
@@ -61,6 +61,7 @@ Type TMesh Extends TAnimEntity
 	Method AppendSurface:TSurface(surface:TSurface)
 		_surfaces=_surfaces[.._surfaces.length+1]
 		_surfaces[_surfaces.length-1]=surface
+		AddHook surface._updateboundshook,SurfaceBoundsUpdated,Self
 		Return surface
 	End Method
 	
@@ -79,19 +80,33 @@ Type TMesh Extends TAnimEntity
 	End Method
 	
 	Method UpdateBounds()
+		For Local surface:TSurface=EachIn _surfaces		
+			surface.UpdateBounds
+		Next
+		If Not _updatebounds Return
+		
 		_minx=999999999;_miny=999999999;_minz=999999999
 		_maxx=-999999999;_maxy=-999999999;_maxz=-999999999
 		
 		For Local surface:TSurface=EachIn _surfaces		
-			surface.UpdateBounds
 			_minx=Min(_minx,surface._minx);_maxx=Max(_maxx,surface._maxx)
 			_miny=Min(_miny,surface._miny);_maxy=Max(_maxy,surface._maxy)
 			_minz=Min(_minz,surface._minz);_maxz=Max(_maxz,surface._maxz)
 		Next
 		
 		_width=_maxx-_minx;_height=_maxy-_miny;_depth=_maxz-_minz
-		If _cullradius>0 _cullradius=Max(Max(_width,_height),_depth)/2.0
+		If _cullradius>=0
+			Local radius#=Max(_width,Max(_height,_depth))/2.0
+			Local radius_sqr#=radius*radius
+			_cullradius=Sqr(radius_sqr+radius_sqr+radius_sqr)
+		EndIf
+		_updatebounds=False
 	End Method
+	
+	Function SurfaceBoundsUpdated:Object(id,data:Object,context:Object)
+		TMesh(context)._updatebounds=True
+		Return data
+	End Function
 	
 	Method GetSize(width# Var,height# Var,depth# Var)
 		UpdateBounds

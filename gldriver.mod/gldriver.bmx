@@ -46,7 +46,13 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Global _firsttime=True
 		If _firsttime
 			ModuleLog "Initializing GL driver"
-			ModuleLog "Extensions supported: "+String.FromCString(glGetString(GL_EXTENSIONS))
+			ModuleLog "Vendor:   "+String.FromCString(Byte Ptr(glGetString(GL_VENDOR)))
+			ModuleLog "Renderer: "+String.FromCString(Byte Ptr(glGetString(GL_RENDERER))) 
+			ModuleLog "Version:  "+String.FromCString(Byte Ptr(glGetString(GL_VERSION)))
+			ModuleLog "Extensions supported: "
+			For Local ext$=EachIn String.FromCString(glGetString(GL_EXTENSIONS)).Split(" ")
+				ModuleLog ext
+			Next
 			_firsttime=False
 			EndMax2D
 		Else
@@ -532,6 +538,23 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Return res
 	End Method
 	
+	Method UpdateShaderRes:TGLShaderRes(shader:TShader)
+		Local res:TGLShaderRes=TGLShaderRes(shader._res)
+		If res=Null res=New TGLShaderRes
+		If Not shader._recompile Return res
+		
+		Local typ=GL_VERTEX_SHADER
+		If shader._type=SHADER_PIXEL typ=GL_FRAG_SHADER
+		shader._id=glCreateShader(typ)
+		
+		Local code:Byte Ptr=shader.GetCode().ToCString()
+		glShaderSource shader._id,1,Varptr code,Null
+		MemFree code
+		
+		shader._recompile=False
+		Return res
+	End Method
+	
 	Method MergeSurfaceRes:TGLSurfaceRes(base:TSurface,animation:TSurface,data)
 		If animation=Null Return UpdateSurfaceRes(base)
 		Local res_base:TGLSurfaceRes=UpdateSurfaceRes(base)
@@ -566,6 +589,10 @@ Type TGLSurfaceRes Extends TSurfaceRes
 End Type
 
 Type TGLTextureRes Extends TTextureRes
+	Field _id
+End Type
+
+Type TGLShaderRes Extends TShaderRes
 	Field _id
 End Type
 

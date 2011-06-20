@@ -356,14 +356,14 @@ Type TEntity
 	End Method
 	
 	Method GetCullRadius#()
-		Return -_cullradius
+		Return Abs(_cullradius)
 	End Method
 	Method SetCullRadius(radius#)
 		_cullradius=-radius
 	End Method
 	Method GetCullParams(x# Var,y# Var,z# Var,radius# Var)
 		GetPosition x,y,z,True
-		radius=Abs(_cullradius)
+		radius=GetCullRadius()
 	End Method
 	
 	Method GetMatrix:TMatrix(alternate=False,copy=True)
