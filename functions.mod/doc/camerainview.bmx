@@ -22,6 +22,8 @@ Local cube_tex:TTexture=LoadTexture("media/b3dlogo.jpg")
 SetEntityTexture cube,cube_tex
 SetEntityPosition cube,0,1,0
 
+DebugLog String.FromCString( glGetString(GL_SHADING_LANGUAGE_VERSION))
+
 While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
 	
 	If KeyDown( KEY_RIGHT ) TurnEntity camera,0,-1,0

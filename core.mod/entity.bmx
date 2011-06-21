@@ -156,6 +156,13 @@ Type TEntity
 		Return _brush.SetFX(fx)
 	End Method
 	
+	Method GetShader:TShader()
+		Return _brush.GetShader()
+	End method
+	Method SetShader(shader:TShader)
+		Return _brush.SetShader(shader)
+	End Method
+	
 	Method GetScale(x# Var,y# Var,z# Var,glob=False)
 		If glob
 			x=_matrix._m[0,0]

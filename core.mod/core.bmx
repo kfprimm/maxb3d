@@ -46,6 +46,12 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function SetShaderDriver(driver:TShaderDriver)
+	Return TMaxB3DDriver(GetGraphicsDriver()).SetShaderDriver(driver)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function BeginMax2D()
 	Return TMaxB3DDriver(GetGraphicsDriver()).BeginMax2D()
 End Function

@@ -93,4 +93,11 @@ Type TBrush
 	Method SetFX(fx)
 		_fx=fx
 	End Method	
+	
+	Method GetShader:TShader()
+		Return _shader
+	End Method
+	Method SetShader(shader:TShader)
+		_shader=shader
+	End Method
 End Type

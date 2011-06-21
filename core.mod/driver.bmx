@@ -23,6 +23,7 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	
 	Field _texture:TTexture[8],_current:TGraphics,_caps:TCaps
 	Field _prevwidth,_prevheight
+	Field _shaderdriver:TShaderDriver
 	
 	Method CreateFrameFromPixmap:TImageFrame(pixmap:TPixmap,flags) 
 		Return _parent.CreateFrameFromPixmap(pixmap,flags)
@@ -131,14 +132,13 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	
 	Method UpdateTextureRes:TTextureRes(texture:TTexture) Abstract
 	Method UpdateSurfaceRes:TSurfaceRes(surface:TSurface) Abstract
-	Method UpdateShaderRes:TShaderRes(shader:TShader) Abstract
 
 	Method MergeSurfaceRes:TSurfaceRes(base:TSurface,animation:TSurface,data) Abstract
 		
 	Function MakeBrush:TBrush(brush:TBrush,master:TBrush)
-		Local red#,green#,blue#,alpha#,shine#,blend,fx
+		Local red#,green#,blue#,alpha#,shine#,blend,fx,shader:TShader
 		red=master._r;green=master._g;blue=master._b;alpha=master._a
-		blend=master._blend;fx=master._fx
+		blend=master._blend;fx=master._fx;shader=master._shader
 		
 		red:*brush._r;green:*brush._g;blue:*brush._b;alpha:*brush._a
 		Local shine2#=brush._shine
@@ -146,6 +146,7 @@ Type TMaxB3DDriver Extends TMax2DDriver
 		If shine<>0.0 And shine2<>0.0 Then shine:*shine2
 		If blend=0 Then blend=brush._blend
 		fx=fx|brush._fx
+		If shader=Null shader=brush._shader
 		
 		Local newbrush:TBrush=New TBrush
 		newbrush.SetColor red*255,green*255,blue*255
@@ -153,6 +154,7 @@ Type TMaxB3DDriver Extends TMax2DDriver
 		newbrush.SetShine shine
 		newbrush.SetBlend blend
 		newbrush.SetFX fx
+		newbrush.SetShader shader
 		
 		For Local i=0 To 7
 			newbrush.SetTexture brush._texture[i],i',brush._textureframe[i]
@@ -181,6 +183,10 @@ Type TMaxB3DDriver Extends TMax2DDriver
 		Next
 	End Method
 	
+	Method SetShaderDriver(driver:TShaderDriver)
+		_shaderdriver=driver
+	End Method
+	
 	'Method SetRenderTarget(target:TRenderTarget) Abstract
 End Type
 
@@ -191,13 +197,9 @@ End Type
 Type TCaps
 	Field PointSprites
 	Field MaxPointSize#
-	Field Extra:Object
 	
-	Method Copy:TCaps()
-		Local caps:TCaps=New TCaps
-		caps.PointSprites=PointSprites
-		caps.MaxPointSize=MaxPointSize
-		caps.Extra=Extra
-		Return caps
+	Method CopyBase(caps:TCaps)
+		PointSprites=caps.PointSprites
+		MaxPointSize=caps.MaxPointSize
 	End Method
 End Type

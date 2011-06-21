@@ -421,6 +421,18 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function GetEntityShader:TShader(entity:TEntity)
+	Return entity.GetShader()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetEntityShader(entity:TEntity,shader:TShader)
+	Return entity.SetShader(shader)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function TurnEntity(entity:TEntity,pitch#,yaw#,roll#,glob=False)
 	Return entity.Turn(pitch,yaw,roll,glob)
 End Function
@@ -1029,4 +1041,44 @@ Rem
 End Rem
 Function SetTexturePosition(texture:TTexture,x#,y#)
 	Return texture.SetPosition(x,y)
+End Function
+
+' Shaders
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function CreateShader:TShader(name$)
+	Local shader:TShader=_currentworld.AddShader()
+	shader.SetName name
+	Return shader
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function LoadShader:TShader(url:Object)
+	Return _currentworld.AddShader(url)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function CreateShaderFrag:TShaderFrag(code$,typ)
+	Return TShaderFrag.Create(code,typ)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function AddShaderCode:TShaderCode(shader:TShader,driver$="")
+	Return shader.AddCode(driver)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function AddShaderCodeFrag(code:TShaderCode,frag:TShaderFrag)
+	Return code.AddFrag(frag)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function AddShaderCodeFrags(code:TShaderCode,frags:TShaderFrag[])
+	Return code.AddFrags(frags)
 End Function

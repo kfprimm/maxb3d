@@ -54,7 +54,7 @@ Type TWorld
 		_config.Wireframe=enable
 	End Method
 	
-	Method Stream:Object(url:Object)
+	Method GetStream:Object(url:Object)
 		Local stream:TStream=ReadStream(url)
 		If stream Return stream
 		If String(url)
@@ -81,7 +81,7 @@ Type TWorld
 		ElseIf TPixmap(url) 
 			pixmap=TPixmap(url)
 		Else
-			pixmap=LoadPixmap(Stream(url))
+			pixmap=LoadPixmap(GetStream(url))
 		EndIf
 		
 		If pixmap=Null 
@@ -92,6 +92,67 @@ Type TWorld
 		texture.SetFlags flags
 		_config.AddObject texture,WORLDLIST_TEXTURE
 		Return texture
+	End Method
+	
+	Method AddShader:TShader(url:Object=Null)
+		Local shader:TShader=New TShader
+		Local stream:TStream=TStream(GetStream(url))
+		_tmp_res_path=String(url)
+		If _tmp_res_path _tmp_res_path=ExtractDir(_tmp_res_path)
+		Try
+			If ReadLine(stream)<>"[shader]" CloseStream(stream);Return Null
+			
+			Local status,code:TShaderCode
+			While Not Eof(stream)
+				Local line$=ReadLine(stream).Trim()
+				If line="[import]"
+					status=1
+				ElseIf line=""
+				ElseIf line="[/shader]"
+					Exit
+				Else
+					If line[0]="["[0] And line[line.length-1]="]"[0]
+						status=2
+						code=shader.AddCode(line[1..line.length-1])
+					Else
+						Select status
+						Case 0
+							Local split$[]=line.Split(":")
+							Local name$=split[0].Trim(),value$=split[1].Trim()
+							shader.SetMetaData name,value
+						Case 1
+							Local imported:TShader
+							For Local shader:TShader=EachIn _config.List[WORLDLIST_SHADER]
+								If shader._name=line imported=shader;Exit
+							Next
+							If imported shader.ImportCode(shader)
+						Case 2
+							Local split$[]=line.Split(":")
+							Local typ_str$=split[0].Trim(),url$=split[1].Trim()
+							Local typ
+							Select typ_str
+							Case "pixel"
+								typ=SHADER_PIXEL
+							Case "vertex"
+								typ=SHADER_VERTEX
+							End Select
+							Local text$
+							Try
+								text=LoadText(GetStream(url))
+							Catch e:Object
+								ModuleLog "Failed to load ~q"+url+"~q."
+							End Try
+							code.AddFrag TShaderFrag.Create(text,typ)
+						End Select
+					EndIf
+				EndIf
+			Wend
+		Catch e:Object
+		End Try
+		_tmp_res_path=""
+		CloseStream stream
+		_config.AddObject shader,WORLDLIST_SHADER
+		Return shader
 	End Method
 	
 	Method AddBrush:TBrush(url:Object=Null)
@@ -146,7 +207,7 @@ Type TWorld
 	Method AddMesh:TMesh(url:Object,parent:TEntity=Null)
 		Local mesh:TMesh=New TMesh
 		If String(url) _tmp_res_path=ExtractDir(String(url))
-		If Not TMeshLoader.Load(mesh,Stream(url))
+		If Not TMeshLoader.Load(mesh,GetStream(url))
 			_tmp_res_path=""
 			If url ModuleLog "Unable to load mesh url. ("+url.ToString()+")" Else ModuleLog "Unable to load mesh url. (null)"
 			Return Null
@@ -196,17 +257,7 @@ Type TWorld
 		Global info:TRenderInfo=New TRenderInfo
 		info.Triangles=0
 		info.Entities=0
-		
-		Global _ticks,_lastupdate
-		
-		If _lastupdate+1000<MilliSecs()
-			info.FPS=_ticks
-			_ticks=0
-			_lastupdate=MilliSecs()
-		Else
-			_ticks:+1
-		EndIf
-		
+				
 		Local tricount
 		For Local camera:TCamera=EachIn _config.List[WORLDLIST_CAMERA]
 			If camera.GetVisible()
@@ -226,6 +277,17 @@ Type TWorld
 				info.Entities:+i.Entities
 			EndIf
 		Next
+		
+		Global _ticks,_lastupdate
+
+		If _lastupdate+1000<MilliSecs()
+			info.FPS=_ticks
+			_ticks=0
+			_lastupdate=MilliSecs()
+		Else
+			_ticks:+1
+		EndIf
+		
 		Return info
 	End Method
 	

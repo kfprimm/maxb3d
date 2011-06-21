@@ -45,12 +45,13 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	Method Startup()
 		Global _firsttime=True
 		If _firsttime
+			Local caps:TGLCaps=TGLCaps(_caps)
 			ModuleLog "Initializing GL driver"
 			ModuleLog "Vendor:   "+String.FromCString(Byte Ptr(glGetString(GL_VENDOR)))
 			ModuleLog "Renderer: "+String.FromCString(Byte Ptr(glGetString(GL_RENDERER))) 
 			ModuleLog "Version:  "+String.FromCString(Byte Ptr(glGetString(GL_VERSION)))
 			ModuleLog "Extensions supported: "
-			For Local ext$=EachIn String.FromCString(glGetString(GL_EXTENSIONS)).Split(" ")
+			For Local ext$=EachIn caps.Extensions
 				ModuleLog ext
 			Next
 			_firsttime=False
@@ -87,13 +88,12 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	End Function	
 	
 	Method GetCaps:TCaps()
-		Local extensions$=String.FromCString(glGetString(GL_EXTENSIONS))
-		Local caps:TCaps=New TCaps
-		If extensions.Find("GL_ARB_point_sprite")<>-1
+		Local caps:TGLCaps=New TGLCaps
+		caps.Extensions=String.FromCString(glGetString(GL_EXTENSIONS)).Split(" ")
+		If caps.HasExtension("GL_ARB_point_sprite")<>-1
 			caps.PointSprites=True
 			glGetFloatv GL_POINT_SIZE_MAX_ARB, Varptr caps.MaxPointSize
 		EndIf
-		caps.extra=extensions
 		Return caps
 	End Method
 	
@@ -108,6 +108,8 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glPopMatrix
 		glMatrixMode GL_COLOR
 		glPopMatrix 
+		
+		If _shaderdriver _shaderdriver.Use(null)	
 	End Method
 	Method EndMax2D()
 		glPushAttrib GL_ALL_ATTRIB_BITS
@@ -365,7 +367,9 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 				glTexEnvi(GL_TEXTURE_ENV,GL_RGB_SCALE,2.0)
 			Default glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE)
 			End Select			
-		Next		
+		Next	
+		
+		If _shaderdriver _shaderdriver.Use(brush._shader)	
 	End Method
 	
 	Method RenderSurface(resource:TSurfaceRes,brush:TBrush)
@@ -538,23 +542,6 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Return res
 	End Method
 	
-	Method UpdateShaderRes:TGLShaderRes(shader:TShader)
-		Local res:TGLShaderRes=TGLShaderRes(shader._res)
-		If res=Null res=New TGLShaderRes
-		If Not shader._recompile Return res
-		
-		Local typ=GL_VERTEX_SHADER
-		If shader._type=SHADER_PIXEL typ=GL_FRAG_SHADER
-		shader._id=glCreateShader(typ)
-		
-		Local code:Byte Ptr=shader.GetCode().ToCString()
-		glShaderSource shader._id,1,Varptr code,Null
-		MemFree code
-		
-		shader._recompile=False
-		Return res
-	End Method
-	
 	Method MergeSurfaceRes:TGLSurfaceRes(base:TSurface,animation:TSurface,data)
 		If animation=Null Return UpdateSurfaceRes(base)
 		Local res_base:TGLSurfaceRes=UpdateSurfaceRes(base)
@@ -575,6 +562,24 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	End Method
 End Type
 
+Type TGLCaps Extends TCaps
+	Field Extensions$[]
+	
+	Method HasExtension(ext$)
+		For Local extension$=EachIn Extensions
+			If extension.Find(ext)<>-1 Return True
+		Next
+		Return False 
+	End Method
+	
+	Method Copy:TGLCaps()
+		Local caps:TGLCaps=New TGLCaps
+		caps.CopyBase(Self)
+		caps.Extensions=Extensions[..]
+		Return caps		
+	End Method
+End Type
+
 Type TGLSurfaceRes Extends TSurfaceRes
 	Field _vbo[12]
 	Field _texcoord
@@ -589,10 +594,6 @@ Type TGLSurfaceRes Extends TSurfaceRes
 End Type
 
 Type TGLTextureRes Extends TTextureRes
-	Field _id
-End Type
-
-Type TGLShaderRes Extends TShaderRes
 	Field _id
 End Type
 
