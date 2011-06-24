@@ -9,8 +9,7 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
-Import BRL.GLMax2D
-Import PUB.GLew
+Import sys87.GLBufferedMax2D
 
 Private
 Function ModuleLog(message$)
@@ -24,7 +23,6 @@ Global GL_LIGHT[]=[GL_LIGHT0,GL_LIGHT1,GL_LIGHT2,GL_LIGHT3,GL_LIGHT4,GL_LIGHT5,G
 Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	Method SetGraphics(g:TGraphics)
 		Super.SetGraphics g
-		glewInit()
 		If g<>Null Startup
 	End Method
 	
@@ -55,7 +53,6 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 				ModuleLog ext
 			Next
 			_firsttime=False
-			EndMax2D
 		Else
 			EnableStates
 		EndIf		
@@ -87,6 +84,21 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		BindTexture -1,0
 	End Function	
 	
+	Method MakeBuffer:TBuffer(src:Object,width,height,flags)
+		Local buffer:TBuffer
+		Select True
+		Case TTextureFrame(src)<>Null
+			buffer=TGLBuffer(TTextureFrame(src)._buffer)
+			If buffer=Null
+				Local res:TGLTextureRes=UpdateTextureRes(TTextureFrame(src))
+				buffer=TGLBufferedMax2DDriver(_parent).MakeGLBuffer(res._id,width,height,flags)
+			EndIf
+		Default
+			buffer=_parent.MakeBuffer(src,width,height,flags)
+		End Select
+		Return buffer
+	End Method
+	
 	Method GetCaps:TCaps()
 		Local caps:TGLCaps=New TGLCaps
 		caps.Extensions=String.FromCString(glGetString(GL_EXTENSIONS)).Split(" ")
@@ -97,38 +109,31 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Return caps
 	End Method
 	
-	Method BeginMax2D()
-		glPopClientAttrib
-		glPopAttrib
-		glMatrixMode GL_MODELVIEW
-		glPopMatrix
-		glMatrixMode GL_PROJECTION
-		glPopMatrix
-		glMatrixMode GL_TEXTURE
-		glPopMatrix
-		glMatrixMode GL_COLOR
-		glPopMatrix 
-		
-		If _shaderdriver _shaderdriver.Use(null)	
-	End Method
-	Method EndMax2D()
-		glPushAttrib GL_ALL_ATTRIB_BITS
-		glPushClientAttrib GL_CLIENT_ALL_ATTRIB_BITS
-		glMatrixMode GL_MODELVIEW
-		glPushMatrix
-		glMatrixMode GL_PROJECTION
-		glPushMatrix
-		glMatrixMode GL_TEXTURE
-		glPushMatrix
-		glMatrixMode GL_COLOR
-		glPushMatrix 
-		
-		EnableStates()
-	End Method
-	
+	Method SetMax2D(enable)
+		If enable
+			glPopClientAttrib
+			glPopAttrib
+			If _shaderdriver _shaderdriver.Use(Null)	
+			TGLBufferedMax2DDriver(_parent).ResetGLContext _current
+			glMatrixMode GL_TEXTURE
+			glLoadIdentity
+			glMatrixMode GL_COLOR	
+			glPopMatrix					
+		Else			
+			glPushAttrib GL_ALL_ATTRIB_BITS
+			glPushClientAttrib GL_CLIENT_ALL_ATTRIB_BITS
+			glMatrixMode GL_TEXTURE
+			glPushMatrix
+			glMatrixMode GL_COLOR
+			glPushMatrix 
+			
+			EnableStates()
+		EndIf
+	End Method	
 	Method SetCamera(camera:TCamera)
-		glViewport(camera._viewx,camera._viewy,camera._viewwidth,camera._viewheight)
-		glScissor(camera._viewx,camera._viewy,camera._viewwidth,camera._viewheight)
+		Local vy#=WorldConfig.Height-camera._viewheight-camera._viewy
+		glViewport(camera._viewx,vy,camera._viewwidth,camera._viewheight)
+		glScissor(camera._viewx,vy,camera._viewwidth,camera._viewheight)
 		glClearColor(camera._brush._r,camera._brush._g,camera._brush._b,1.0)
 		
 		If camera._clsmode&CLSMODE_COLOR And camera._clsmode&CLSMODE_DEPTH
@@ -144,7 +149,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 				EndIf
 			EndIf
 		EndIf
-
+		
 		If camera._fogmode<>FOGMODE_NONE
 			glEnable GL_FOG
 			glFogi GL_FOG_MODE,GL_LINEAR
@@ -305,7 +310,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 				Continue
 			EndIf
 			
-			Local texres:TGLTextureRes=TGLTextureRes(UpdateTextureRes(texture))
+			Local texres:TGLTextureRes=TGLTextureRes(UpdateTextureRes(texture._frame[brush._textureframe[i]]))
 			
 			glEnable GL_TEXTURE_2D
 			
@@ -497,20 +502,23 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glEnableClientState GL_NORMAL_ARRAY 
 	End Method
 	
-	Method UpdateTextureRes:TTextureRes(texture:TTexture)
-		Local glres:TGLTextureRes=TGLTextureRes(texture._res)
+	Method UpdateTextureRes:TGLTextureRes(frame:TTextureFrame)
+		If frame=Null Return Null
+		
+		Local glres:TGLTextureRes=TGLTextureRes(frame._res)
 		If glres=Null
 			glres=New TGLTextureRes
-			texture._res=glres
-			texture._updateres=True
+			frame._res=glres
+			frame._updateres=True
 		EndIf		
-		If Not texture._updateres Return texture._res
+		If Not frame._updateres Return glres
 		
 		If glres._id=0 glGenTextures(1,Varptr glres._id)
 		BindTexture 0,glres._id
-		gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGBA8,texture._width,texture._height,GL_BGRA,GL_UNSIGNED_BYTE,texture._pixmap.pixels)
+		Local pixmap:TPixmap=frame._pixmap
+		gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGBA8,pixmap.width,pixmap.height,GL_BGRA,GL_UNSIGNED_BYTE,pixmap.pixels)
 		
-		texture._updateres=0
+		frame._updateres=0
 		Return glres
 	End Method
 	
@@ -601,9 +609,9 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function GLMaxB3DDriver:TGLMaxB3DDriver()
-	If GLMax2DDriver()
+	If GLBufferedMax2DDriver()
 		Global driver:TGLMaxB3DDriver=New TGLMaxB3DDriver
-		driver._parent=GLMax2DDriver()
+		driver._parent=GLBufferedMax2DDriver()
 		Return driver
 	End If
 End Function

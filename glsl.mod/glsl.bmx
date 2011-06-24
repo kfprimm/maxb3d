@@ -24,10 +24,7 @@ Type TGLSLRes Extends TShaderRes
 End Type
 
 Type TGLSLDriver Extends TShaderDriver
-	Method Compile:TShaderCode(shader:TShader)
-		Local code:TShaderCode=shader.GetCode(Name())
-		If code=Null Return Null
-		
+	Method Compile:TShaderCode(code:TShaderCode)		
 		Local prog_res:TGLSLRes=TGLSLRes(code._res)
 		If prog_res=Null
 			prog_res=New TGLSLRes
@@ -53,13 +50,12 @@ Type TGLSLDriver Extends TShaderDriver
 				Local status
 				glGetShaderiv(res._id,GL_COMPILE_STATUS,Varptr status)
 				If status<>GL_TRUE
-					DebugStop
 					Local max_size
 					glGetShaderiv res._id,GL_INFO_LOG_LENGTH,Varptr max_size
 					Local str:Byte[max_size],size
 					glGetShaderInfoLog res._id,max_size,Varptr size,str
-					ModuleLog "Fragment compilation error from ~q"+shader.GetName()+"~q."
-					ModuleLog String.FromCString(str)
+					'ModuleLog "Fragment compilation error from ~q"+shader.GetName()+"~q."
+					'ModuleLog String.FromCString(str)
 				EndIf
 			EndIf			
 			frag._recompile=False
@@ -88,5 +84,3 @@ Function GLSLShaderDriver:TGLSLDriver()
 	Global _driver:TGLSLDriver=New TGLSLDriver
 	Return _driver
 End Function
-
-SetShaderDriver GLSLShaderDriver()

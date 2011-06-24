@@ -18,6 +18,12 @@ Function RenderWorld:TRenderInfo(tween#=1.0)
 	Return _currentworld.Render(tween)
 End Function
 Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function RenderCamera:TRenderInfo(camera:TCamera)
+	Return _currentworld.RenderCamera(camera)
+End Function
+Rem
 	bbdoc: Advances all animations and updates collision/physics.
 End Rem
 Function UpdateWorld(anim_speed#=1.0,collision_speed#=1.0)
@@ -948,7 +954,7 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateTexture:TTexture(width,height,flags=TEXTURE_COLOR|TEXTURE_MIPMAP,frames=1)
-	Local texture:TTexture=_currentworld.AddTexture([width,height],flags)
+	Local texture:TTexture=_currentworld.AddTexture([width,height,frames],flags)
 	texture.SetPixmap(CreatePixmap(width,height,PF_RGBA8888))
 	Return texture
 End Function
@@ -1041,6 +1047,12 @@ Rem
 End Rem
 Function SetTexturePosition(texture:TTexture,x#,y#)
 	Return texture.SetPosition(x,y)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetTextureSize(texture:TTexture,width Var,height Var)
+	Return texture.GetSize(width,height)
 End Function
 
 ' Shaders

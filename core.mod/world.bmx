@@ -71,24 +71,31 @@ Type TWorld
 	End Method
 	
 	Method AddTexture:TTexture(url:Object,flags=TEXTURE_DEFAULT)
-		Local texture:TTexture=New TTexture,pixmap:TPixmap
+		Local texture:TTexture=New TTexture,pixmap:TPixmap[]
 		If Int[](url)
-			Local arr[]=Int[](url),width,height
+			Local arr[]=Int[](url),width,height,frames=1
 			If arr.length=0 Return Null
 			If arr.length=1 width=arr[0];height=arr[0]
-			If arr.length>1 width=arr[0];height=arr[1]		
-			pixmap=CreatePixmap(width,height,PF_BGRA8888)
+			If arr.length>1 width=arr[0];height=arr[1]
+			If arr.length>2 frames=arr[2]	
+			pixmap=New TPixmap[frames]
+			For Local i=0 To frames-1
+				pixmap[i]=CreatePixmap(width,height,PF_BGRA8888)
+			Next
 		ElseIf TPixmap(url) 
-			pixmap=TPixmap(url)
+			pixmap=[TPixmap(url)]
 		Else
-			pixmap=LoadPixmap(GetStream(url))
+			pixmap=[LoadPixmap(GetStream(url))]
 		EndIf
 		
 		If pixmap=Null 
 			If url ModuleLog "Invalid texture url passed. ("+url.ToString()+")" Else ModuleLog "Invalid texture url passed. ("+url.ToString()+")"
 			Return Null
 		EndIf
-		texture.SetPixmap pixmap
+		texture.SetSize -1,-1,pixmap.length
+		For Local i=0 To pixmap.length-1
+			texture.SetPixmap pixmap[i],i
+		Next
 		texture.SetFlags flags
 		_config.AddObject texture,WORLDLIST_TEXTURE
 		Return texture
@@ -251,31 +258,16 @@ Type TWorld
 	
 	Method Render:TRenderInfo(tween#=1.0)
 		Local driver:TMaxB3DDriver=TMaxB3DDriver(GetGraphicsDriver())
-		Assert driver,"MaxB3D driver not set!"
-		Assert driver._current,"Graphics not set!"
-		
+
 		Global info:TRenderInfo=New TRenderInfo
 		info.Triangles=0
 		info.Entities=0
-				
-		Local tricount
+
 		For Local camera:TCamera=EachIn _config.List[WORLDLIST_CAMERA]
-			If camera.GetVisible()
-				driver.SetCamera camera
-				SetLighting	driver,camera
-
-				Local list:TList=CreateList()
-				For Local entity:TEntity=EachIn _config.List[WORLDLIST_RENDER]
-					If entity.GetVisible()=False Or entity._brush._a=0 Continue
-					If camera.InView(entity) list.AddLast entity
-				Next
-				
-				UpdateSprites list,driver,camera
-
-				Local i:TRenderInfo=RenderEntities(list,driver,camera)
-				info.Triangles:+i.Triangles
-				info.Entities:+i.Entities
-			EndIf
+			If Not camera.GetVisible() Continue
+			Local i:TRenderInfo=RenderCamera(camera)
+			info.Triangles:+i.Triangles
+			info.Entities:+i.Entities
 		Next
 		
 		Global _ticks,_lastupdate
@@ -291,6 +283,26 @@ Type TWorld
 		Return info
 	End Method
 	
+	Method RenderCamera:TRenderInfo(camera:TCamera)
+		Local driver:TMaxB3DDriver=TMaxB3DDriver(GetGraphicsDriver())
+		Global info:TRenderInfo=New TRenderInfo
+		
+		If driver._in_max2d driver.EndMax2D
+		
+		driver.SetCamera camera
+		SetLighting	driver,camera
+		
+		Local list:TList=CreateList()
+		For Local entity:TEntity=EachIn _config.List[WORLDLIST_RENDER]
+			If entity.GetVisible()=False Or entity._brush._a=0 Continue
+			If camera.InView(entity) list.AddLast entity
+		Next
+		
+		UpdateSprites list,driver,camera
+		
+		Return RenderEntities(list,driver,camera)		
+	End Method
+
 	Method Update(anim_speed#,collision_speed#)
 		_collisiondriver.Update _config,collision_speed
 		For Local mesh:TMesh=EachIn _config.List[WORLDLIST_MESH]

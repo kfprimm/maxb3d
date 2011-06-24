@@ -2,6 +2,7 @@
 Strict
 
 Import BRL.Max2D
+Import sys87.BufferedMax2D
 Import "light.bmx"
 Import "camera.bmx"
 Import "mesh.bmx"
@@ -18,83 +19,30 @@ Public
 
 Global _creategraphicshook=AllocHookId()
 
-Type TMaxB3DDriver Extends TMax2DDriver
-	Global _parent:TMax2DDriver
+Type TCaps
+	Field PointSprites
+	Field MaxPointSize#
 	
-	Field _texture:TTexture[8],_current:TGraphics,_caps:TCaps
+	Method CopyBase(caps:TCaps)
+		PointSprites=caps.PointSprites
+		MaxPointSize=caps.MaxPointSize
+	End Method
+End Type
+
+Type TMaxB3DDriver Extends TBufferedMax2DDriver
+	Global _parent:TBufferedMax2DDriver
+	
+	Field _texture:TTexture[8],_caps:TCaps
 	Field _prevwidth,_prevheight
 	Field _shaderdriver:TShaderDriver
-	
-	Method CreateFrameFromPixmap:TImageFrame(pixmap:TPixmap,flags) 
-		Return _parent.CreateFrameFromPixmap(pixmap,flags)
-	End Method
-	
-	Method SetBlend( blend )
-		Return _parent.SetBlend(blend)
-	End Method
-	Method SetAlpha( alpha# )
-		Return _parent.SetAlpha(alpha)
-	End Method
-	Method SetColor( red,green,blue )
-		Return _parent.SetColor(red,green,blue)
-	End Method
-	Method SetClsColor( red,green,blue )
-		Return _parent.SetClsColor(red,green,blue)
-	End Method
-	Method SetViewport( x,y,width,height )
-		Return _parent.SetViewport(x,y,width,height)
-	End Method
-	Method SetTransform( xx#,xy#,yx#,yy# )
-		Return _parent.SetTransform(xx,xy,yx,yy)
-	End Method
-	Method SetLineWidth( width# )
-		Return _parent.SetLineWidth(width)
-	End Method
-	
-	Method Cls()
-		Return _parent.Cls()
-	End Method
-	Method Plot( x#,y# )
-		Return _parent.Plot(x,y)
-	End Method
-	Method DrawLine( x0#,y0#,x1#,y1#,tx#,ty# )
-		Return _parent.DrawLine(x0,y0,x1,y1,tx,ty)
-	End Method
-	Method DrawRect( x0#,y0#,x1#,y1#,tx#,ty# )
-		Return _parent.DrawRect(x0,y0,x1,y1,tx,tx)
-	End Method
-	Method DrawOval( x0#,y0#,x1#,y1#,tx#,ty# )
-		Return _parent.DrawOval(x0,y0,x1,y1,tx,ty)
-	End Method
-	Method DrawPoly( xy#[],handlex#,handley#,originx#,originy# )
-		Return _parent.DrawPoly(xy,handlex,handlex,originx,originy)
-	End Method
-		
-	Method DrawPixmap( pixmap:TPixmap,x,y )
-		Return _parent.DrawPixmap(pixmap,x,y)
-	End Method
-	Method GrabPixmap:TPixmap( x,y,width,height )
-		Return _parent.GrabPixmap(x,y,width,height)
-	End Method
-	
-	Method SetResolution( width#,height# )
-		Return _parent.SetResolution(width,height)
-	End Method
-	
-	Method GraphicsModes:TGraphicsMode[]()
-		Return _parent.GraphicsModes()
-	End Method
-		
-	Method AttachGraphics:TGraphics( widget,flags )
-		Return MakeGraphics(_parent.AttachGraphics(widget,flags))		
-	End Method
+	Field _in_max2d=True
 	
 	Method CreateGraphics:TGraphics( width,height,depth,hertz,flags )
 		RunHooks _creategraphicshook,Null
-		Return MakeGraphics(_parent.CreateGraphics(width,height,depth,hertz,flags))
+		Return Super.CreateGraphics(width,height,depth,hertz,flags)
 	End Method
 	
-	Method SetGraphics( g:TGraphics )
+	Method SetGraphics(g:TGraphics)
 		_parent.SetGraphics(g)
 		_current=g
 		WorldConfig.Width=GraphicsWidth()
@@ -104,19 +52,38 @@ Type TMaxB3DDriver Extends TMax2DDriver
 		_caps=GetCaps()
 	End Method
 	
-	Method Flip( sync )
-		Return _parent.Flip(sync)
+	Method MakeBuffer:TBuffer(src:Object,width,height,flags) Abstract
+	
+	Method TextureBuffer:TBuffer(texture:TTexture,frame=0,flags=BUFFER_COLOR)
+		Return MakeBuffer(texture._frame[frame],texture._width,texture._height,flags)
 	End Method
 	
-	Method MakeGraphics:TGraphics(g:TGraphics)
-		TMax2DGraphics(g)._driver=Self
-		Return g
+	Method SetBuffer(buffer:TBuffer)
+		WorldConfig.Width=buffer._width
+		WorldConfig.Height=buffer._height			
+		Return _parent.SetBuffer(buffer)
 	End Method
 	
+	Method BackBuffer:TBuffer()
+		Return _parent.BackBuffer()
+	End Method
+
 	Method GetCaps:TCaps() Abstract
 	
-	Method BeginMax2D() Abstract
-	Method EndMax2D() Abstract
+	Method SetMax2D(enable) Abstract
+	
+	Method DoMax2D()
+		If Not _in_max2d
+			_in_max2d=True
+			SetMax2D True
+		EndIf
+	End Method
+	Method EndMax2D()
+		If _in_max2d
+			_in_max2d=False
+			SetMax2D False
+		EndIf
+	End Method
 	
 	Method SetBrush(brush:TBrush,hasalpha) Abstract
 	Method SetCamera(camera:TCamera) Abstract
@@ -130,7 +97,7 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	Method RenderSprite(sprite:TSprite) Abstract
 	Method RenderTerrain(terrain:TTerrain) Abstract
 	
-	Method UpdateTextureRes:TTextureRes(texture:TTexture) Abstract
+	Method UpdateTextureRes:TTextureRes(frame:TTextureFrame) Abstract
 	Method UpdateSurfaceRes:TSurfaceRes(surface:TSurface) Abstract
 
 	Method MergeSurfaceRes:TSurfaceRes(base:TSurface,animation:TSurface,data) Abstract
@@ -185,21 +152,5 @@ Type TMaxB3DDriver Extends TMax2DDriver
 	
 	Method SetShaderDriver(driver:TShaderDriver)
 		_shaderdriver=driver
-	End Method
-	
-	'Method SetRenderTarget(target:TRenderTarget) Abstract
-End Type
-
-'Type TRenderTarget
-	
-'End Type
-
-Type TCaps
-	Field PointSprites
-	Field MaxPointSize#
-	
-	Method CopyBase(caps:TCaps)
-		PointSprites=caps.PointSprites
-		MaxPointSize=caps.MaxPointSize
 	End Method
 End Type

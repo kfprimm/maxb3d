@@ -9,3 +9,4 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.GLSL
+Import MaxB3D.Cg

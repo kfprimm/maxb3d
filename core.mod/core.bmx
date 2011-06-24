@@ -2,7 +2,7 @@
 Strict
 
 Rem
-	bbdoc: MaxB3D core logic
+	bbdoc: MaxB3D core system.
 End Rem
 Module MaxB3D.Core
 ModuleInfo "Author: Kevin Primm"
@@ -15,6 +15,14 @@ Import BRL.Max2D
 Import MaxB3D.Logging
 Import "driver.bmx"
 Import "world.bmx"
+
+Private
+Function _maxb3d_world_initialize:Object(id,data:Object,context:Object)
+	If GetWorld()=Null SetWorld CreateWorld()
+End Function
+AddHook _creategraphicshook,_maxb3d_world_initialize
+
+Public
 
 Global _currentworld:TWorld
 
@@ -52,8 +60,8 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function BeginMax2D()
-	Return TMaxB3DDriver(GetGraphicsDriver()).BeginMax2D()
+Function DoMax2D()
+	Return TMaxB3DDriver(GetGraphicsDriver()).DoMax2D()
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -61,8 +69,9 @@ End Rem
 Function EndMax2D()
 	Return TMaxB3DDriver(GetGraphicsDriver()).EndMax2D()
 End Function
-
-Function _maxb3d_world_initialize:Object(id,data:Object,context:Object)
-	If GetWorld()=Null SetWorld CreateWorld()
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function TextureBuffer:TBuffer(texture:TTexture,frame=0)
+	Return TMaxB3DDriver(GetGraphicsDriver()).TextureBuffer(texture,frame)
 End Function
-AddHook _creategraphicshook,_maxb3d_world_initialize
