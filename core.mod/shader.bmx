@@ -105,14 +105,15 @@ Type TShaderDriver
 	Method Use(shader:TShader)
 		Local res:TShaderRes
 		If shader<>Null
-			Local code:TShaderCode=Compile(shader)
+			Local code:TShaderCode=shader.GetCode(Name())
+			If code code=Compile(code)
 			If code res=code._res
 		EndIf
 		Apply res	
 		Return True
 	End Method
 	
-	Method Compile:TShaderCode(shader:TShader) Abstract
+	Method Compile:TShaderCode(code:TShaderCode) Abstract
 	Method Apply(res:TShaderRes) Abstract
 	Method Name$() Abstract
 End Type
