@@ -168,6 +168,30 @@ End Rem
 Function SetBrushFX(brush:TBrush,fx)
 	Return brush.SetFX(fx)
 End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetBrushBlend(brush:TBrush)
+	Return brush.GetBlend()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetBrushBlend(brush:TBrush,fx)
+	Return brush.SetBlend(fx)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetBrushShader:TShader(brush:TBrush)
+	Return brush.GetShader()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetBrushShader(brush:TBrush,shader:TShader)
+	Return brush.SetShader(shader)
+End Function
 
 'Cameras
 Rem
@@ -427,6 +451,18 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function GetEntityBlend(entity:TEntity)
+	Return entity.GetBlend()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetEntityBlend(entity:TEntity,blend)
+	Return entity.SetBlend(blend)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function GetEntityShader:TShader(entity:TEntity)
 	Return entity.GetShader()
 End Function
@@ -623,8 +659,8 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function AddMeshSurface:TSurface(mesh:TMesh,vertexcount=0,trianglecount=0)
-	Return mesh.AddSurface(vertexcount,trianglecount)
+Function AddMeshSurface:TSurface(mesh:TMesh,brush:TBrush=Null,vertexcount=0,trianglecount=0)
+	Return mesh.AddSurface(brush,vertexcount,trianglecount)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO

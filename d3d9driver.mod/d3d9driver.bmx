@@ -9,7 +9,7 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
-Import BRL.D3D9Max2D
+Import sys87.D3D9BufferedMax2D
 
 ?Win32
 
@@ -44,68 +44,72 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		If _d3ddev<>Null EndMax2D ' TODO: Figure out when this needs to be called. Most likely NOT always!
 	End Method
 	
+	Method MakeBuffer:TBuffer(src:Object,width,height,flags)
+		Return _parent.MakeBuffer(src,width,height,flags)
+	End Method
+	
 	Method GetCaps:TCaps()
 		Local caps:TCaps=New TCaps
 		Return caps
 	End Method
 	
-	Method BeginMax2D()
-		Global identity:TMatrix=TMatrix.Identity()
-		Local width=GraphicsWidth(),height=GraphicsHeight()
-		Local matrix#[]=[..
-		2.0/width,0.0,0.0,0.0,..
-		 0.0,-2.0/height,0.0,0.0,..
-		 0.0,0.0,1.0,0.0,..
-		 -1-(1.0/width),1+(1.0/height),1.0,1.0]
-		
-		_d3ddev.SetTransform D3DTS_PROJECTION,matrix
-		_d3ddev.SetTransform D3DTS_WORLD,identity.ToPtr()
-		_d3ddev.SetTransform D3DTS_VIEW,identity.ToPtr()
-		_d3ddev.SetTransform D3DTS_TEXTURE0,identity.ToPtr()
-		
-		_d3ddev.SetVertexDeclaration Null
-		_d3ddev.SetIndices Null
-		_d3ddev.SetFVF D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1
-		
-		_d3ddev.SetRenderState D3DRS_LIGHTING,False
-		_d3ddev.SetRenderState D3DRS_ZENABLE,False
-		_d3ddev.SetRenderState D3DRS_SCISSORTESTENABLE,_viewporton		
-		
-		_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE,True
-		
-		_d3ddev.SetRenderState D3DRS_WRAP0, 0
-		
-		_d3ddev.SetRenderState D3DRS_FOGENABLE,False
-		
-		For Local i=2 To 7
-			_d3ddev.SetTexture i,Null
-		Next
-		
-		_d3ddev.SetTextureStageState 0,D3DTSS_COLOROP,D3DTOP_MODULATE
-		_d3ddev.SetTextureStageState 0,D3DTSS_ALPHAOP,D3DTOP_MODULATE
-		
-		_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_NONE
-	End Method
+	Method SetMax2D(enable)
+		If enable
+			Global identity:TMatrix=TMatrix.Identity()
+			Local width=GraphicsWidth(),height=GraphicsHeight()
+			Local matrix#[]=[..
+			2.0/width,0.0,0.0,0.0,..
+			 0.0,-2.0/height,0.0,0.0,..
+			 0.0,0.0,1.0,0.0,..
+			 -1-(1.0/width),1+(1.0/height),1.0,1.0]
+			
+			_d3ddev.SetTransform D3DTS_PROJECTION,matrix
+			_d3ddev.SetTransform D3DTS_WORLD,identity.ToPtr()
+			_d3ddev.SetTransform D3DTS_VIEW,identity.ToPtr()
+			_d3ddev.SetTransform D3DTS_TEXTURE0,identity.ToPtr()
+			
+			_d3ddev.SetVertexDeclaration Null
+			_d3ddev.SetIndices Null
+			_d3ddev.SetFVF D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1
+			
+			_d3ddev.SetRenderState D3DRS_LIGHTING,False
+			_d3ddev.SetRenderState D3DRS_ZENABLE,False
+			_d3ddev.SetRenderState D3DRS_SCISSORTESTENABLE,_viewporton		
+			
+			_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE,True
+			
+			_d3ddev.SetRenderState D3DRS_WRAP0, 0
+			
+			_d3ddev.SetRenderState D3DRS_FOGENABLE,False
+			
+			For Local i=2 To 7
+				_d3ddev.SetTexture i,Null
+			Next
+			
+			_d3ddev.SetTextureStageState 0,D3DTSS_COLOROP,D3DTOP_MODULATE
+			_d3ddev.SetTextureStageState 0,D3DTSS_ALPHAOP,D3DTOP_MODULATE
+			
+			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_NONE
+		Else
+			_d3ddev.SetRenderState D3DRS_ZENABLE,True
+			_d3ddev.SetRenderState D3DRS_ZWRITEENABLE,True
 	
-	Method EndMax2D()
-		_d3ddev.SetRenderState D3DRS_ZENABLE,True
-		_d3ddev.SetRenderState D3DRS_ZWRITEENABLE,True
-
-		_d3ddev.GetRenderState D3DRS_SCISSORTESTENABLE,_viewporton
-		_d3ddev.SetRenderState D3DRS_SCISSORTESTENABLE,True
-		
-		_d3ddev.SetRenderState D3DRS_LIGHTING,True
-		_d3ddev.SetRenderState D3DRS_NORMALIZENORMALS,True
-		_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(WorldConfig.AmbientRed,WorldConfig.AmbientGreen,WorldConfig.AmbientBlue)
-		_d3ddev.SetRenderState D3DRS_COLORVERTEX, True
-		_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE,D3DMCS_MATERIAL
-		
-		_d3ddev.SetRenderState D3DRS_SHADEMODE,D3DSHADE_GOURAUD
-		
-		'_d3ddev.SetRenderState D3DRS_ALPHAREF, 1
-		'_d3ddev.SetRenderState D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL
-				
-		_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CW		
+			_d3ddev.GetRenderState D3DRS_SCISSORTESTENABLE,_viewporton
+			_d3ddev.SetRenderState D3DRS_SCISSORTESTENABLE,True
+			
+			_d3ddev.SetRenderState D3DRS_LIGHTING,True
+			_d3ddev.SetRenderState D3DRS_NORMALIZENORMALS,True
+			_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(WorldConfig.AmbientRed,WorldConfig.AmbientGreen,WorldConfig.AmbientBlue)
+			_d3ddev.SetRenderState D3DRS_COLORVERTEX, True
+			_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE,D3DMCS_MATERIAL
+			
+			_d3ddev.SetRenderState D3DRS_SHADEMODE,D3DSHADE_GOURAUD
+			
+			'_d3ddev.SetRenderState D3DRS_ALPHAREF, 1
+			'_d3ddev.SetRenderState D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL
+					
+			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CW	
+		EndIf	
 	End Method
 	
 	Method SetCamera(camera:TCamera)
@@ -208,7 +212,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 				Continue
 			EndIf
 			
-			_d3ddev.SetTexture i,UpdateTextureRes(texture)._tex
+			_d3ddev.SetTexture i,UpdateTextureRes(texture._frame[brush._textureframe[i]],texture._flags)._tex
 
 			Local matrix:TMatrix=TMatrix.Identity()
 			'matrix._m[0,0]=-texture._sx
@@ -326,24 +330,24 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	Method RenderTerrain(terrain:TTerrain)
 	End Method
 	
-	Method UpdateTextureRes:TD3D9TextureRes(texture:TTexture)
-		Local res:TD3D9TextureRes=TD3D9TextureRes(texture._res)
-		If res And texture._updateres=False Return res
+	Method UpdateTextureRes:TD3D9TextureRes(frame:TTextureFrame,flags)
+		Local res:TD3D9TextureRes=TD3D9TextureRes(frame._res)
+		If res And frame._updateres=False Return res
 
 		If res=Null res=New TD3D9TextureRes
-		texture._res=res
+		frame._res=res
 		
-		Local pixmap:TPixmap=texture._pixmap
+		Local pixmap:TPixmap=frame._pixmap
 		Local tex_width=Pow2Size(pixmap.width),tex_height=Pow2Size(pixmap.height)
 		pixmap=ConvertPixmap(ResizePixmap(pixmap,tex_width,tex_height),PF_BGRA8888)
-		If res._tex=Null Assert _d3ddev.CreateTexture(tex_width,tex_height,(texture._flags & TEXTURE_MIPMAP)=0,D3DUSAGE_AUTOGENMIPMAP,D3DFMT_A8R8G8B8,D3DPOOL_MANAGED,res._tex,Null)=D3D_OK
+		If res._tex=Null Assert _d3ddev.CreateTexture(tex_width,tex_height,(flags & TEXTURE_MIPMAP)=0,D3DUSAGE_AUTOGENMIPMAP,D3DFMT_A8R8G8B8,D3DPOOL_MANAGED,res._tex,Null)=D3D_OK
 		
 		Local rect:D3DLOCKED_RECT=New D3DLOCKED_RECT 
 		res._tex.LockRect 0,rect,Null,0
 		MemCopy rect.pBits,pixmap.pixels,pixmap.width*pixmap.height*4
 		res._tex.UnlockRect 0
 		
-		texture._updateres=False
+		frame._updateres=False
 				
 		Return res
 	End Method
@@ -426,7 +430,7 @@ End Rem
 Function D3D9MaxB3DDriver:TD3D9MaxB3DDriver()
 	If D3D9Max2DDriver()
 		Global driver:TD3D9MaxB3DDriver=New TD3D9MaxB3DDriver
-		driver._parent=D3D9Max2DDriver()
+		driver._parent=D3D9BufferedMax2DDriver()
 		Return driver
 	End If
 End Function

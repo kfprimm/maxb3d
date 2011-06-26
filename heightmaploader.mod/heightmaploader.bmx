@@ -19,7 +19,7 @@ Type TMeshLoaderHMAP Extends TMeshLoader
 		pixmap=XFlipPixmap(ConvertPixmap(pixmap,PF_I8))
 		Local width=PixmapWidth(pixmap),height=PixmapHeight(pixmap)
 		
-		Local surface:TSurface=mesh.AddSurface(height*width,height*width*2)		
+		Local surface:TSurface=mesh.AddSurface(Null,height*width,height*width*2)		
 		
 		Local stx#=-1,sty#=stx,y#=sty
 		For Local a=0 To height-1

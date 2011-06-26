@@ -66,7 +66,7 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 				trianglecount=segments*4
 			EndIf
 			
-			Local surface:TSurface=mesh.AddSurface(vertexcount,trianglecount)
+			Local surface:TSurface=mesh.AddSurface(Null,vertexcount,trianglecount)
 			
 			Local div#=Float(360.0/(segments*2))
 			Local height#=1.0
@@ -201,10 +201,10 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			If segments<3 Or segments>100 Then Return Null
 			If ringsegments<0 Or ringsegments>100 Then Return Null
 			
-			Local surface:TSurface=mesh.AddSurface(1000,1000)
+			Local surface:TSurface=mesh.AddSurface(Null,1000,1000)
 			Local solidsurface:TSurface
 			If solid=True
-				solidsurface=mesh.AddSurface(1000,1000)
+				solidsurface=mesh.AddSurface(Null,1000,1000)
 			EndIf
 			Local div#=Float(360.0/(segments))
 			
@@ -322,9 +322,9 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 						
 			If segments<3 Or segments>100 Then Return Null
 			
-			Local surface:TSurface=mesh.AddSurface(1+segments*2,segments)
+			Local surface:TSurface=mesh.AddSurface(Null,1+segments*2,segments)
 			Local bottomsurface:TSurface
-			If solid bottomsurface=mesh.AddSurface(1+segments,segments-1)
+			If solid bottomsurface=mesh.AddSurface(Null,1+segments,segments-1)
 			
 			Local div#=Float(360.0/(segments))
 		
@@ -374,7 +374,7 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			mesh.UpdateNormals()
 			Return True
 		Case "cube"
-			Local surface:TSurface=mesh.AddSurface(24,12)
+			Local surface:TSurface=mesh.AddSurface(Null,24,12)
 
 			For Local i=0 To 3
 				surface.SetNormal(i,0,-1,0)
@@ -440,7 +440,7 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 			'torrad#,torwidth#,segments,sides
 			Local torrad#=Float(params[0]),torwidth#=Float(params[1]),segments=Int(params[2]),sides=Int(params[3])
 			
-			Local surface:TSurface=mesh.AddSurface(segments*sides,segments*sides*2)
+			Local surface:TSurface=mesh.AddSurface(Null,segments*sides,segments*sides*2)
 			
 			Local FATSTEP#=360.0/sides
 			Local DEGSTEP#=360.0/segments

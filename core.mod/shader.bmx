@@ -1,18 +1,25 @@
 
 Strict
 
+Import BRL.Hook
+Import MaxB3D.Math
 Import "resource.bmx"
 
 Const SHADER_VERTEX   = 1
 Const SHADER_PIXEL    = 2
 Const SHADER_GEOMETRY = 4
 
+Type TShaderData
+	Field _projection:TMatrix
+	Field _modelviewproj:TMatrix
+End Type
+
 Type TShaderRes Extends TDriverResource
 End Type
 
 Type TShaderFrag
-	Field _code$,_recompile
-	Field _type
+	Field _code$,_type
+	Field _recompilehook=AllocHookId()
 	
 	Function Create:TShaderFrag(code$,typ)
 		Local frag:TShaderFrag=New TShaderFrag
@@ -26,20 +33,42 @@ Type TShaderFrag
 	End Method
 	Method SetCode(code$)
 		_code=code
-		_recompile=True
+		RunHooks _recompilehook,Self
 	End Method
 End Type
 
 Type TShaderCode
 	Field _driver$,_frag:TShaderFrag[]
-	Field _res:TShaderRes
+	Field _composition$
+	Field _res:TShaderRes,_recompile
 	
 	Method AddFrag(frag:TShaderFrag)
 		AddFrags([frag])
 	End Method
 	Method AddFrags(frags:TShaderFrag[])
+		For Local frag:TShaderFrag=EachIn frags
+			AddHook frag._recompilehook,RecompileHook,Self
+		Next
+		_recompile=True
 		_frag:+frags
 	End Method
+	
+	Method GetComposition(vert$ Var,frag$ Var)
+		vert="";frag=""
+		For Local f:TShaderFrag=EachIn _frag
+			Select f._type
+			Case SHADER_PIXEL
+				frag:+f._code
+			Case SHADER_VERTEX
+				vert:+f._code
+			End Select
+		Next		
+	End Method
+	
+	Function RecompileHook:Object(id,data:Object,context:Object)
+		TShaderCode(context)._recompile=True
+		Return data
+	End Function
 End Type
 
 Type TShader
@@ -87,8 +116,6 @@ Type TShader
 		For Local code:TShaderCode=EachIn _code
 			If code._driver=driver Return code
 		Next
-		Local code:TShaderCode=GetCode("")
-		If code Return code
 		Return Null
 	End Method
 End Type
@@ -102,18 +129,18 @@ Type TShaderDriver
 		_first=Self		
 	End Method
 	
-	Method Use(shader:TShader)
+	Method Use(shader:TShader,data:TShaderData)
 		Local res:TShaderRes
 		If shader<>Null
 			Local code:TShaderCode=shader.GetCode(Name())
 			If code code=Compile(code)
 			If code res=code._res
 		EndIf
-		Apply res	
+		Apply res,data
 		Return True
 	End Method
 	
 	Method Compile:TShaderCode(code:TShaderCode) Abstract
-	Method Apply(res:TShaderRes) Abstract
+	Method Apply(res:TShaderRes,data:TShaderData) Abstract
 	Method Name$() Abstract
 End Type

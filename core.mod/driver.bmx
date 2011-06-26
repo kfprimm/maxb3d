@@ -97,7 +97,7 @@ Type TMaxB3DDriver Extends TBufferedMax2DDriver
 	Method RenderSprite(sprite:TSprite) Abstract
 	Method RenderTerrain(terrain:TTerrain) Abstract
 	
-	Method UpdateTextureRes:TTextureRes(frame:TTextureFrame) Abstract
+	Method UpdateTextureRes:TTextureRes(frame:TTextureFrame,flags) Abstract
 	Method UpdateSurfaceRes:TSurfaceRes(surface:TSurface) Abstract
 
 	Method MergeSurfaceRes:TSurfaceRes(base:TSurface,animation:TSurface,data) Abstract

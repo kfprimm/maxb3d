@@ -28,6 +28,7 @@ Type TBrush
 	End Method
 	
 	Method Load(brush:TBrush)
+		If brush=Null brush=New TBrush
 		_r=brush._r;_g=brush._g;_b=brush._b;_a=brush._a
 		_shine=brush._shine
 		For Local i=0 To 7

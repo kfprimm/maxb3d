@@ -21,6 +21,8 @@ Public
 Global GL_LIGHT[]=[GL_LIGHT0,GL_LIGHT1,GL_LIGHT2,GL_LIGHT3,GL_LIGHT4,GL_LIGHT5,GL_LIGHT6,GL_LIGHT7]
 
 Type TGLMaxB3DDriver Extends TMaxB3DDriver
+	Field _currentdata:TShaderData=New TShaderData
+	
 	Method SetGraphics(g:TGraphics)
 		Super.SetGraphics g
 		If g<>Null Startup
@@ -90,7 +92,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Case TTextureFrame(src)<>Null
 			buffer=TGLBuffer(TTextureFrame(src)._buffer)
 			If buffer=Null
-				Local res:TGLTextureRes=UpdateTextureRes(TTextureFrame(src))
+				Local res:TGLTextureRes=UpdateTextureRes(TTextureFrame(src),0)
 				buffer=TGLBufferedMax2DDriver(_parent).MakeGLBuffer(res._id,width,height,flags)
 			EndIf
 		Default
@@ -113,7 +115,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		If enable
 			glPopClientAttrib
 			glPopAttrib
-			If _shaderdriver _shaderdriver.Use(Null)	
+			If _shaderdriver _shaderdriver.Use(Null,Null)	
 			TGLBufferedMax2DDriver(_parent).ResetGLContext _current
 			glMatrixMode GL_TEXTURE
 			glLoadIdentity
@@ -175,6 +177,8 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glGetFloatv GL_PROJECTION_MATRIX,camera._lastprojection._m
 		glGetIntegerv GL_VIEWPORT,camera._lastviewport
 
+		_currentdata._projection=camera._lastprojection
+		
 		camera._lastfrustum=TFrustum.Extract(camera._lastmodelview,camera._lastprojection)
 	End Method	
 	
@@ -310,7 +314,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 				Continue
 			EndIf
 			
-			Local texres:TGLTextureRes=TGLTextureRes(UpdateTextureRes(texture._frame[brush._textureframe[i]]))
+			Local texres:TGLTextureRes=TGLTextureRes(UpdateTextureRes(texture._frame[brush._textureframe[i]],texture._flags))
 			
 			glEnable GL_TEXTURE_2D
 			
@@ -374,7 +378,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			End Select			
 		Next	
 		
-		If _shaderdriver _shaderdriver.Use(brush._shader)	
+		If _shaderdriver _shaderdriver.Use(brush._shader,_currentdata)	
 	End Method
 	
 	Method RenderSurface(resource:TSurfaceRes,brush:TBrush)
@@ -421,6 +425,10 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glMatrixMode GL_MODELVIEW
 		glPushMatrix
 		glMultMatrixf entity.GetMatrix(True,False).ToPtr()
+		
+		Global matrix:TMatrix=New TMatrix
+		glGetFloatv GL_MODELVIEW_MATRIX,matrix._m
+		_currentdata._modelviewproj=matrix.Multiply(_currentdata._projection)
 	End Method
 	Method EndEntityRender(entity:TEntity)
 		glMatrixMode GL_MODELVIEW
@@ -502,7 +510,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glEnableClientState GL_NORMAL_ARRAY 
 	End Method
 	
-	Method UpdateTextureRes:TGLTextureRes(frame:TTextureFrame)
+	Method UpdateTextureRes:TGLTextureRes(frame:TTextureFrame,flags)
 		If frame=Null Return Null
 		
 		Local glres:TGLTextureRes=TGLTextureRes(frame._res)

@@ -52,8 +52,9 @@ Type TMesh Extends TAnimEntity
 		Return mesh
 	End Method
 	
-	Method AddSurface:TSurface(vertices=0,triangles=0)
+	Method AddSurface:TSurface(brush:TBrush=Null,vertices=0,triangles=0)
 		Local surface:TSurface=New TSurface
+		surface.SetBrush brush
 		surface.Resize vertices,triangles
 		Return AppendSurface(surface)
 	End Method

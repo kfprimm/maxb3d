@@ -156,9 +156,16 @@ Type TEntity
 		Return _brush.SetFX(fx)
 	End Method
 	
+	Method GetBlend()
+		Return _brush.GetBlend()
+	End Method
+	Method SetBlend(blend)
+		Return _brush.SetBlend(blend)
+	End Method
+	
 	Method GetShader:TShader()
 		Return _brush.GetShader()
-	End method
+	End Method
 	Method SetShader(shader:TShader)
 		Return _brush.SetShader(shader)
 	End Method

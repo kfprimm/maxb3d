@@ -78,8 +78,8 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 
 
 	RenderWorld
-	BeginMax2D
+	DoMax2D
 	DrawText "Segs="+segs+" - [] to adjust, 'W' for wireframe",0,0
-	EndMax2D
+	
 	Flip
 Wend
