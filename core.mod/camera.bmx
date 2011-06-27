@@ -111,8 +111,8 @@ Type TCamera Extends TEntity
 		TEntity.GetTargetPosition target,x,y,z
 		
 		Local w#=1.0
-	   _lastmodelview.TransformVector x,y,z,w
-	   _lastprojection.TransformVector x,y,z,w
+	   _lastmodelview.TransformVec4 x,y,z,w
+	   _lastprojection.TransformVec4 x,y,z,w
 	   If w=0 Return False
 	   x:/w;y:/w;z:/w
 	    

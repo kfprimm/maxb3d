@@ -50,7 +50,7 @@ Type TBoneAnimator Extends TAnimator
 			_bone[i].GetPosition x,y,z
 			
 			x:+key._px;y:+key._py;z:+key._pz
-			TQuaternion.Matrix(key._rw,key._rx,key._ry,key._rz).TransformVector x,y,z,w
+			TQuaternion.Matrix(key._rw,key._rx,key._ry,key._rz).TransformVec4 x,y,z,w
 			
 			
 			_bone[i].SetPosition x,y,z

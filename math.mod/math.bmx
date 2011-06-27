@@ -8,14 +8,13 @@ Module MaxB3D.Math
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
+Import sys87.Math3D
 Import "collision.cpp"
 Import "geom.cpp"
 Import "misc.cpp"
 Import "std.cpp"
 Import "tree.cpp"
 
-' Seperated to bypass a "feature" that would otherwise result in a linking error...ugh.
-Import "types.bmx"
 
 Extern
 	Function C_UpdateNormals(no_tris:Int,no_verts:Int,tris:Int Ptr,vert_coords:Float Ptr,vert_norms:Float Ptr)

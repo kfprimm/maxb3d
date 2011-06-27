@@ -165,8 +165,7 @@ Type TSurface
 	
 	Method Transform(matrix:TMatrix)
 		For Local i=0 To _vertexcnt-1
-			Local w#=1.0
-			matrix.TransformVector _vertexpos[i*3+0],_vertexpos[i*3+1],_vertexpos[i*3+2],w
+			matrix.TransformVec3 _vertexpos[i*3+0],_vertexpos[i*3+1],_vertexpos[i*3+2]
 			'matrix.TransformVector _vertexnml[i+0],_vertexnml[i+1],_vertexnml[i+2],w
 		Next
 	End Method

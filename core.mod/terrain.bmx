@@ -99,8 +99,7 @@ Type TTerrain Extends TEntity
 			_update = False
 		EndIf
 		
-		Local w#=1.0
-		_matrix.TransformVector x,y,z,w
+		_matrix.TransformVec3 x,y,z
 		roam_set_frustum _handle,x,y,z,frustrum
 		roam_optimize _handle	
 		_data=roam_getdata(_handle, _count)

@@ -164,8 +164,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		
 		d3dlight.Direction_x=0.0;d3dlight.Direction_y=0.0;d3dlight.Direction_z=1.0
 				
-		Local matrix:TMatrix=light._matrix,w#=1
-		matrix.TransformVector d3dlight.Direction_x,d3dlight.Direction_y,d3dlight.Direction_z,w
+		Local matrix:TMatrix=light._matrix
+		matrix.TransformVec3 d3dlight.Direction_x,d3dlight.Direction_y,d3dlight.Direction_z
 		matrix.GetPosition d3dlight.Position_x,d3dlight.Position_y,d3dlight.Position_z		
 		
 		d3dlight.Range=light._range		

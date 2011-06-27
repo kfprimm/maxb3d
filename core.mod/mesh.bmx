@@ -322,8 +322,7 @@ Type TMesh Extends TAnimEntity
 		y=y+(_maxy-_miny)/2.0
 		z=z+(_maxz-_minz)/2.0
 		
-		Local w#=1.0
-		_matrix.TransformVector x,y,z,w
+		_matrix.TransformVec3 x,y,z
 		
 		Local sx#,sy#,sz#
 		GetScale sx,sy,sz,True
