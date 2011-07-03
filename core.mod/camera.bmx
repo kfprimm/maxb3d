@@ -106,6 +106,13 @@ Type TCamera Extends TEntity
 		_zoom=zoom
 	End Method
 	
+	Method GetEye:TRay()
+		Local x#,y#,z#,dx#,dy#,dz#=1.0,o:TVector,d:TVector
+		GetPosition x,y,z,True
+		_matrix.TransformVec3 dx,dy,dz
+		Return New TRay.Create(New TVector.Create3(x,y,z),New TVector.Create3(dx-x,dy-y,dz-x))		
+	End Method
+	
 	Method Project(target:Object,x# Var,y# Var)
 		Local z#
 		TEntity.GetTargetPosition target,x,y,z

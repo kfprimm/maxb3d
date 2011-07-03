@@ -90,6 +90,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			_d3ddev.SetTextureStageState 0,D3DTSS_ALPHAOP,D3DTOP_MODULATE
 			
 			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_NONE
+			_d3ddev.SetRenderState D3DRS_FILLMODE,D3DFILL_SOLID
 		Else
 			_d3ddev.SetRenderState D3DRS_ZENABLE,True
 			_d3ddev.SetRenderState D3DRS_ZWRITEENABLE,True
@@ -313,9 +314,9 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	Method EndEntityRender(entity:TEntity)
 	End Method
 	
-	Method RenderPlane(plane:TPlane)
+	Method RenderFlat(flat:TFlat)
 		Local x#,y#,z#
-		plane.GetScale x,y,z,True
+		flat.GetScale x,y,z,True
 
 		Global _data#[]=[ -1.0,0.0, 1.0, 0.0,1.0,0.0, 0.0,0.0, ..
 		                   1.0,0.0, 1.0, 0.0,1.0,0.0,   x,0.0, ..
@@ -328,6 +329,33 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	End Method
 	
 	Method RenderTerrain(terrain:TTerrain)
+	End Method
+	
+	Method RenderBSPTree(tree:TBSPTree)
+		Local node:TBSPNode=tree.Node
+		If node=Null Return
+		Local triangles
+		triangles:+RenderBSPTree(node.In)
+		
+		_d3ddev.SetVertexDeclaration Null
+		_d3ddev.SetFVF D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX1
+				
+		For Local poly:TBSPPolygon=EachIn node.On
+			Local ptA:TVector=poly.Point[0],v0
+			Local trianglecnt=poly.Count()-2
+			Local data#[trianglecnt*24],dataptr:Float Ptr=data
+			For Local i=0 To trianglecnt-1
+				Local ptB:TVector=poly.Point[i+1],ptC:TVector=poly.Point[i+2]
+				data[i*24+00]=ptA.x;data[i*24+01]=ptA.y;data[i*24+02]=ptA.z;data[i*24+03]=poly.Plane.x;data[i*24+04]=poly.Plane.y;	data[i*24+05]=poly.Plane.z;data[i*24+06]=0.0;data[i*24+07]=0.0
+				data[i*24+08]=ptB.x;data[i*24+09]=ptB.y;data[i*24+10]=ptB.z;data[i*24+11]=poly.Plane.x;data[i*24+12]=poly.Plane.y;	data[i*24+13]=poly.Plane.z;data[i*24+14]=0.0;data[i*24+15]=0.0
+				data[i*24+16]=ptC.x;data[i*24+17]=ptC.y;data[i*24+18]=ptC.z;data[i*24+19]=poly.Plane.x;data[i*24+20]=poly.Plane.y;data[i*24+21]=poly.Plane.z;data[i*24+22]=0.0;data[i*24+23]=0.0
+			Next
+			_d3ddev.DrawPrimitiveUP D3DPT_TRIANGLELIST,trianglecnt,data,8*4
+			triangles:+trianglecnt
+		Next
+				
+		triangles:+RenderBSPTree(node.Out)
+		Return triangles
 	End Method
 	
 	Method UpdateTextureRes:TD3D9TextureRes(frame:TTextureFrame,flags)

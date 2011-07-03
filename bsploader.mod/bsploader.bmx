@@ -18,7 +18,6 @@ Type TMeshLoaderBSP Extends TMeshLoader
 		
 		Local surface:TSurface=mesh.AddSurface()
 		AddTreeToSurface tree,surface
-		surface.UpdateNormals
 		
 		Return True
 	End Method
@@ -33,7 +32,8 @@ Type TMeshLoaderBSP Extends TMeshLoader
 				Local ptB:TVector=poly.Point[i],ptC:TVector=poly.Point[i+1]
 				Local v1=surface.AddVertex(ptB.x,ptB.y,ptB.z)
 				Local v2=surface.AddVertex(ptC.x,ptC.y,ptC.z)			
-				surface.AddTriangle v0,v1,v2
+				Local t=surface.AddTriangle(v0,v1,v2)
+				surface.SetTriangleNormal t,-poly.Plane.x,-poly.Plane.y,-poly.Plane.z
 			Next
 		Next
 		AddTreeToSurface node.In,surface

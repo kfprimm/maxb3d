@@ -190,9 +190,9 @@ Type TMesh Extends TAnimEntity
 		Return count
 	End Method
 	
-	Method UpdateNormals()
+	Method UpdateNormals(smoothing=True)
 		For Local surface:TSurface=EachIn _surfaces
-			surface.UpdateNormals()
+			surface.UpdateNormals(smoothing)
 		Next
 	End Method
 	

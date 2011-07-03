@@ -6,9 +6,10 @@ Import sys87.BufferedMax2D
 Import "light.bmx"
 Import "camera.bmx"
 Import "mesh.bmx"
-Import "plane.bmx"
+Import "flat.bmx"
 Import "sprite.bmx"
 Import "terrain.bmx"
+Import "bspmodel.bmx"
 
 Private
 Function ModuleLog(message$)
@@ -93,9 +94,10 @@ Type TMaxB3DDriver Extends TBufferedMax2DDriver
 	Method EndEntityRender(entity:TEntity) Abstract
 	
 	Method RenderSurface(surface:TSurfaceRes,brush:TBrush) Abstract
-	Method RenderPlane(plane:TPlane) Abstract	
+	Method RenderFlat(plane:TFlat) Abstract	
 	Method RenderSprite(sprite:TSprite) Abstract
 	Method RenderTerrain(terrain:TTerrain) Abstract
+	Method RenderBSPTree(tree:TBSPTree) Abstract
 	
 	Method UpdateTextureRes:TTextureRes(frame:TTextureFrame,flags) Abstract
 	Method UpdateSurfaceRes:TSurfaceRes(surface:TSurface) Abstract

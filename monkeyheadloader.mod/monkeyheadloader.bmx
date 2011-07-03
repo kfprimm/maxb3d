@@ -25,7 +25,7 @@ Type TMeshLoaderMONKEYHEAD Extends TMeshLoader
 			
 			For Local i=0 To vc-1
 				surface.SetCoord i,v[i*3+0],v[i*3+1],v[i*3+2]
-				surface.SetNormal i,-n[i*3+0],-n[i*3+1],-n[i*3+2]
+				'surface.SetNormal i,-n[i*3+0],-n[i*3+1],-n[i*3+2]
 			Next
 			
 			For Local i=0 To tc-1
@@ -40,7 +40,7 @@ Type TMeshLoaderMONKEYHEAD Extends TMeshLoader
 		Return "Suzanne"
 	End Method
 	Method ModuleName$()
-		Return "monkeyheaderloader"
+		Return "monkeyheadloader"
 	End Method
 End Type
 New TMeshLoaderMONKEYHEAD

@@ -185,9 +185,47 @@ Type TSurface
 		_resetbounds=False
 	End Method
 	
-	Method UpdateNormals()
-		C_UpdateNormals(_trianglecnt,_vertexcnt,_triangle,_vertexpos,_vertexnml)
+	Method UpdateNormals(smoothing=True)
+		If smoothing
+			C_UpdateNormals(_trianglecnt,_vertexcnt,_triangle,_vertexpos,_vertexnml)
+		Else
+			Local face_normal:TVector[_trianglecnt],vertex_triangles[][_vertexcnt]
+						
+			For Local i=0 To _trianglecnt-1
+				Local v0,v1,v2
+				GetTriangle i,v0,v1,v2
+				
+				vertex_triangles[v0]:+[i]
+				vertex_triangles[v1]:+[i]
+				vertex_triangles[v2]:+[i]
+				
+				Local a:TVector=New TVector,b:TVector=New TVector,c:TVector=New TVector
+				GetCoord v0,a.x,a.y,a.z
+				GetCoord v1,b.x,b.y,b.z
+				GetCoord v2,c.x,c.y,c.z
+				
+				face_normal[i]=New TVector.FromTriangle(a,b,c)	
+			Next
+	
+			Local normal:TVector=New TVector
+			For Local i=0 To _vertexcnt-1
+				normal.Create3(0,0,0)
+				For Local t=0 To vertex_triangles[i].length-1
+					normal=normal.Add(face_normal[vertex_triangles[i][t]])		
+				Next
+				normal.Normalize()				
+				SetNormal i,-normal.x,-normal.y,-normal.z
+			Next		
+		EndIf
 		_reset:|2
+	End Method
+	
+	Method SetTriangleNormal(index,nx#,ny#,nz#)
+		Local v0,v1,v2
+		GetTriangle index,v0,v1,v2
+		SetNormal v0,nx,ny,nz
+		SetNormal v1,nx,ny,nz
+		SetNormal v2,nx,ny,nz
 	End Method
 	
 	Method GetBrush:TBrush()

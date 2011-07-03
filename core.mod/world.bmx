@@ -224,10 +224,10 @@ Type TWorld
 		Return mesh
 	End Method
 	
-	Method AddPlane:TPlane(parent:TEntity=Null)
-		Local plane:TPlane=New TPlane
-		plane.AddToWorld parent,[WORLDLIST_PLANE,WORLDLIST_RENDER]
-		Return plane
+	Method AddFlat:TFlat(parent:TEntity=Null)
+		Local flat:TFlat=New TFlat
+		flat.AddToWorld parent,[WORLDLIST_FLAT,WORLDLIST_RENDER]
+		Return flat
 	End Method
 	
 	Method AddSprite:TSprite(url:Object,flags=TEXTURE_DEFAULT,parent:TEntity=Null)
@@ -254,6 +254,13 @@ Type TWorld
 		Local bone:TBone=New TBone
 		bone.AddToWorld parent,[WORLDLIST_BONE]
 		Return bone
+	End Method
+	
+	Method AddBSPModel:TBSPModel(url:Object,parent:TEntity=Null)
+		Local bsp:TBSPModel=New TBSPModel
+		bsp.SetTree TBSPTree(url)
+		bsp.AddToWorld parent,[WORLDLIST_BSPMODEL,WORLDLIST_RENDER]
+		Return bsp
 	End Method
 	
 	Method Render:TRenderInfo(tween#=1.0)
@@ -352,7 +359,8 @@ Type TWorld
 		info.Entities=0
 		If Not list.IsEmpty() info.Entities=list.Count()
 		For Local entity:TEntity=EachIn list
-			Local mesh:TMesh=TMesh(entity),plane:TPlane=TPlane(entity),terrain:TTerrain=TTerrain(entity),sprite:TSprite=TSprite(entity)
+			Local mesh:TMesh=TMesh(entity),flat:TFlat=TFlat(entity),terrain:TTerrain=TTerrain(entity)
+			Local sprite:TSprite=TSprite(entity),bsp:TBSPModel=TBSPModel(entity)
 			Local brush:TBrush=entity._brush
 			If brush._a=0 Continue
 			driver.BeginEntityRender entity
@@ -373,8 +381,8 @@ Type TWorld
 				Next
 			Else
 				driver.SetBrush brush,brush._a<>1
-				If plane					
-					info.Triangles:+driver.RenderPlane(plane)
+				If flat					
+					info.Triangles:+driver.RenderFlat(flat)
 				ElseIf sprite				
 					driver.RenderSprite(sprite)
 					info.Triangles:+4+(4*(brush._fx&FX_NOCULLING<>0))
@@ -383,6 +391,9 @@ Type TWorld
 					camera.GetPosition x,y,z,True
 					terrain.Update x,y,z,camera._lastfrustum.ToPtr()
 					info.Triangles:+driver.RenderTerrain(terrain)
+				ElseIf bsp
+					Local tree:TBSPTree=bsp.GetRenderTree(camera.GetEye())
+					info.Triangles:+driver.RenderBSPTree(tree)
 				EndIf	
 			EndIf
 			driver.EndEntityRender entity		

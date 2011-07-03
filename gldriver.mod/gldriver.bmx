@@ -435,9 +435,9 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glPopMatrix
 	End Method
 	
-	Method RenderPlane(plane:TPlane)
+	Method RenderFlat(flat:TFlat)
 		Local x#,y#,z#
-		plane.GetScale x,y,z,True
+		flat.GetScale x,y,z,True
 		
 		glBegin GL_QUADS
 			glNormal3f 0,1,0
@@ -510,6 +510,32 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glEnableClientState GL_NORMAL_ARRAY 
 	End Method
 	
+	Method RenderBSPTree(tree:TBSPTree)
+		Local node:TBSPNode=tree.Node
+		If node=Null Return
+		Local triangles
+		triangles:+RenderBSPTree(node.In)
+		
+		glBegin GL_TRIANGLES
+		
+		For Local poly:TBSPPolygon=EachIn node.On
+			glNormal3f poly.Plane.x,poly.Plane.y,poly.Plane.z
+			Local ptA:TVector=poly.Point[0],v0
+			For Local i=1 To poly.Count()-2
+				Local ptB:TVector=poly.Point[i],ptC:TVector=poly.Point[i+1]
+				glVertex3f ptA.x,ptA.y,ptA.z
+				glVertex3f ptB.x,ptB.y,ptB.z
+				glVertex3f ptC.x,ptC.y,ptC.z
+			Next
+			triangles:+poly.Count()-2
+		Next
+		
+		glEnd
+		
+		triangles:+RenderBSPTree(node.Out)
+		Return triangles
+	End Method
+
 	Method UpdateTextureRes:TGLTextureRes(frame:TTextureFrame,flags)
 		If frame=Null Return Null
 		

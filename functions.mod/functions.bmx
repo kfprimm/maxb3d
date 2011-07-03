@@ -713,8 +713,8 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function UpdateMeshNormals(mesh:TMesh)
-	Return mesh.UpdateNormals()
+Function UpdateMeshNormals(mesh:TMesh,smoothing=True)
+	Return mesh.UpdateNormals(smoothing)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -779,12 +779,12 @@ Function CreatePivot:TPivot(parent:TEntity=Null)
 	Return _currentworld.AddPivot(parent)
 End Function
 
-'Planes
+'Flats (plane)
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function CreatePlane:TPlane(parent:TEntity=Null)
-	Return _currentworld.AddPlane(parent)
+Function CreateFlat:TFlat(parent:TEntity=Null)
+	Return _currentworld.AddFlat(parent)
 End Function
 
 'Sprite
@@ -853,8 +853,8 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function UpdateSurfaceNormals(surface:TSurface)
-	Return surface.UpdateNormals()
+Function UpdateSurfaceNormals(surface:TSurface,smoothing=True)
+	Return surface.UpdateNormals(smoothing)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -1130,3 +1130,11 @@ End Rem
 Function AddShaderCodeFrags(code:TShaderCode,frags:TShaderFrag[])
 	Return code.AddFrags(frags)
 End Function
+
+'BSP
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function LoadBSPModel:TBSPModel(url:Object,parent:TEntity=Null)
+	Return _currentworld.AddBSPModel(url,parent)
+End function

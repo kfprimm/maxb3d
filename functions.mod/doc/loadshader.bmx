@@ -7,7 +7,7 @@ Import MaxB3D.MonkeyHeadLoader
 Import MaxB3D.Shaders
 
 GLGraphics3D 800,600
-SetShaderDriver CgSLShaderDriver()
+SetShaderDriver glSLShaderDriver()
 
 Local light:TLight=CreateLight()
 
