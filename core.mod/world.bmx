@@ -85,18 +85,27 @@ Type TWorld
 			Next
 		ElseIf TPixmap(url) 
 			pixmap=[TPixmap(url)]
+			If pixmap[0]=Null 
+				If url ModuleLog "Invalid texture url passed. ("+url.ToString()+")" Else ModuleLog "Invalid texture url passed. ("+url.ToString()+")"
+				Return Null
+			EndIf
 		Else
 			pixmap=[LoadPixmap(GetStream(url))]
+			If pixmap[0]=Null 
+				If url ModuleLog "Invalid texture url passed. ("+url.ToString()+")" Else ModuleLog "Invalid texture url passed. ("+url.ToString()+")"
+				Return Null
+			EndIf
 		EndIf
 		
-		If pixmap=Null 
+		If pixmap.length=0
 			If url ModuleLog "Invalid texture url passed. ("+url.ToString()+")" Else ModuleLog "Invalid texture url passed. ("+url.ToString()+")"
 			Return Null
 		EndIf
+				
 		texture.SetSize -1,-1,pixmap.length
 		For Local i=0 To pixmap.length-1
 			texture.SetPixmap pixmap[i],i
-		Next
+		Next			
 		texture.SetFlags flags
 		_config.AddObject texture,WORLDLIST_TEXTURE
 		Return texture
@@ -376,7 +385,7 @@ Type TWorld
 					EndIf
 					If surface._brush._a=0 Continue					
 					Local resource:TSurfaceRes=driver.MergeSurfaceRes(surface,animation_surface,merge_data)				'driver.UpdateSurfaceRes(surface)
-					brush=driver.MakeBrush(surface._brush,mesh._brush)
+					brush=surface._brush.Merge(mesh._brush)
 					driver.SetBrush brush,surface.HasAlpha() Or brush._fx&FX_FORCEALPHA
 					info.Triangles:+driver.RenderSurface(resource,brush)
 				Next

@@ -4,7 +4,7 @@ Strict
 Import MaxB3D.Drivers
 Import MaxB3D.MD2Loader
 
-Graphics 800,600
+GLGraphics3D 800,600
 
 Local room_texture:TTexture=LoadTexture( "media/chorme-2.bmp" )
 SetTextureScale room_texture,1.0/3,1.0/3
@@ -43,9 +43,9 @@ SetMeshAnim dragon,anim_idle,ANIMATION_LOOP,.05
 
 While Not KeyHit(KEY_ESCAPE) And Not AppTerminate()
 
-	If KeyDown(KEY_RIGHT)
+	If KeyDown(KEY_LEFT)
 		cam_yr=cam_yr-2
-	Else If KeyDown(KEY_LEFT)
+	Else If KeyDown(KEY_RIGHT)
 		cam_yr=cam_yr+2
 	EndIf
 	

@@ -38,12 +38,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			EndMax2D
 		EndIf
 	End Method
-	
-	Method Flip(sync)
-		Super.Flip(sync)
-		If _d3ddev<>Null EndMax2D ' TODO: Figure out when this needs to be called. Most likely NOT always!
-	End Method
-	
+		
 	Method MakeBuffer:TBuffer(src:Object,width,height,flags)
 		Return _parent.MakeBuffer(src,width,height,flags)
 	End Method

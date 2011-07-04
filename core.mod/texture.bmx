@@ -50,6 +50,7 @@ Type TTexture
 	End Method
 	
 	Method SetPixmap:TPixmap(pixmap:TPixmap,index=0)
+		If pixmap=Null _frame[index]=Null;Return
 		If _frame[index]=Null _frame[index]=New TTextureFrame
 		_frame[index]._pixmap=ConvertPixmap(pixmap,PF_BGRA8888)
 		_frame[index]._updateres=True

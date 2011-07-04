@@ -2,10 +2,12 @@
 Strict
 
 Framework MaxB3D.GUI
+Import MaxB3D.Loaders
 Import BRL.Timer
 
 AppTitle="MediaView"
-SetWorld CreateWorld()
+SetGraphicsDriver D3D9MaxB3DDriver(),GRAPHICS_BACKBUFFER|GRAPHICS_DEPTHBUFFER
+
 New TApplet.Run
 
 Type TApplet
@@ -17,7 +19,8 @@ Type TApplet
 		canvas=CreateCanvas(0,0,ClientWidth(window),ClientHeight(window),window)
 		SetGadgetLayout canvas,EDGE_ALIGNED,EDGE_ALIGNED,EDGE_ALIGNED,EDGE_ALIGNED
 		
-		CreateLight()		
+		CreateLight()	
+			
 		mesh=CreateCube()
 		camera=CreateCamera()
 		SetEntityPosition camera,0,0,-5

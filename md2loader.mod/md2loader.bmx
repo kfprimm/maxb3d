@@ -43,7 +43,7 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 	  Local offset_end=ReadInt(stream)
 		
 		Local skin$[num_skins]
-		Local st:Short[num_st*2]
+		Local st#[num_st*2]
 		Local tri:Short[num_tris*6]
 				
 		SeekStream stream, offset_skins
@@ -53,8 +53,8 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 		
 		SeekStream stream, offset_st
 		For Local i=0 To num_st-1
-			st[(i*2)+0]=ReadShort(stream)
-			st[(i*2)+1]=ReadShort(stream)
+			st[(i*2)+0]=ReadShort(stream)/Float(skinwidth)
+			st[(i*2)+1]=ReadShort(stream)/Float(skinwidth)
 		Next
 		
 		SeekStream stream, offset_tris
@@ -68,15 +68,15 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 		Next
 		
 		Local master_surface:TSurface=New TSurface
-		master_surface.Resize(num_tris,num_tris)
+		master_surface.Resize(num_vertices,num_tris)
 		For Local i=0 To num_tris-1
 			Local v0=tri[(i*6)+0],v1=tri[(i*6)+1],v2=tri[(i*6)+2]
 			Local tc0=tri[(i*6)+3],tc1=tri[(i*6)+4],tc2=tri[(i*6)+5]
 						
 			master_surface.SetTriangle i,v2,v1,v0
-			master_surface.SetTexCoord v0,st[(tc0*2)+0]/Float(skinwidth),st[(tc0*2)+1]/Float(skinheight)
-			master_surface.SetTexCoord v1,st[(tc1*2)+0]/Float(skinwidth),st[(tc1*2)+1]/Float(skinheight)
-			master_surface.SetTexCoord v2,st[(tc2*2)+0]/Float(skinwidth),st[(tc2*2)+1]/Float(skinheight)
+			master_surface.SetTexCoord v0,1.0-(st[(tc0*2)+0]),st[(tc0*2)+1]
+			master_surface.SetTexCoord v1,1.0-(st[(tc1*2)+0]),st[(tc1*2)+1]
+			master_surface.SetTexCoord v2,1.0-(st[(tc2*2)+0]),st[(tc2*2)+1]
 		Next
 				
 		SeekStream stream,offset_frames

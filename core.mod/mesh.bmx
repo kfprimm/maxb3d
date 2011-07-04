@@ -35,21 +35,42 @@ Type TMesh Extends TAnimEntity
 		Next
 	End Method
 	
+	Method CopyData(entity:TEntity)
+		Super.CopyData entity
+		
+		Local mesh:TMesh=TMesh(entity)
+	End Method
+	
 	Method Copy:TMesh(parent:TEntity=Null)
 		Local mesh:TMesh=New TMesh
-		mesh.AddToWorld parent,[WORLDLIST_MESH,WORLDLIST_RENDER]
-		mesh._surfaces=_surfaces[..]
+		mesh.CopyData Self
+		
+		For Local surface:TSurface=EachIn _surfaces
+			mesh.AppendSurface surface
+		Next
+		
+		mesh.AddToWorld parent,[WORLDLIST_MESH,WORLDLIST_RENDER]		
 		Return mesh
 	End Method
 	
 	Method Clone:TMesh(parent:TEntity=Null)
 		Local mesh:TMesh=New TMesh
-		mesh.AddToWorld parent,[WORLDLIST_MESH,WORLDLIST_RENDER]
-		mesh._surfaces=New TSurface[_surfaces.length]
-		For Local i=0 To _surfaces.length-1
-			mesh._surfaces[i]=_surfaces[i].Copy()
+		mesh.CopyData Self
+		
+		For Local surface:TSurface=EachIn _surfaces
+			mesh.AppendSurface surface.Copy()
 		Next
+		
+		mesh.AddToWorld parent,[WORLDLIST_MESH,WORLDLIST_RENDER]
 		Return mesh
+	End Method
+	
+	Method Add(mesh:TMesh)
+		For Local surface:TSurface=EachIn mesh._surfaces
+			Local new_surface:TSurface=surface.Copy()
+			new_surface.SetBrush new_surface._brush.Merge(mesh._brush)
+			AppendSurface new_surface
+		Next
 	End Method
 	
 	Method AddSurface:TSurface(brush:TBrush=Null,vertices=0,triangles=0)
@@ -116,10 +137,9 @@ Type TMesh Extends TAnimEntity
 	Method Fit(x#,y#,z#,width#,height#,depth#,uniform=False)
 		Local mw#,mh#,md#,wr#,hr#,dr#
 		GetSize mw,mh,md
-		If uniform=True									
-			wr=mw/width;hr=mh/height;dr=md/depth
-			
-			If wr>=hr And wr>=dr	
+		wr=mw/width;hr=mh/height;dr=md/depth		
+		If uniform	
+			If wr>=hr And wr>=dr
 				y=y+((height-(mh/wr))/2.0)
 				z=z+((depth-(md/wr))/2.0)
 				
@@ -130,7 +150,7 @@ Type TMesh Extends TAnimEntity
 				z=z+((depth-(md/hr))/2.0)
 			
 				width=mw/hr
-				depth=md/hr						
+				depth=md/hr		
 			Else			
 				x=x+((width-(mw/dr))/2.0)
 				y=y+((height-(mh/dr))/2.0)
@@ -138,27 +158,25 @@ Type TMesh Extends TAnimEntity
 				width=mw/dr
 				height=mh/dr								
 			EndIf
-		EndIf
-				
-		wr=mw/width;hr=mh/height;dr=md/depth
+		EndIf		
 		
+		Local mx#=_maxx-_minx,my#=_maxy-_miny,mz#=_maxz-_minz		
 		For Local surface:TSurface=EachIn _surfaces				
-			For Local v=0 To surface.CountVertices()-1
-				Local vx#,vy#,vz#,ux#,uy#,uz#,nx#,ny#,nz#
+			For Local v=0 To surface._vertexcnt-1		
+				Local vx#,vy#,vz#,nx#,ny#,nz#
 				surface.GetCoord v,vx,vy,vz
-				surface.GetNormal v,nx,ny,nz				
-
-				If mw<0.0001 And mw>-0.0001 ux=0.0 Else ux=(vx-_minx)/mw
-				If mh<0.0001 And mh>-0.0001 uy=0.0 Else uy=(vy-_miny)/mh
-				If md<0.0001 And md>-0.0001 uz=0.0 Else uz=(vz-_minz)/md
-										
-				vx=x+(ux*width);vy=y+(uy*height);vz=z+(uz*depth)			
-				nx:*wr;ny:*hr;nz:*dr				
-			
-				surface.SetCoord v,vx,vy,vz				
-				surface.SetNormal v,nx,ny,nz
-			Next			
-		Next		
+				surface.GetNormal v,nx,ny,nz
+				
+				Local ux#,uy#,uz#
+				
+				If mx<0.0001 And mx>-0.0001 Then ux=0.0 Else ux=(vx-_minx)/mx
+				If my<0.0001 And my>-0.0001 Then uy=0.0 Else uy=(vy-_miny)/my
+				If mz<0.0001 And mz>-0.0001 Then uz=0.0 Else uz=(vz-_minz)/mz
+				
+				surface.SetCoord v,x+(ux*width),y+(uy*height),z+(uz*depth)
+				surface.SetNormal v,nx*wr,ny*hr,nz*dr
+			Next
+		Next
 	End Method
 	
 	Method Center()
@@ -330,6 +348,28 @@ Type TMesh Extends TAnimEntity
 		
 		Local rx#=radius*sx,ry#=radius*sy,rz#=radius*sz
 		radius=Max(Max(rx,ry),rz)
+	End Method
+	
+	Method ObjectEnumerator:TSurfaceEnumerator()
+		Return New TSurfaceEnumerator.Create(_surfaces)
+	End Method
+End Type
+
+Type TSurfaceEnumerator
+	Field _surfaces:TSurface[],_pos=-1
+	
+	Method Create:TSurfaceEnumerator(surfaces:TSurface[])
+		_surfaces=surfaces[..]
+		Return Self
+	End Method
+	
+	Method NextObject:Object()
+		_pos:+1
+		Return _surfaces[_pos]
+	End Method
+	
+	Method HasNext()
+		Return _pos<_surfaces.length-1
 	End Method
 End Type
 

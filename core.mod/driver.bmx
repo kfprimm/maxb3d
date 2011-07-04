@@ -43,14 +43,25 @@ Type TMaxB3DDriver Extends TBufferedMax2DDriver
 		Return Super.CreateGraphics(width,height,depth,hertz,flags)
 	End Method
 	
+	Method AttachGraphics:TGraphics( widget,flags )
+		RunHooks _creategraphicshook,Null
+		Return Super.AttachGraphics(widget,flags)
+	End Method
+	
 	Method SetGraphics(g:TGraphics)
 		_parent.SetGraphics(g)
 		_current=g
-		WorldConfig.Width=GraphicsWidth()
-		WorldConfig.Height=GraphicsHeight()	
-		ScaleViewports	
-		_prevwidth=GraphicsWidth();_prevheight=GraphicsHeight()
-		_caps=GetCaps()
+		If _prevwidth<>GraphicsWidth() Or _prevheight<>GraphicsHeight()
+			WorldConfig.Width=GraphicsWidth()
+			WorldConfig.Height=GraphicsHeight()	
+			ScaleViewports	
+			_prevwidth=GraphicsWidth();_prevheight=GraphicsHeight()
+		EndIf
+		Global firsttime=True
+		If firsttime
+			_caps=GetCaps()
+			firsttime=False
+		EndIf
 	End Method
 	
 	Method MakeBuffer:TBuffer(src:Object,width,height,flags) Abstract
@@ -104,35 +115,6 @@ Type TMaxB3DDriver Extends TBufferedMax2DDriver
 
 	Method MergeSurfaceRes:TSurfaceRes(base:TSurface,animation:TSurface,data) Abstract
 		
-	Function MakeBrush:TBrush(brush:TBrush,master:TBrush)
-		Local red#,green#,blue#,alpha#,shine#,blend,fx,shader:TShader
-		red=master._r;green=master._g;blue=master._b;alpha=master._a
-		blend=master._blend;fx=master._fx;shader=master._shader
-		
-		red:*brush._r;green:*brush._g;blue:*brush._b;alpha:*brush._a
-		Local shine2#=brush._shine
-		If shine=0.0 Then shine=shine2
-		If shine<>0.0 And shine2<>0.0 Then shine:*shine2
-		If blend=0 Then blend=brush._blend
-		fx=fx|brush._fx
-		If shader=Null shader=brush._shader
-		
-		Local newbrush:TBrush=New TBrush
-		newbrush.SetColor red*255,green*255,blue*255
-		newbrush.SetAlpha alpha
-		newbrush.SetShine shine
-		newbrush.SetBlend blend
-		newbrush.SetFX fx
-		newbrush.SetShader shader
-		
-		For Local i=0 To 7
-			newbrush.SetTexture brush._texture[i],i',brush._textureframe[i]
-			If master._texture[i] newbrush.SetTexture master._texture[i],i',master._textureframe[i]
-		Next
-		
-		Return newbrush
-	End Function
-	
 	Method ScaleViewports()
 		For Local camera:TCamera=EachIn WorldConfig.List[WORLDLIST_CAMERA]
 			Local x,y,width,height

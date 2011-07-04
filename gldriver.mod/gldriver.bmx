@@ -50,14 +50,10 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			ModuleLog "Vendor:   "+String.FromCString(Byte Ptr(glGetString(GL_VENDOR)))
 			ModuleLog "Renderer: "+String.FromCString(Byte Ptr(glGetString(GL_RENDERER))) 
 			ModuleLog "Version:  "+String.FromCString(Byte Ptr(glGetString(GL_VERSION)))
-			ModuleLog "Extensions supported: "
-			For Local ext$=EachIn caps.Extensions
-				ModuleLog ext
-			Next
-			_firsttime=False
-		Else
-			EnableStates
+			ModuleLog "Extensions supported: "+" ".Join(caps.Extensions)
+			_firsttime=False			
 		EndIf		
+		EnableStates
 	End Method
 	
 	Function EnableStates()	

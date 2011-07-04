@@ -27,6 +27,35 @@ Type TBrush
 		Return newbrush
 	End Method
 	
+	Method Merge:TBrush(master:TBrush)
+		Local red#,green#,blue#,alpha#,shine#,blend,fx,shader:TShader
+		red=master._r;green=master._g;blue=master._b;alpha=master._a
+		blend=master._blend;fx=master._fx;shader=master._shader
+		
+		red:*_r;green:*_g;blue:*_b;alpha:*_a
+		Local shine2#=_shine
+		If shine=0.0 Then shine=shine2
+		If shine<>0.0 And shine2<>0.0 Then shine:*shine2
+		If blend=0 Then blend=_blend
+		fx:|_fx
+		If shader=Null shader=_shader
+		
+		Local newbrush:TBrush=New TBrush
+		newbrush.SetColor red*255,green*255,blue*255
+		newbrush.SetAlpha alpha
+		newbrush.SetShine shine
+		newbrush.SetBlend blend
+		newbrush.SetFX fx
+		newbrush.SetShader shader
+		
+		For Local i=0 To 7
+			newbrush.SetTexture _texture[i],i,_textureframe[i]
+			If master._texture[i] newbrush.SetTexture master._texture[i],i,master._textureframe[i]
+		Next
+		
+		Return newbrush
+	End Method
+		
 	Method Load(brush:TBrush)
 		If brush=Null brush=New TBrush
 		_r=brush._r;_g=brush._g;_b=brush._b;_a=brush._a

@@ -24,7 +24,7 @@ SetEntityRotation gargoyle,0,180,0
 
 While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
 	SetWireFrame KeyDown(KEY_W)
-	
+	TurnEntity gargoyle,0,1,0
 	UpdateWorld	
 	RenderWorld
 	Flip

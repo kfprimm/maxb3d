@@ -52,6 +52,10 @@ Type TEntity
 		Next
 	End Method
 	
+	Method CopyData(entity:TEntity)
+		SetBrush entity.GetBrush()
+	End Method
+	
 	Method Copy:TEntity(parent:TEntity=Null) Abstract
 	
 	Method AddParent(parent:TEntity)
