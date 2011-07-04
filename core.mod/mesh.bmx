@@ -62,7 +62,7 @@ Type TMesh Extends TAnimEntity
 	Method AppendSurface:TSurface(surface:TSurface)
 		_surfaces=_surfaces[.._surfaces.length+1]
 		_surfaces[_surfaces.length-1]=surface
-		AddHook surface._updateboundshook,SurfaceBoundsUpdated,Self
+		surface._boundsupdatedmsg.Add BoundsUpdated,Self
 		Return surface
 	End Method
 	
@@ -86,8 +86,8 @@ Type TMesh Extends TAnimEntity
 		Next
 		If Not _updatebounds Return
 		
-		_minx=999999999;_miny=999999999;_minz=999999999
-		_maxx=-999999999;_maxy=-999999999;_maxz=-999999999
+		_minx=INFINITY;_miny=INFINITY;_minz=INFINITY
+		_maxx=-INFINITY;_maxy=-INFINITY;_maxz=-INFINITY
 		
 		For Local surface:TSurface=EachIn _surfaces		
 			_minx=Min(_minx,surface._minx);_maxx=Max(_maxx,surface._maxx)
@@ -104,9 +104,8 @@ Type TMesh Extends TAnimEntity
 		_updatebounds=False
 	End Method
 	
-	Function SurfaceBoundsUpdated:Object(id,data:Object,context:Object)
-		TMesh(context)._updatebounds=True
-		Return data
+	Function BoundsUpdated(entity:Object)
+		TMesh(entity)._updatebounds=True
 	End Function
 	
 	Method GetSize(width# Var,height# Var,depth# Var)

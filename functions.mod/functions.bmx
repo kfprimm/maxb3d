@@ -308,6 +308,12 @@ End Rem
 Function CameraProject(camera:TCamera,target:Object,x# Var,y# Var)
 	Return camera.Project(target,x,y)
 End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function CameraUnproject(camera:TCamera,wx#,wy#,wz#,x# Var,y# Var,z# Var)
+	Return camera.Unproject(wx,wy,wz,x,y,z)
+End Function
 
 'Entities
 Rem
@@ -601,7 +607,7 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function GetEntityDistance(entity:TEntity,target:Object)
+Function GetEntityDistance#(entity:TEntity,target:Object)
 	Return entity.GetDistance(target)
 End Function
 
@@ -1137,4 +1143,4 @@ Rem
 End Rem
 Function LoadBSPModel:TBSPModel(url:Object,parent:TEntity=Null)
 	Return _currentworld.AddBSPModel(url,parent)
-End function
+End Function

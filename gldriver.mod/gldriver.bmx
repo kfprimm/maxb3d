@@ -514,11 +514,10 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Local node:TBSPNode=tree.Node
 		If node=Null Return
 		Local triangles
-		triangles:+RenderBSPTree(node.In)
-		
-		glBegin GL_TRIANGLES
+		triangles:+RenderBSPTree(node.In)		
 		
 		For Local poly:TBSPPolygon=EachIn node.On
+			glBegin GL_POLYGON
 			glNormal3f poly.Plane.x,poly.Plane.y,poly.Plane.z
 			Local ptA:TVector=poly.Point[0],v0
 			For Local i=1 To poly.Count()-2
@@ -528,9 +527,8 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 				glVertex3f ptC.x,ptC.y,ptC.z
 			Next
 			triangles:+poly.Count()-2
-		Next
-		
-		glEnd
+			glEnd
+		Next	
 		
 		triangles:+RenderBSPTree(node.Out)
 		Return triangles

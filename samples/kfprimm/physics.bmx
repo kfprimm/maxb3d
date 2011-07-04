@@ -44,10 +44,10 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	
 	If run_physics UpdateWorld ,4
 	Local info:TRenderInfo=RenderWorld()
-	BeginMax2D
+	DoMax2D
 	DrawText "FPS: "+info.FPS,0,0
 	DrawText "Triangles: "+info.Triangles,0,13
-	EndMax2D
+	
 	Flip
 Wend
 

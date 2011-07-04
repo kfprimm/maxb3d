@@ -13,16 +13,14 @@ SetEntityRotation light,90,0,0
 
 Local ground_tex:TTexture=LoadTexture("media/Chorme-2.bmp")
 
-Local plane:TPlane=CreatePlane()
-SetEntityScale plane,1000,1,1000
-SetEntityTexture plane,ground_tex
+Local flat:TFlat=CreateFlat()
+SetEntityScale flat,1000,1,1000
+SetEntityTexture flat,ground_tex
 
 Local cube:TMesh=CreateCube()
 Local cube_tex:TTexture=LoadTexture("media/b3dlogo.jpg")
 SetEntityTexture cube,cube_tex
 SetEntityPosition cube,0,1,0
-
-DebugLog String.FromCString( glGetString(GL_SHADING_LANGUAGE_VERSION))
 
 While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
 	
@@ -35,12 +33,12 @@ While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
 	CameraProject camera,cube,x,y
 	
 	RenderWorld
-	BeginMax2D
+	DoMax2D
 	If CameraInView(camera,cube) DrawText "Cube",x,y	
 	DrawText "Use cursor keys to move about",0,0
 	DrawText "Projected X: "+x,0,20
 	DrawText "Projected Y: "+y,0,40
 	DrawText "CameraInView: "+CameraInView(camera,cube),0,60
-	EndMax2D
+	
 	Flip
 Wend

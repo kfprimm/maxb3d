@@ -4,14 +4,14 @@ Strict
 Import "texture.bmx"
 Import "shader.bmx"
 
-Const FX_NONE			= 0
-Const FX_FULLBRIGHT		= 1
-Const FX_VERTEXCOLOR	= 2
-Const FX_FLATSHADED		= 4
-Const FX_NOFOG			= 8
-Const FX_NOCULLING		= 16
-Const FX_FORCEALPHA		= 32
-Const FX_WIREFRAME		= 64
+Const FX_NONE        = 0
+Const FX_FULLBRIGHT  = 1
+Const FX_VERTEXCOLOR = 2
+Const FX_FLATSHADED  = 4
+Const FX_NOFOG	       = 8
+Const FX_NOCULLING   = 16
+Const FX_FORCEALPHA  = 32
+Const FX_WIREFRAME   = 64
 
 Type TBrush
 	Field _name$

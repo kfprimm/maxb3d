@@ -5,6 +5,7 @@ Import "worldconfig.bmx"
 Import "collision.bmx"
 Import "body.bmx"
 Import "pivot.bmx"
+Import "custom_entity.bmx"
 Import "driver.bmx"
 
 Private
@@ -360,7 +361,7 @@ Type TWorld
 		If Not list.IsEmpty() info.Entities=list.Count()
 		For Local entity:TEntity=EachIn list
 			Local mesh:TMesh=TMesh(entity),flat:TFlat=TFlat(entity),terrain:TTerrain=TTerrain(entity)
-			Local sprite:TSprite=TSprite(entity),bsp:TBSPModel=TBSPModel(entity)
+			Local sprite:TSprite=TSprite(entity),bsp:TBSPModel=TBSPModel(entity),custom:TCustomEntity=TCustomEntity(entity)
 			Local brush:TBrush=entity._brush
 			If brush._a=0 Continue
 			driver.BeginEntityRender entity
@@ -394,6 +395,8 @@ Type TWorld
 				ElseIf bsp
 					Local tree:TBSPTree=bsp.GetRenderTree(camera.GetEye())
 					info.Triangles:+driver.RenderBSPTree(tree)
+				ElseIf custom
+					info.Triangles:+custom.Renderer("").Render(custom)
 				EndIf	
 			EndIf
 			driver.EndEntityRender entity		

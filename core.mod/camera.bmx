@@ -130,6 +130,24 @@ Type TCamera Extends TEntity
 		Return True
 	End Method
 	
+	Method Unproject(wx#,wy#,wz#,x# Var,y# Var,z# Var)	
+		Local matrix:TMatrix=_lastprojection.Multiply(_lastmodelview).Inverse()
+		
+		Local w#=1.0
+		x=wx;y=-wy;z=wz
+		
+		x=(x-_lastviewport[0])/_lastviewport[2]
+		y=(y-_lastviewport[1])/_lastviewport[3]
+		
+		x=x*2-1;y=y*2-1;z=z*2-1
+		
+		matrix.TransformVec4 x,y,z,w
+		If w=0 Return False
+		
+		x:/w;y:/w;z:/w
+		Return True
+	End Method
+	
 	Method InView#(target:Object)
 		Local x#,y#,z#,radius#
 		Local entity:TEntity=TEntity(target),point#[]=Float[](target)
