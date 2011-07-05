@@ -2,7 +2,7 @@
 Strict
 
 Rem
-	bbdoc: Blender's 'Suzanne' model loader.
+	bbdoc: Blender's Suzanne model loader.
 End Rem
 Module MaxB3D.MonkeyHeadLoader
 
