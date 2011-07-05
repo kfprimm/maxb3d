@@ -11,8 +11,8 @@ Local light:TLight=CreateLight()
 Local camera:TCamera=CreateCamera()
 SetEntityPosition camera,0,0,-5
 
-Local mesh:TMesh=LoadMesh("bunny.obj")
-FitMesh mesh,-1,-1,-1,2,2,2,True
+Local mesh:TMesh=LoadMesh("media/bunny.obj")
+FitMesh mesh,-1,-1,-1,2,2,2
 
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	SetWireFrame KeyDown(KEY_W)

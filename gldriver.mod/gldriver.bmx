@@ -51,6 +51,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			ModuleLog "Renderer: "+String.FromCString(Byte Ptr(glGetString(GL_RENDERER))) 
 			ModuleLog "Version:  "+String.FromCString(Byte Ptr(glGetString(GL_VERSION)))
 			ModuleLog "Extensions supported: "+" ".Join(caps.Extensions)
+			EndMax2D
 			_firsttime=False			
 		EndIf		
 		EnableStates
