@@ -18,11 +18,9 @@ End Function
 
 Public
 
-Const 3DS_MAIN3DS  = $4D4D
-
 Type TMeshLoader3DS Extends TMeshLoader	
 	Method Run(mesh:TMesh,stream:TStream,url:Object)	
-		If stream=Null Return false
+		If stream=Null Return False
 		Return True
 	End Method
 	
