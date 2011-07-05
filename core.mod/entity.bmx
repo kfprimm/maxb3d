@@ -111,6 +111,17 @@ Type TEntity
 		Return _childlist.Count()+count
 	End Method
 	
+	Method FindChild:TEntity(name$,recursive=False)
+		For Local child:TEntity=EachIn _childlist
+			If child._name=name Return child
+		Next
+		If recursive
+			For Local child:TEntity=EachIn _childlist
+				If child.FindChild(name) Return child
+			Next
+		EndIf
+	End Method
+	
 	Method GetName$()
 		Return _name
 	End Method

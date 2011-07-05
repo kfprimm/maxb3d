@@ -55,6 +55,16 @@ Type TMeshLoaderMS3D Extends TMeshLoader
 			mesh.AppendSurface surface		
 		Next
 		
+		For Local joint:TMS3DJoint=EachIn model.Joints
+			Local parent:TEntity=mesh.FindChild(joint.parentName,True)
+			If parent=Null parent=mesh
+			
+			Local bone:TBone=_currentworld.AddBone(parent)
+			bone.SetName joint.name
+			bone.SetPosition joint.position[0],joint.position[1],joint.position[2]
+			bone.SetRotation joint.rotation[0],joint.rotation[1],joint.rotation[2]
+		Next
+		
 		Return True
 	End Method
 	
