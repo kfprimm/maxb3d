@@ -22,7 +22,7 @@ SetEntityPosition teapot,0,10,0
 Local ground_tex:TTexture=LoadTexture("media/sand.bmp")
 SetTextureScale ground_tex,10,10
 
-Local ground:TPlane=CreatePlane()
+Local ground:TFlat=CreateFlat()
 SetEntityColor ground,168,133,55
 SetEntityScale ground,1000,1,1000
 SetEntityTexture ground,ground_tex

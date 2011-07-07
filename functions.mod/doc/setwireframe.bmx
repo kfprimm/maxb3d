@@ -20,10 +20,9 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	
 	RenderWorld
 	
-	BeginMax2D
+	DoMax2D
 	DrawText "Press spacebar to toggle between Wireframe True/False",0,0
 	If enable=True Then DrawText "Wireframe True",0,20 Else DrawText "Wireframe False",0,20
-	EndMax2D
 	
 	Flip
 Wend

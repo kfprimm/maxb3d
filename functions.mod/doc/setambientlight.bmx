@@ -28,12 +28,11 @@ While Not KeyDown( KEY_ESCAPE )
 	
 	RenderWorld
 	
-	BeginMax2D
+	DoMax2D
 	DrawText "Press keys 1-6 to change SetAmbientLight red#,green#,blue# values",0,0
 	DrawText "Ambient Red: "+red,0,20
 	DrawText "Ambient Green: "+green,0,40
 	DrawText "Ambient Blue: "+blue,0,60
-	EndMax2D
 	
 	Flip
 Wend

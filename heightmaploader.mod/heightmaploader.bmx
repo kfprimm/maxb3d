@@ -27,8 +27,8 @@ Type TMeshLoaderHMAP Extends TMeshLoader
 			For Local b=0 To width-1
 				Local u#=b/Float(width)
 				Local vert=width*a+b
-				surface.SetCoord vert,x,pixmap.pixels[a*height+b]/255.0,y
-				surface.SetTexCoord vert,u,v
+				surface.SetCoords vert,x,pixmap.pixels[a*height+b]/255.0,y
+				surface.SetTexCoords vert,u,v
 				x:+2.0/width
 			Next
 			y:+2.0/height

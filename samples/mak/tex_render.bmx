@@ -16,9 +16,9 @@ SetColor 192,192,192;DrawRect 0,0,8,8;DrawRect 8,8,8,8
 
 SetBuffer BackBuffer()
 
-Local plane:TPlane=CreatePlane()
-SetEntityScale plane,1000,1,1000
-SetEntityTexture plane,grid_tex
+Local flat:TFlat=CreateFlat()
+SetEntityScale flat,1000,1,1000
+SetEntityTexture flat,grid_tex
 
 Local pivot:TPivot=CreatePivot()
 SetEntityPosition pivot,0,2,0

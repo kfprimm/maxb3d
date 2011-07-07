@@ -24,8 +24,8 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	
 	RenderWorld
 	
-	BeginMax2D
+	DoMax2D
 	DrawText "Use the arrow/A/Z/ keys to move the cone.",0,0
-	EndMax2D
+	
 	Flip
 Wend

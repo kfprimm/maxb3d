@@ -27,9 +27,9 @@ While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
 	TurnEntity cube,0.1,0.1,0.1
 	
 	RenderWorld
-	BeginMax2D
+	DoMax2D
 	DrawText "Use left and right cursor keys to change texture angle value",0,0
 	DrawText "angle#="+angle#,0,13
-	EndMax2D
+	
 	Flip
 Wend

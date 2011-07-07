@@ -40,7 +40,7 @@ Function MakeBones(bone:TBone)
 End Function
 
 For Local bone:TBone=EachIn zombie._childlist
-	MakeBones bone
+	'MakeBones bone
 Next
 
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
@@ -48,10 +48,10 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	
 	If KeyDown(KEY_D) UpdateWorld
 	Local info:TRenderInfo=RenderWorld()
-	BeginMax2D
+	DoMax2D
 	DrawText "Triangles: "+info.Triangles,0,0
 	DrawText "Frame: "+zombie.GetFrame(),0,14
-	EndMax2D
+	
 	Flip
 Wend
 

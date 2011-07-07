@@ -11,7 +11,7 @@ Local light:TLight=CreateLight()
 Local camera:TCamera=CreateCamera()
 SetEntityPosition camera,0,10,-20
 
-Local model:TMesh=LoadMesh("media/zombie02.ms3d")
+Local model:TMesh=LoadMesh("media/fighter1.ms3d")
 
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	SetWireFrame KeyDown(KEY_W)

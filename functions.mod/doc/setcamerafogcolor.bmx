@@ -11,14 +11,11 @@ SetEntityPosition camera, 0,1,0
 Local light:TLight = CreateLight()
 SetEntityRotation light, 90,0,0
 
-Local plane:TPlane = CreatePlane()
 Local grass_tex:TTexture = LoadTexture("media/mossyground.bmp")
 
-' PLANES NOT INFINITE (YET!) WILL REMOVE LATER!
-SetTextureScale grass_tex, .05,.05
-SetEntityScale plane, 20,20,20
-
-SetEntityTexture plane, grass_tex
+Local flat:TFlat = CreateFlat()
+SetEntityScale flat, 1000,1000,1000
+SetEntityTexture flat, grass_tex
 
 SetCameraFogMode camera, FOGMODE_LINEAR
 SetCameraFogRange camera, 1,10
@@ -41,14 +38,12 @@ While Not KeyDown(KEY_ESCAPE)
 	
 	RenderWorld
 	
-	BeginMax2D	
+	DoMax2D	
 	DrawText "Use cursor keys to move about the infinite plane",0,0
 	DrawText "Press keys 1-6 to change CameraFogColor red#,green#,blue# values",0,20
 	DrawText "Fog Red: "+red,0,40
 	DrawText "Fog Green: "+green,0,60
 	DrawText "Fog Blue: "+blue,0,80
-	EndMax2D
 	
 	Flip
-
 Wend

@@ -24,8 +24,8 @@ Type TMeshLoaderMONKEYHEAD Extends TMeshLoader
 			surface.Resize vc,tc
 			
 			For Local i=0 To vc-1
-				surface.SetCoord i,v[i*3+0],v[i*3+1],v[i*3+2]
-				'surface.SetNormal i,-n[i*3+0],-n[i*3+1],-n[i*3+2]
+				surface.SetCoords i,v[i*3+0],v[i*3+1],v[i*3+2]
+				surface.SetNormal i,-n[i*3+0],-n[i*3+1],-n[i*3+2]
 			Next
 			
 			For Local i=0 To tc-1

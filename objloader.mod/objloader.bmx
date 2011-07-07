@@ -69,9 +69,9 @@ Type TMeshLoaderOBJ Extends TMeshLoader
 					If vi1<0 vi1=v.length-vi1 Else vi1:-1					
 					If vi2<0 vi2=v.length-vi2 Else vi2:-1
 					
-					surface.SetCoord v0,v[vi0*3+0],v[vi0*3+1],v[vi0*3+2]					
-					surface.SetCoord v1,v[vi1*3+0],v[vi1*3+1],v[vi1*3+2]
-					surface.SetCoord v2,v[vi2*3+0],v[vi2*3+1],v[vi2*3+2]
+					surface.SetCoords v0,v[vi0*3+0],v[vi0*3+1],v[vi0*3+2]					
+					surface.SetCoords v1,v[vi1*3+0],v[vi1*3+1],v[vi1*3+2]
+					surface.SetCoords v2,v[vi2*3+0],v[vi2*3+1],v[vi2*3+2]
 					
 					If vn0
 						If vn0<0 vn0=vn.length-vn0 Else vn0:-1
@@ -98,8 +98,6 @@ Type TMeshLoaderOBJ Extends TMeshLoader
 		Wend
 		
 		mesh.AppendSurface surface
-		
-		mesh.UpdateNormals
 		Return True
 	End Method
 	

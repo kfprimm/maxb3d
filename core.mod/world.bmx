@@ -61,10 +61,10 @@ Type TWorld
 		If String(url)
 			Local uri$=String(url),file$=StripDir(uri)
 			For Local path$=EachIn _resource_path+[_tmp_res_path]
-				stream=ReadStream(path+"/"+file)
+				stream=ReadStream(CasedFileName(path+"/"+file))
 				If stream Return stream
 			Next
-			stream=ReadStream(file)
+			stream=ReadStream(CasedFileName(file))
 			If stream Return stream
 			Return url
 		EndIf 

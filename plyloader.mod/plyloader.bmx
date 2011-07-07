@@ -44,9 +44,9 @@ Type TMeshLoaderPLY Extends TMeshLoader
 				Local v0=vcnt+t*3+0,v1=vcnt+t*3+1,v2=vcnt+t*3+2		
 				Local vi0=verts[0],vi1=verts[t+1],vi2=verts[t+2]
 				
-				surface.SetCoord v0,vertex_x.AsFloat(vi0),vertex_y.AsFloat(vi0),vertex_z.AsFloat(vi0)
-				surface.SetCoord v1,vertex_x.AsFloat(vi1),vertex_y.AsFloat(vi1),vertex_z.AsFloat(vi1)
-				surface.SetCoord v2,vertex_x.AsFloat(vi2),vertex_y.AsFloat(vi2),vertex_z.AsFloat(vi2)
+				surface.SetCoords v0,vertex_x.AsFloat(vi0),vertex_y.AsFloat(vi0),vertex_z.AsFloat(vi0)
+				surface.SetCoords v1,vertex_x.AsFloat(vi1),vertex_y.AsFloat(vi1),vertex_z.AsFloat(vi1)
+				surface.SetCoords v2,vertex_x.AsFloat(vi2),vertex_y.AsFloat(vi2),vertex_z.AsFloat(vi2)
 				
 				surface.SetTriangle tcnt+t,v0,v1,v2
 			Next

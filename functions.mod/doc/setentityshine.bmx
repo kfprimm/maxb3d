@@ -25,10 +25,9 @@ While Not KeyDown(KEY_ESCAPE)
 
 	RenderWorld
 	
-	BeginMax2D
-	DrawText "Press keys 1-2 to change EntityShininess Setting",0,0
-	DrawText "Entity Shininess: "+shine,0,20
-	EndMax2D
+	DoMax2D
+	DrawText "Press keys 1-2 to change entity shine setting",0,0
+	DrawText "Entity shine: "+shine,0,20
 	
 	Flip
 Wend

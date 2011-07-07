@@ -17,8 +17,6 @@ Local texture:TTexture=LoadTexture("media/b3dlogo.jpg")
 
 SetEntityTexture cube,texture
 
-Local image:TImage=LoadImage(texture._pixmap)
-
 While Not KeyDown(KEY_ESCAPE) 
 	Local pitch#,yaw#,roll#
 	

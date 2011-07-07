@@ -30,19 +30,27 @@ SetEntityTexture dragon,dragon_texture
 SetEntityPosition dragon,0,25,0
 TurnEntity dragon,0,150,0
 
-Local anim_idle:TAnimSeq=ExtractMeshAnimSeq(dragon,0,40)
-Local anim_run:TAnimSeq=ExtractMeshAnimSeq(dragon,40,46)
-Local anim_attack:TAnimSeq=ExtractMeshAnimSeq(dragon,46,54)
-Local anim_paina:TAnimSeq=ExtractMeshAnimSeq(dragon,54,58)
-Local anim_painb:TAnimSeq=ExtractMeshAnimSeq(dragon,58,62)
-Local anim_painc:TAnimSeq=ExtractMeshAnimSeq(dragon,62,66)
-Local anim_jump:TAnimSeq=ExtractMeshAnimSeq(dragon,66,72)
-Local anim_flip:TAnimSeq=ExtractMeshAnimSeq(dragon,72,84)
+Local anim:TAnimSeq[8]
+anim[0]=CreateAnimSeq(0,40,"Idle")
+anim[1]=CreateAnimSeq(40,46,"Run")
+anim[2]=CreateAnimSeq(46,54,"Attack")
+anim[3]=CreateAnimSeq(54,58,"Pain A")
+anim[4]=CreateAnimSeq(58,62,"Pain B")
+anim[5]=CreateAnimSeq(62,66,"Pain C")
+anim[6]=CreateAnimSeq(66,72,"Jump")
+anim[7]=CreateAnimSeq(72,84,"Flip")
 
-SetMeshAnim dragon,anim_idle,ANIMATION_LOOP,.05
+SetMeshAnim dragon,anim[0],ANIMATION_LOOP,.05
+Local curr_anim
 
 While Not KeyHit(KEY_ESCAPE) And Not AppTerminate()
-
+	For Local i=0 To anim.length-1
+		If KeyHit(KEY_1+i)
+			SetMeshAnim dragon,anim[i],ANIMATION_LOOP,.05
+			curr_anim=i
+		EndIf
+	Next
+	
 	If KeyDown(KEY_LEFT)
 		cam_yr=cam_yr-2
 	Else If KeyDown(KEY_RIGHT)
@@ -78,6 +86,7 @@ While Not KeyHit(KEY_ESCAPE) And Not AppTerminate()
 	DoMax2D
 	DrawText "Use arrows keys to pan, A/Z to zoom",0,0
 	DrawText "FPS: "+info.FPS,0,15
+	DrawText "Current animation: "+GetAnimSeqName(anim[curr_anim]),0,30
 	
 	Flip
 Wend

@@ -74,13 +74,13 @@ Type TMeshLoaderB3D Extends TMeshLoader
 			vertsurface.Resize(vrts.xyz.length/3,0)
 			
 			For Local i=0 To vertsurface.CountVertices()-1
-				vertsurface.SetCoord i,vrts.xyz[i*3+0],vrts.xyz[i*3+1],vrts.xyz[i*3+2]
+				vertsurface.SetCoords i,vrts.xyz[i*3+0],vrts.xyz[i*3+1],vrts.xyz[i*3+2]
 				If vrts.nxyz vertsurface.SetNormal i,vrts.nxyz[i*3+0],vrts.nxyz[i*3+1],vrts.nxyz[i*3+2]
 				If vrts.rgba vertsurface.SetColor i,vrts.rgba[i*4+0]*255,vrts.rgba[i*4+1]*255,vrts.rgba[i*4+2]*255,vrts.rgba[i*4+3]
 				For Local j=0 To vrts.SetCount()-1
 					Local u#,v#
 					If vrts.SetSize()>1 u=vrts.tex_coords[i][j,0];v=vrts.tex_coords[i][j,1]
-					vertsurface.SetTexCoord i,u,v
+					vertsurface.SetTexCoords i,1-u,v
 				Next
 			Next
 			

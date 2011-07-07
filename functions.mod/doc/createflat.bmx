@@ -11,10 +11,10 @@ SetEntityPosition camera,0,1,0
 Local light:TLight=CreateLight()
 SetEntityRotation light,90,0,0
 
-Local plane:TPlane=CreatePlane()
-SetEntityScale plane,1000,1,1000
+Local flat:TFlat=CreateFlat()
+SetEntityScale flat,1000,1,1000
 Local texture:TTexture=LoadTexture("media/mossyground.bmp")
-SetEntityTexture plane,texture
+SetEntityTexture flat,texture
 
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	If KeyDown(KEY_LEFT) TurnEntity camera,0,-1,0
@@ -24,8 +24,8 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	
 	RenderWorld
 	
-	BeginMax2D
+	DoMax2D
 	DrawText "Use the arrow keys to move about the infinite plane.",0,0
-	EndMax2D
+	
 	Flip
 Wend

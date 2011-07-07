@@ -14,12 +14,13 @@ SetCameraViewport cam2,0,GraphicsHeight()/2,GraphicsWidth(),GraphicsHeight()/2
 Local light:TLight=CreateLight()
 SetEntityRotation light,90,0,0
 
-Local plane:TPlane=CreatePlane()
 Local grass_tex:TTexture=LoadTexture("media/mossyground.bmp")
-SetEntityTexture plane,grass_tex
-SetEntityPosition plane,0,0,5
 
-While Not KeyDown( KEY_ESCAPE )
+Local flat:TFlat=CreateFlat()
+SetEntityTexture flat,grass_tex
+SetEntityScale flat,1000,1,1000
+
+While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
 	
 	If KeyDown( KEY_RIGHT ) TurnEntity cam1,0,-1,0
 	If KeyDown( KEY_LEFT ) TurnEntity cam1,0,1,0
@@ -28,9 +29,9 @@ While Not KeyDown( KEY_ESCAPE )
 	
 	RenderWorld
 	
-	BeginMax2D
+	DoMax2D
 	DrawText "Use cursor keys to move the first camera about the infinite plane",0,0
-	EndMax2D
+	
 	Flip
 Wend
 

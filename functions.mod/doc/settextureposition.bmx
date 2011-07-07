@@ -29,10 +29,10 @@ While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
 	TurnEntity cube,0.1,0.1,0.1
 	
 	RenderWorld
-	BeginMax2D
+	DoMax2D
 	DrawText "Use cursor keys to change uv position values",0,0
 	DrawText "u_position#="+u_position,0,13
 	DrawText "v_position#="+v_position,0,26
-	EndMax2D
+	
 	Flip
 Wend

@@ -27,11 +27,11 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	
 	RenderWorld
 	
-	BeginMax2D
+	DoMax2D
 	DrawText "Press keys 1-6 to change the red, green, and blue values.",0,0
 	DrawText "Red: "+red,0,20
 	DrawText "Green: "+green,0,40
 	DrawText "Blue: "+blue,0,60
-	EndMax2D
+	
 	Flip
 Wend

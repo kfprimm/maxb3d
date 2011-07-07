@@ -19,11 +19,11 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	If KeyDown(KEY_UP) MoveEntity camera,0,0,0.05
 
 	Local info:TRenderInfo=RenderWorld()
-	BeginMax2D
+	DoMax2D
 	DrawText "Render Information",0,0
 	DrawText "Frames/second (FPS): "+info.FPS,0,13
 	DrawText "Triangles rendered:  "+info.Triangles,0,26
 	DrawText "Entities rendered:   "+info.Entities,0,39
-	EndMax2D
+	
 	Flip
 Wend

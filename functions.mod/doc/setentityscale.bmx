@@ -25,12 +25,11 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	
 	RenderWorld
 	
-	BeginMax2D
+	DoMax2D
 	DrawText "Use cursors/A/Z to scale the cone.",0,0
 	DrawText "X Scale: "+x_scale,0,20
 	DrawText "Y Scale: "+y_scale,0,40
 	DrawText "Z Scale: "+z_scale,0,60
-	EndMax2D
-	
+		
 	Flip
 Wend

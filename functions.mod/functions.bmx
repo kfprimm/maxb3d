@@ -777,6 +777,26 @@ Function SetMeshAnimSpeed(mesh:TMesh,speed#)
 	Return mesh.SetAnimSpeed(speed)
 End Function
 
+'Animation
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function CreateAnimSeq:TAnimSeq(first,last,name$="")
+	Return TAnimSeq.Create(first,last,name)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetAnimSeqName$(seq:TAnimSeq)
+	Return seq.GetName()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetAnimSeqName(seq:TAnimSeq,name$)
+	Return seq.SetName(name)
+End Function
+
 'Pivots
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -877,14 +897,14 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function GetSurfaceCoord(surface:TSurface,index,x# Var,y# Var,z# Var)
-	Return surface.GetCoord(index,x,y,z)
+Function GetSurfaceCoords(surface:TSurface,index,x# Var,y# Var,z# Var)
+	Return surface.GetCoords(index,x,y,z)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function SetSurfaceCoord(surface:TSurface,index,x#,y#,z#)
-	Return surface.SetCoord(index,x,y,z)
+Function SetSurfaceCoords(surface:TSurface,index,x#,y#,z#)
+	Return surface.SetCoords(index,x,y,z)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -913,14 +933,14 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function GetSurfaceTexCoord(surface:TSurface,index,u# Var,v# Var,set=0)
-	Return surface.GetTexCoord(index,u,v,set)
+Function GetSurfaceTexCoords(surface:TSurface,index,u# Var,v# Var,set=0)
+	Return surface.GetTexCoords(index,u,v,set)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function SetSurfaceTexCoord(surface:TSurface,index,u#,v#,set=0)
-	Return surface.SetTexCoord(index,u,v,set)
+Function SetSurfaceTexCoords(surface:TSurface,index,u#,v#,set=0)
+	Return surface.SetTexCoords(index,u,v,set)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO

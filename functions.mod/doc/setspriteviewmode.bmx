@@ -14,11 +14,11 @@ SetEntityPosition camera,0,0,10
 Local light:TLight=CreateLight()
 SetEntityRotation light,90,0,0
 
-Local plane:TPlane=CreatePlane()
-SetEntityScale plane,1000,1,1000
+Local flat:TFlat=CreateFlat()
+SetEntityScale flat,1000,1,1000
 
 Local ground_tex:TTexture=LoadTexture("media/Chorme-2.bmp")
-SetEntityTexture plane,ground_tex
+SetEntityTexture flat,ground_tex
 
 Local sprite:TSprite=LoadSprite("media/b3dlogo.jpg")
 SetEntityPosition sprite,0,1,0
@@ -46,12 +46,11 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 
 	RenderWorld
 	
-	BeginMax2D
+	DoMax2D
 	DrawText "Use cursor keys to orbit camera around sprite",0,0
 	DrawText "Press A and S keys to roll camera",0,20
 	DrawText "Press keys 1-4 to change sprite view mode",0,40
 	DrawText "SetSpriteViewMode: VIEWMODE_"+view_mode_info,0,60
-	EndMax2D
 	
 	Flip
 Wend

@@ -35,17 +35,17 @@ Type TMeshLoaderMS3D Extends TMeshLoader
 				Local v1:TMS3DVertex=model.Vertices[triangle.vertexIndices[1]]
 				Local v2:TMS3DVertex=model.Vertices[triangle.vertexIndices[2]]
 				
-				surface.SetCoord    i*3+0,v0.vertex[0],v0.vertex[1],v0.vertex[2]
-				surface.SetNormal   i*3+0,triangle.vertexNormals[0,0],triangle.vertexNormals[0,1],triangle.vertexNormals[0,2]
-				surface.SetTexCoord i*3+0,1.0-triangle.s[0],triangle.t[0]
+				surface.SetCoords    i*3+0,v0.vertex[0],v0.vertex[1],v0.vertex[2]
+				surface.SetNormal    i*3+0,triangle.vertexNormals[0,0],triangle.vertexNormals[0,1],triangle.vertexNormals[0,2]
+				surface.SetTexCoords i*3+0,1.0-triangle.s[0],triangle.t[0]
 				
-				surface.SetCoord    i*3+1,v1.vertex[0],v1.vertex[1],v1.vertex[2]
-				surface.SetNormal   i*3+1,triangle.vertexNormals[1,0],triangle.vertexNormals[1,1],triangle.vertexNormals[1,2]
-				surface.SetTexCoord i*3+1,1.0-triangle.s[1],triangle.t[1]
+				surface.SetCoords    i*3+1,v1.vertex[0],v1.vertex[1],v1.vertex[2]
+				surface.SetNormal    i*3+1,triangle.vertexNormals[1,0],triangle.vertexNormals[1,1],triangle.vertexNormals[1,2]
+				surface.SetTexCoords i*3+1,1.0-triangle.s[1],triangle.t[1]
 				
-				surface.SetCoord    i*3+2,v2.vertex[0],v2.vertex[1],v2.vertex[2]
-				surface.SetNormal   i*3+2,triangle.vertexNormals[2,0],triangle.vertexNormals[2,1],triangle.vertexNormals[2,2]
-				surface.SetTexCoord i*3+2,1.0-triangle.s[2],triangle.t[2]
+				surface.SetCoords    i*3+2,v2.vertex[0],v2.vertex[1],v2.vertex[2]
+				surface.SetNormal    i*3+2,triangle.vertexNormals[2,0],triangle.vertexNormals[2,1],triangle.vertexNormals[2,2]
+				surface.SetTexCoords i*3+2,1.0-triangle.s[2],triangle.t[2]
 				
 				surface.SetTriangle i,i*3+0,i*3+1,i*3+2
 			Next

@@ -75,7 +75,7 @@ Type TCamera Extends TEntity
 		near=_fognear;far=_fogfar
 	End Method
 	Method SetFogRange(near#,far#)
-		_fognear=near;_fogfar=far
+		_fognear=Max(near,0);_fogfar=Max(far,0.001)
 	End Method
 	
 	Method GetViewport(x Var,y Var,width Var,height Var)
@@ -96,7 +96,7 @@ Type TCamera Extends TEntity
 		near=_near;far=_far
 	End Method
 	Method SetRange(near#,far#)
-		_near=Max(0,near);_far=Max(0,far)
+		_near=near;_far=far
 	End Method	
 	
 	Method GetZoom#()

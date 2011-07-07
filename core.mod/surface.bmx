@@ -64,17 +64,17 @@ Type TSurface
 
 	Method AddVertex(x#,y#,z#,u#=0.0,v#=0.0)
 		Resize(_vertexcnt+1,-1)
-		SetCoord(_vertexcnt-1,x,y,z)
-		SetTexCoord(_vertexcnt-1,u,v)
+		SetCoords(_vertexcnt-1,x,y,z)
+		SetTexCoords(_vertexcnt-1,u,v)
 		Return _vertexcnt-1
 	End Method
 	
-	Method GetCoord(index,x# Var,y# Var,z# Var)
+	Method GetCoords(index,x# Var,y# Var,z# Var)
 		x=_vertexpos[index*3+0]
 		y=_vertexpos[index*3+1]
 		z=_vertexpos[index*3+2]
 	End Method
-	Method SetCoord(index,x#,y#,z#)
+	Method SetCoords(index,x#,y#,z#)
 		_vertexpos[index*3+0]=x
 		_vertexpos[index*3+1]=y
 		_vertexpos[index*3+2]=z		
@@ -107,12 +107,12 @@ Type TSurface
 		_reset:|4
 	End Method
 	
-	Method GetTexCoord(index,u# Var,v# Var,set=0)
+	Method GetTexCoords(index,u# Var,v# Var,set=0)
 		ResizeTexSets set
 		u=_vertextex[set][index*2+0]
-		v=_vertextex[set][index*2+0]
+		v=_vertextex[set][index*2+1]
 	End Method
-	Method SetTexCoord(index,u#,v#,set=0)
+	Method SetTexCoords(index,u#,v#,set=0)
 		ResizeTexSets set
 		_vertextex[set][index*2+0]=u
 		_vertextex[set][index*2+1]=v
@@ -175,7 +175,7 @@ Type TSurface
 		_maxx=-999999999;_maxy=-999999999;_maxz=-999999999
 		For Local v=0 To _vertexcnt-1
 			Local x#,y#,z#
-			GetCoord v,x,y,z				
+			GetCoords v,x,y,z				
 			_minx=Min(x,_minx);_maxx=Max(x,_maxx)
 			_miny=Min(x,_miny);_maxy=Max(y,_maxy)
 			_minz=Min(x,_minz);_maxz=Max(z,_maxz)
@@ -199,9 +199,9 @@ Type TSurface
 				vertex_triangles[v2]:+[i]
 				
 				Local a:TVector=New TVector,b:TVector=New TVector,c:TVector=New TVector
-				GetCoord v0,a.x,a.y,a.z
-				GetCoord v1,b.x,b.y,b.z
-				GetCoord v2,c.x,c.y,c.z
+				GetCoords v0,a.x,a.y,a.z
+				GetCoords v1,b.x,b.y,b.z
+				GetCoords v2,c.x,c.y,c.z
 				
 				face_normal[i]=New TVector.FromTriangle(a,b,c)	
 			Next

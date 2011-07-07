@@ -14,9 +14,9 @@ SetEntityRotation light, 90,0,0
 
 Local grass_tex:TTexture = LoadTexture("media/mossyground.bmp")
 
-Local plane:TPlane = CreatePlane()
-SetEntityScale plane, 1000,1000,1000
-SetEntityTexture plane, grass_tex
+Local flat:TFlat = CreateFlat()
+SetEntityScale flat,1000,1,1000
+SetEntityTexture flat,grass_tex
 
 Local red = 0,green = 0,blue = 0, fogmode, fogtext$="FOGMODE_NONE"
 While Not KeyDown(KEY_ESCAPE)
@@ -41,12 +41,10 @@ While Not KeyDown(KEY_ESCAPE)
 	
 	RenderWorld
 	
-	BeginMax2D	
+	DoMax2D	
 	DrawText "Use cursor keys to move about the infinite plane.", 0,0
 	DrawText "Press spacebar to toggle between fog modes.", 0,20
 	DrawText "SetCameraFogMode camera,"+fogtext, 0,40
-	EndMax2D
 	
 	Flip
-
 Wend

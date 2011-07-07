@@ -74,9 +74,9 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 			Local tc0=tri[(i*6)+3],tc1=tri[(i*6)+4],tc2=tri[(i*6)+5]
 						
 			master_surface.SetTriangle i,v2,v1,v0
-			master_surface.SetTexCoord v0,1.0-(st[(tc0*2)+0]),st[(tc0*2)+1]
-			master_surface.SetTexCoord v1,1.0-(st[(tc1*2)+0]),st[(tc1*2)+1]
-			master_surface.SetTexCoord v2,1.0-(st[(tc2*2)+0]),st[(tc2*2)+1]
+			master_surface.SetTexCoords v0,1-st[(tc0*2)+0],1-st[(tc0*2)+1]
+			master_surface.SetTexCoords v1,1-st[(tc1*2)+0],1-st[(tc1*2)+1]
+			master_surface.SetTexCoords v2,1-st[(tc2*2)+0],1-st[(tc2*2)+1]
 		Next
 				
 		SeekStream stream,offset_frames
@@ -91,7 +91,7 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 			For Local v=0 To num_vertices-1
 				Local x#=ReadByte(stream)*sx+tx,y#=ReadByte(stream)*sy+ty,z#=ReadByte(stream)*sz+tz
 				Local ni=ReadByte(stream)
-				surface.SetCoord v,x,y,z
+				surface.SetCoords v,x,y,z
 				surface.SetNormal v,md2_anorms[ni][2],md2_anorms[ni][1],md2_anorms[ni][0]
 			Next
 			surface.Transform TMatrix.YawPitchRoll(-90,90,0)
@@ -105,7 +105,6 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 			mesh._animator.SetKey i,surface
 		Next
 			
-		mesh.UpdateNormals		
 		Return True
 	End Method
 

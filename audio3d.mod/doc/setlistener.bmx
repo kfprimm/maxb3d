@@ -13,11 +13,11 @@ SetEntityPosition camera,0,1,-10
 Local light:TLight=CreateLight()
 SetEntityRotation light,90,0,0
 
-Local plane:TPlane=CreatePlane()
-SetEntityScale plane,1000,0,1000
+Local flat:TFlat=CreateFlat()
+SetEntityScale flat,1000,0,1000
 
 Local ground_tex:TTexture=LoadTexture("media/Chorme-2.bmp")
-SetEntityTexture plane,ground_tex
+SetEntityTexture flat,ground_tex
 
 Local cube:TMesh=CreateCube()
 Local cube_tex:TTexture=LoadTexture("media/b3dlogo.jpg")
@@ -37,9 +37,9 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	If MouseHit(1) EmitSound sound,cube
 	
 	RenderWorld	
-	BeginMax2D
+	DoMax2D
 	DrawText "Use cursor keys to move about",0,0
 	DrawText "Press left mouse button to make a sound be emitted from the cube",0,20
-	EndMax2D
+	
 	Flip
 Wend

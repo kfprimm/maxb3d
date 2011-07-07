@@ -35,8 +35,8 @@ Type TMeshLoaderTeapot Extends TMeshLoader
 			For Local i=0 To vertexcount-1
 				Local x#=ReadFloat(stream),y#=ReadFloat(stream),z#=ReadFloat(stream)
 				Local u#=ReadFloat(stream),v#=ReadFloat(stream)
-				_surface.SetCoord(i,x,y,z)
-				_surface.SetTexCoord(i,u,v)
+				_surface.SetCoords(i,x,y,z)
+				_surface.SetTexCoords(i,u,v)
 			Next
 			
 			For Local i=0 To trianglecount-1

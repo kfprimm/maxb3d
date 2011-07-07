@@ -37,9 +37,9 @@ While Not KeyHit(KEY_ESCAPE) And Not AppTerminate()
 	Local ph#=MilliSecs()/4
 	For Local k=0 To CountSurfaceVertices(surf)-1
 		Local x#,y#,z#
-		GetSurfaceCoord surf,k,x,y,z
+		GetSurfaceCoords surf,k,x,y,z
 		z=Sin(ph+x*300)*DEPTH
-		SetSurfaceCoord surf,k,x,y,z
+		SetSurfaceCoords surf,k,x,y,z
 	Next
 	UpdateMeshNormals mesh
 	

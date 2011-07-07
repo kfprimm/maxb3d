@@ -42,8 +42,7 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	
 	RenderWorld
 	
-	BeginMax2D
-	
+	DoMax2D	
 	SetColor 255, 255, 255
 	DrawText "Global",185,20
 	DrawText "Local",495,20
@@ -59,8 +58,6 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	SetColor 150, 150, 0
 	DrawText "cSphere: " + XYZ( cSphere, True ),20,100
 	DrawText XYZ( cSphere, False ),400,100
-	
-	EndMax2D
 	
 	Flip
 Wend

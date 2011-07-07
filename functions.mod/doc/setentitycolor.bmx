@@ -27,11 +27,11 @@ While Not KeyDown( KEY_ESCAPE )
 	TurnEntity cube,0.1,0.1,0.1 
 	RenderWorld 
 	
-	BeginMax2D
+	DoMax2D
 	DrawText "Press keys 1-6 to change SetEntityColor red#,green#,blue# values",0,0
 	DrawText "Entity Red: "+red,0,20
 	DrawText "Entity Green: "+green,0,40
 	DrawText "Entity Blue: "+blue,0,60
-	EndMax2D
+	
 	Flip
 Wend 

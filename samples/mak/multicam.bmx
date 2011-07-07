@@ -55,10 +55,10 @@ While Not KeyHit(KEY_ESCAPE) And Not AppTerminate()
 	If KeyDown(KEY_Z) MoveEntity pivot,0,0,-.1
 
 	RenderWorld
-	BeginMax2D
+	DoMax2D
 	DrawText "Front",0,0
 	DrawText "Top",320,0
 	DrawText "Left",0,240
-	EndMax2D
+	
 	Flip
 Wend

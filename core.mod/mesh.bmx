@@ -164,7 +164,7 @@ Type TMesh Extends TAnimEntity
 		For Local surface:TSurface=EachIn _surfaces				
 			For Local v=0 To surface._vertexcnt-1		
 				Local vx#,vy#,vz#,nx#,ny#,nz#
-				surface.GetCoord v,vx,vy,vz
+				surface.GetCoords v,vx,vy,vz
 				surface.GetNormal v,nx,ny,nz
 				
 				Local ux#,uy#,uz#
@@ -173,7 +173,7 @@ Type TMesh Extends TAnimEntity
 				If my<0.0001 And my>-0.0001 Then uy=0.0 Else uy=(vy-_miny)/my
 				If mz<0.0001 And mz>-0.0001 Then uz=0.0 Else uz=(vz-_minz)/mz
 				
-				surface.SetCoord v,x+(ux*width),y+(uy*height),z+(uz*depth)
+				surface.SetCoords v,x+(ux*width),y+(uy*height),z+(uz*depth)
 				surface.SetNormal v,nx*wr,ny*hr,nz*dr
 			Next
 		Next

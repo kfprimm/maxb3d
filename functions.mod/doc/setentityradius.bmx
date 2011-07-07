@@ -42,11 +42,10 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	UpdateWorld
 	RenderWorld
 	
-	BeginMax2D
+	DoMax2D
 	DrawText "Use cursor/A/Z keys to move sphere",0,0
 	DrawText "Press [ or ] to change SetEntityRadius radius_x# value",0,20
 	DrawText "SetEntityRadius sphere,"+sphere_radius,0,40
-	EndMax2D
 	
 	Flip
 Wend

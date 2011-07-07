@@ -14,7 +14,22 @@ Type TAnimKey
 End Type
 
 Type TAnimSeq
-	Field _start,_end
+	Field _start,_end,_name$
+	
+	Function Create:TAnimSeq(first,last,name$="")
+		Local seq:TAnimSeq=New TAnimSeq
+		seq._start=first
+		seq._end=last
+		seq._name=name
+		Return seq
+	End Function
+	
+	Method GetName$()
+		Return _name
+	End Method
+	Method SetName(name$)
+		_name=name
+	End Method
 	
 	Method GetLength()
 		Return _end-_start
@@ -34,9 +49,9 @@ Type TAnimator
 	Method InterpolateSurfaces:TSurface(surface0:TSurface,surface1:TSurface,diff#,output:TSurface)
 		For Local v=0 To output._vertexcnt-1
 			Local x1#,y1#,z1#,x2#,y2#,z2#
-			surface0.GetCoord v,x1,y1,z1
-			surface1.GetCoord v,x2,y2,z2
-			output.SetCoord v,x1+(x2-x1)*diff,y1+(y2-y1)*diff,z1+(z2-z1)*diff			
+			surface0.GetCoords v,x1,y1,z1
+			surface1.GetCoords v,x2,y2,z2
+			output.SetCoords v,x1+(x2-x1)*diff,y1+(y2-y1)*diff,z1+(z2-z1)*diff			
 		Next
 		Return output
 	End Method

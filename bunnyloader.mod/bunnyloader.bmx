@@ -32,7 +32,7 @@ Type TMeshLoaderBunny Extends TMeshLoader
 		If Not surface		
 			surface=New TSurface
 			
-			Local triangle_count=16301/6
+			Local triangle_count=16301
 			surface.Resize(triangle_count*3,triangle_count)
 			
 			For Local i=0 To triangle_count-1
@@ -43,10 +43,10 @@ Type TMeshLoaderBunny Extends TMeshLoader
 					Local v:Float Ptr=_maxb3d_bunny_vertices(vi,0)
 					Local n:Float Ptr=_maxb3d_bunny_normals(ni,0)
 					
-					surface.SetCoord i*3+j,v[0],v[1],v[2] 
-					surface.SetNormal i*3+j,n[0],n[1],n[2] 
+					surface.SetCoords i*3+j,v[0],v[1],v[2] 
+					surface.SetNormal i*3+j,-n[0],-n[1],-n[2] 
 	     	Next
-				surface.SetTriangle i,i*3+2,i*3+1,i*3+0
+				surface.SetTriangle i,i*3+0,i*3+1,i*3+2
 			Next
 		EndIf
 		

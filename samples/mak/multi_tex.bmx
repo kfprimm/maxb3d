@@ -3,7 +3,7 @@ Strict
 
 Import MaxB3D.Drivers
 
-GLGraphics3d 800,600
+GLGraphics3D 800,600
 SetAmbientLight 0,0,0
 
 Local logo:TTexture=LoadTexture("media/blitzlogo.bmp")
@@ -81,11 +81,11 @@ While Not KeyHit(KEY_ESCAPE) And Not AppTerminate()
 	TurnEntity cube,.1,.2,.3
 	
 	RenderWorld
-	BeginMax2D
+	DoMax2D
 	DrawText "(F1) TextureBlend 1="+mode(blend1),0,0
 	DrawText "(F2) TextureBlend 2="+mode(blend2),0,13
 	DrawText "(F3) TextureBlend 3="+mode(blend3),0,26
-	EndMax2D
+
 	Flip
 Wend
 

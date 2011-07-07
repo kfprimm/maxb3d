@@ -31,7 +31,7 @@ While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
 	If KeyDown(KEY_A) TranslateEntity camera,0,1,0
 	If KeyDown(KEY_Z) TranslateEntity camera,0,-1,0
 	
-	SetWireframe KeyDown(KEY_W)
+	SetWireFrame KeyDown(KEY_W)
 	
 	'Local x#,y#,z#
 	'GetEntityPosition camera,x,y,z
@@ -40,9 +40,8 @@ While Not KeyDown( KEY_ESCAPE ) And Not AppTerminate()
 	
 	'PositionEntity camera,x#,terra_y#,z#
 	RenderWorld
-	BeginMax2D	
+	DoMax2D	
 	DrawText "Use cursor keys to move about the terrain",0,0
-	EndMax2D
 	
 	Flip
 Wend

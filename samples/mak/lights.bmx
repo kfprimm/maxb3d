@@ -44,11 +44,10 @@ While Not KeyHit(KEY_ESCAPE) And Not AppTerminate()
 	
 	RenderWorld
 	
-	BeginMax2D
+	DoMax2D
 	DrawText "(F1) Light1="+on1,0,0
 	DrawText "(F2) Light2="+on2,0,13
 	DrawText "(F3) Light3="+on3,0,26
-	EndMax2D
 	
 	Flip
 Wend
