@@ -4,14 +4,18 @@ Strict
 Import MaxB3D.Drivers
 Import MaxB3D.MS3DLoader
 
-GLGraphics3D 800,600 
+Graphics 800,600 
 
 Local light:TLight=CreateLight()
 
 Local camera:TCamera=CreateCamera()
-SetEntityPosition camera,0,10,-20
+SetEntityPosition camera,0,0,-4
 
-Local model:TMesh=LoadMesh("media/fighter1.ms3d")
+Local cube:TMesh=CreateCube()
+
+Local model:TMesh=LoadMesh("media/dwarf1.ms3d",cube)
+FitMesh model,-1,-1,-1,2,2,2
+
 
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	SetWireFrame KeyDown(KEY_W)

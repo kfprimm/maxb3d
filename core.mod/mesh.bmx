@@ -101,9 +101,9 @@ Type TMesh Extends TAnimEntity
 		Return _surfaces.length
 	End Method
 	
-	Method UpdateBounds()
+	Method UpdateBounds(force=False)
 		For Local surface:TSurface=EachIn _surfaces		
-			surface.UpdateBounds
+			surface.UpdateBounds force
 		Next
 		If Not _updatebounds Return
 		
@@ -131,54 +131,56 @@ Type TMesh Extends TAnimEntity
 	
 	Method GetSize(width# Var,height# Var,depth# Var)
 		UpdateBounds
-		width=_width;height=_height;_depth=depth
+		width=_width;height=_height;depth=_depth
 	End Method
 	
 	Method Fit(x#,y#,z#,width#,height#,depth#,uniform=False)
-		Local mw#,mh#,md#,wr#,hr#,dr#
-		GetSize mw,mh,md
-		wr=mw/width;hr=mh/height;dr=md/depth		
-		If uniform	
-			If wr>=hr And wr>=dr
-				y=y+((height-(mh/wr))/2.0)
-				z=z+((depth-(md/wr))/2.0)
-				
-				height=mh/wr
-				depth=md/wr			
-			ElseIf hr>dr			
-				x=x+((width-(mw/hr))/2.0)
-				z=z+((depth-(md/hr))/2.0)
-			
-				width=mw/hr
-				depth=md/hr		
-			Else			
-				x=x+((width-(mw/dr))/2.0)
-				y=y+((height-(mh/dr))/2.0)
-			
-				width=mw/dr
-				height=mh/dr								
-			EndIf
-		EndIf		
+		UpdateBounds
 		
-		Local mx#=_maxx-_minx,my#=_maxy-_miny,mz#=_maxz-_minz		
-		For Local surface:TSurface=EachIn _surfaces				
-			For Local v=0 To surface._vertexcnt-1		
+		Local wr#,hr#,dr#
+		wr=_width/width;hr=_height/height;dr=_depth/depth
+		If uniform			
+			If wr>=hr And wr>=dr
+				y=y+((height-(_height/wr))/2.0)
+				z=z+((depth-(_depth/wr))/2.0)
+				
+				height=_height/wr
+				depth=_depth/wr
+			ElseIf hr>dr
+				x=x+((width-(_width/hr))/2.0)
+				z=z+((depth-(_depth/hr))/2.0)
+				
+				width=_width/hr
+				depth=_depth/hr
+			Else
+				x=x+((width-(_width/dr))/2.0)
+				y=y+((height-(_height/dr))/2.0)
+				
+				width=_width/dr
+				height=_height/dr
+			EndIf
+		EndIf
+		wr=_width/width;hr=_height/height;dr=_depth/depth
+		
+		For Local surface:TSurface=EachIn _surfaces
+			For Local v=0 To surface._vertexcnt-1
 				Local vx#,vy#,vz#,nx#,ny#,nz#
 				surface.GetCoords v,vx,vy,vz
 				surface.GetNormal v,nx,ny,nz
 				
 				Local ux#,uy#,uz#
 				
-				If mx<0.0001 And mx>-0.0001 Then ux=0.0 Else ux=(vx-_minx)/mx
-				If my<0.0001 And my>-0.0001 Then uy=0.0 Else uy=(vy-_miny)/my
-				If mz<0.0001 And mz>-0.0001 Then uz=0.0 Else uz=(vz-_minz)/mz
+				If _width<0.0001 And _width>-0.0001 Then ux=0.0 Else ux=(vx-_minx)/_width
+				If _height<0.0001 And _height>-0.0001 Then uy=0.0 Else uy=(vy-_miny)/_height
+				If _depth<0.0001 And _depth>-0.0001 Then uz=0.0 Else uz=(vz-_minz)/_depth
 				
 				surface.SetCoords v,x+(ux*width),y+(uy*height),z+(uz*depth)
 				surface.SetNormal v,nx*wr,ny*hr,nz*dr
 			Next
 		Next
+		UpdateBounds True
 	End Method
-	
+
 	Method Center()
 		Local w#,h#,d#
 		GetSize w,h,d

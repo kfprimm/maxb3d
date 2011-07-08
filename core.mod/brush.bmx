@@ -98,7 +98,7 @@ Type TBrush
 	Method GetTexture:TTexture(index=0)
 		Return _texture[index]
 	End Method
-	Method SetTexture(texture:TTexture,index,frame=0)
+	Method SetTexture(texture:TTexture,index=0,frame=0)
 		_texture[index]=texture
 		_textureframe[index]=frame
 	End Method

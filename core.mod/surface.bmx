@@ -169,16 +169,16 @@ Type TSurface
 		Next
 	End Method
 	
-	Method UpdateBounds()
-		If Not _resetbounds Return
+	Method UpdateBounds(force=False)
+		If Not _resetbounds And force=false Return
 		_minx=999999999;_miny=999999999;_minz=999999999
 		_maxx=-999999999;_maxy=-999999999;_maxz=-999999999
 		For Local v=0 To _vertexcnt-1
 			Local x#,y#,z#
 			GetCoords v,x,y,z				
 			_minx=Min(x,_minx);_maxx=Max(x,_maxx)
-			_miny=Min(x,_miny);_maxy=Max(y,_maxy)
-			_minz=Min(x,_minz);_maxz=Max(z,_maxz)
+			_miny=Min(y,_miny);_maxy=Max(y,_maxy)
+			_minz=Min(z,_minz);_maxz=Max(z,_maxz)
 		Next
 		_boundsupdatedmsg.Run
 		_resetbounds=False
@@ -239,6 +239,10 @@ Type TSurface
 	End Method
 	Method CountTriangles()
 		Return _trianglecnt
+	End Method
+	
+	Method IsEmpty()
+		Return _vertexcnt=0 And _trianglecnt=0
 	End Method
 		
 	Method HasAlpha()
