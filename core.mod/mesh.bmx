@@ -411,6 +411,22 @@ Type TMeshLoader
 	
 	Method Name$() Abstract
 	Method ModuleName$() Abstract
+		
+	Function ReadCString$(stream:TStream)
+		Local str$,c=ReadByte(stream)
+		While c<>0
+			str:+Chr(c)
+			c=ReadByte(stream)
+		Wend
+		Return str.Trim()
+	End Function
+	
+	Function WriteCString(stream:TStream,str$)
+		For Local i=0 To str.length-1
+			WriteByte stream,str[i]
+		Next
+		WriteByte stream,0
+	End Function
 End Type
 
 Type TMeshLoaderNull Extends TMeshLoader

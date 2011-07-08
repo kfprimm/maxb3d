@@ -7,7 +7,7 @@ Import MaxB3D.MonkeyHeadLoader
 Import MaxB3D.Shaders
 
 GLGraphics3D 800,600
-SetShaderDriver glSLShaderDriver()
+SetShaderDriver GLSLShaderDriver()
 
 Local light:TLight=CreateLight()
 
@@ -21,11 +21,9 @@ SetEntityColor head,102,102,204
 SetEntityShader head,shader
 
 RotateMesh head,0,180,0
-UpdateMeshNormals head
-
 
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
-	TurnEntity head,1,1,0
+	TurnEntity head,0,1,0
 	
 	Local info:TRenderInfo=RenderWorld()
 	DoMax2D

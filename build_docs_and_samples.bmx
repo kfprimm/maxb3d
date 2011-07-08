@@ -6,7 +6,7 @@ Import BRL.FileSystem
 Import BRL.StandardIO
 
 Const INDEX_FILE$=".docs_and_samples_index"
-Const BMXPATH$=""
+Const BMXPATH$="/home/kfprimm/BlitzMax"
 
 Assert BMXPATH,"Path to BlitzMax install must be set!"
 
@@ -54,7 +54,7 @@ If files.length>0
 	Print "Building "+files.length+" files..."
 	Local errors$[],built:TSourceFile[]
 	For Local f:TSourceFile=EachIn files
-		Local process:TProcess=CreateProcess("bmk makeapp -d ~q"+f.path+"~q",0)
+		Local process:TProcess=CreateProcess(BMXPATH+"/bin/bmk makeapp -d -o "+StripAll(f)+".debug ~q"+f.path+"~q",0)
 		Local error
 		While process.Status()
 			If process.err.ReadLine()
