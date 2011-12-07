@@ -16,18 +16,18 @@ PointEntity camera,[0.0,3.0,0.0]
 Local zombie:TMesh=LoadMesh("media/zombie.b3d")
 SetEntityScale zombie,.3,.3,.3
 
-Local walk1:TAnimSeq=ExtractMeshAnimSeq(zombie,2,20)
-Local walk2:TAnimSeq=ExtractMeshAnimSeq(zombie,22,36)
-Local attacked1:TAnimSeq=ExtractMeshAnimSeq(zombie,38,47)
-Local attacked2:TAnimSeq=ExtractMeshAnimSeq(zombie,48,57)
-Local blown:TAnimSeq=ExtractMeshAnimSeq(zombie,59,75)
-Local dying:TAnimSeq=ExtractMeshAnimSeq(zombie,78,88)
-Local die:TAnimSeq=ExtractMeshAnimSeq(zombie,91,103)
-Local kick:TAnimSeq=ExtractMeshAnimSeq(zombie,106,115)
-Local punch:TAnimSeq=ExtractMeshAnimSeq(zombie,117,128)
-Local headbutt:TAnimSeq=ExtractMeshAnimSeq(zombie,129,136)
-Local idle1:TAnimSeq=ExtractMeshAnimSeq(zombie,137,169)
-Local idle2:TAnimSeq=ExtractMeshAnimSeq(zombie,170,200)
+Local walk1:TAnimSeq     = ExtractMeshAnimSeq(zombie,2,20)
+Local walk2:TAnimSeq     = ExtractMeshAnimSeq(zombie,22,36)
+Local attacked1:TAnimSeq = ExtractMeshAnimSeq(zombie,38,47)
+Local attacked2:TAnimSeq = ExtractMeshAnimSeq(zombie,48,57)
+Local blown:TAnimSeq     = ExtractMeshAnimSeq(zombie,59,75)
+Local dying:TAnimSeq     = ExtractMeshAnimSeq(zombie,78,88)
+Local die:TAnimSeq       = ExtractMeshAnimSeq(zombie,91,103)
+Local kick:TAnimSeq      = ExtractMeshAnimSeq(zombie,106,115)
+Local punch:TAnimSeq     = ExtractMeshAnimSeq(zombie,117,128)
+Local headbutt:TAnimSeq  = ExtractMeshAnimSeq(zombie,129,136)
+Local idle1:TAnimSeq     = ExtractMeshAnimSeq(zombie,137,169)
+Local idle2:TAnimSeq     = ExtractMeshAnimSeq(zombie,170,200)
 
 SetMeshAnim zombie,walk1
 
