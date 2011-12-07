@@ -5,7 +5,7 @@ Import MaxB3D.Drivers
 
 Const SEGS=128,WIDTH#=4.0,DEPTH#=.125
 
-GLGraphics3D 800,600
+Graphics 800,600
 
 Local mesh:TMesh=CreateMesh()
 SetEntityFX mesh, FX_NOCULLING

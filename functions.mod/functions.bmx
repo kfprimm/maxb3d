@@ -305,8 +305,8 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function CameraProject(camera:TCamera,target:Object,x# Var,y# Var)
-	Return camera.Project(target,x,y)
+Function CameraProject(camera:TCamera,target:Object,x# Var,y# Var, offset#[] = Null)
+	Return camera.Project(target,x,y,offset)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -679,6 +679,12 @@ Rem
 End Rem
 Function CloneMesh:TMesh(mesh:TMesh,parent:TEntity=Null)
 	Return mesh.Clone(parent)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function TranslateMesh(mesh:TMesh,x#,y#,z#)
+	Return mesh.Translate(x,y,z)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO

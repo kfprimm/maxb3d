@@ -113,9 +113,15 @@ Type TCamera Extends TEntity
 		Return New TRay.Create(New TVector.Create3(x,y,z),New TVector.Create3(dx-x,dy-y,dz-x))		
 	End Method
 	
-	Method Project(target:Object,x# Var,y# Var)
+	Method Project(target:Object,x# Var,y# Var, offset#[] = Null)
 		Local z#
 		TEntity.GetTargetPosition target,x,y,z
+		
+		If offset
+		  x :+ offset[0]
+		  y :+ offset[1]
+		  z :+ offset[2]
+		EndIf
 		
 		Local w#=1.0
 	   _lastmodelview.TransformVec4 x,y,z,w
