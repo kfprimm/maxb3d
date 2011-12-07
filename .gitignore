@@ -7,6 +7,6 @@
 .*.bmx
 /functions.mod/doc/bb/
 .bmx/
-.docs_and_samples_index
-
-media/
+doc/media/
+doc/sample-*
+doc/function-*
