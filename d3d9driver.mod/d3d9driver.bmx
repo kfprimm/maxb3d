@@ -9,7 +9,7 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
-Import sys87.D3D9BufferedMax2D
+Import Prime.D3D9BufferedMax2D
 
 ?Win32
 

@@ -9,7 +9,7 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
-Import sys87.libB3D
+Import Prime.libB3D
 
 Type TMeshLoaderB3D Extends TMeshLoader
 	Field _mesh:TMesh

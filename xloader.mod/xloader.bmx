@@ -6,7 +6,7 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
-Import sys87.libx
+Import Prime.libx
 
 Type TMeshLoaderX Extends TMeshLoader
 	Method Run(mesh:TMesh,stream:TStream,url:Object)

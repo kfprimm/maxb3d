@@ -9,7 +9,7 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
-Import sys87.GLBufferedMax2D
+Import Prime.GLBufferedMax2D
 
 Private
 Function ModuleLog(message$)

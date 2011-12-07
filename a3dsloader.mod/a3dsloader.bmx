@@ -9,7 +9,7 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
-Import sys87.lib3ds
+Import Prime.lib3ds
 
 Private
 Function ModuleLog(message$)

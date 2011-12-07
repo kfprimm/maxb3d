@@ -2,7 +2,7 @@
 Strict
 
 Import "entity.bmx"
-Import sys87.BSP
+Import Prime.BSP
 
 Type TBSPModel Extends TEntity
 	Field _tree:TBSPTree

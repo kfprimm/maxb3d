@@ -2,7 +2,7 @@
 Strict
 
 Import MaxB3D.Core
-Import sys87.CgToolkit
+Import Prime.CgToolkit
 
 Type TCgRes Extends TShaderRes
 	Field _id

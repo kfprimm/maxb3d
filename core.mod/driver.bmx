@@ -2,7 +2,7 @@
 Strict
 
 Import BRL.Max2D
-Import sys87.BufferedMax2D
+Import Prime.BufferedMax2D
 Import "light.bmx"
 Import "camera.bmx"
 Import "mesh.bmx"

@@ -9,7 +9,7 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
-Import sys87.BSP
+Import Prime.BSP
 
 Type TMeshLoaderBSP Extends TMeshLoader
 	Method Run(mesh:TMesh,stream:TStream,url:Object)

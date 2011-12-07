@@ -2,7 +2,7 @@
 Strict
 
 Import MaxB3D.Core
-Import sys87.Newton
+Import Prime.Newton
 
 Type TNewtonCollisionDriver Extends TCollisionDriver
 	Field _world:Byte Ptr

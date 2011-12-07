@@ -8,7 +8,7 @@ Module MaxB3D.Math
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
-Import sys87.Math3D
+Import Prime.Math3D
 Import "collision.cpp"
 Import "geom.cpp"
 Import "misc.cpp"

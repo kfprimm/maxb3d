@@ -8,7 +8,7 @@ ModuleInfo "License: MIT"
 Import MaxB3D.Core
 Import MaxB3D.Logging
 
-Import sys87.libply
+Import Prime.libply
 
 Private
 Function ModuleLog(message$)
