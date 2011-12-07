@@ -10,3 +10,4 @@
 doc/media/
 doc/sample-*
 doc/function-*
+*.mod/doc/media
