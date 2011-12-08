@@ -48,8 +48,8 @@ Type TMeshLoaderHMAP Extends TMeshLoader
 		Return True
 	End Method
 	
-	Method Name$()
-		Return "Heightmap"
+	Method Info$()
+		Return "Heightmap|TPixmap"
 	End Method
 	Method ModuleName$()
 		Return "heightmaploader"

@@ -108,8 +108,8 @@ Type TMeshLoaderMD2 Extends TMeshLoader
 		Return True
 	End Method
 
-	Method Name$()
-		Return "MD2"
+	Method Info$()
+		Return "MD2|.md2"
 	End Method
 	Method ModuleName$()
 		Return "md2loader"

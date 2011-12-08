@@ -44,8 +44,8 @@ Type TMeshLoaderBSP Extends TMeshLoader
 		Return "bsploader"
 	End Method
 	
-	Method Name$()
-		Return "BSP Tree"
+	Method Info$()
+		Return "BSP Tree|"
 	End Method
 End Type
 New TMeshLoaderBSP

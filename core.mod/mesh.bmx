@@ -411,9 +411,18 @@ Type TMeshLoader
 	
 	Method Run(mesh:TMesh,stream:TStream,url:Object) Abstract
 	
-	Method Name$() Abstract
+	Method Info$() Abstract
 	Method ModuleName$() Abstract
-		
+	
+	Function List$[]()
+		Local loaders$[], loader:TMeshLoader=_start
+		While loader<>Null
+			loaders:+ [loader.Info()]
+			loader=loader._next
+		Wend
+		Return loaders
+	End Function
+	
 	Function ReadCString$(stream:TStream)
 		Local str$,c=ReadByte(stream)
 		While c<>0
@@ -437,7 +446,7 @@ Type TMeshLoaderNull Extends TMeshLoader
 		Return False
 	End Method
 	
-	Method Name$()
+	Method Info$()
 		Return "Null"
 	End Method
 	Method ModuleName$()

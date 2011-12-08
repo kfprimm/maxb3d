@@ -75,3 +75,9 @@ End Rem
 Function TextureBuffer:TBuffer(texture:TTexture,frame=0)
 	Return TMaxB3DDriver(GetGraphicsDriver()).TextureBuffer(texture,frame)
 End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function MeshLoaders$[]()
+	Return TMeshLoader.List()
+End Function

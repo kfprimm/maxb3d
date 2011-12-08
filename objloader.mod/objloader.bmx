@@ -112,8 +112,8 @@ Type TMeshLoaderOBJ Extends TMeshLoader
 		Return res
 	End Method
 	
-	Method Name$()
-		Return "Wavefront OBJ"
+	Method Info$()
+		Return "Wavefront OBJ|.obj"
 	End Method
 	Method ModuleName$()
 		Return "objloader"

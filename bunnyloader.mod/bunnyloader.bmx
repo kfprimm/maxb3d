@@ -55,7 +55,7 @@ Type TMeshLoaderBunny Extends TMeshLoader
 		Return True
 	End Method
 	
-	Method Name$()
+	Method Info$()
 		Return "Stanford bunny"
 	End Method
 	Method ModuleName$()

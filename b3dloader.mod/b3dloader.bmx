@@ -142,8 +142,8 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		If TBone(entity) TBone(entity)._start_matrix=entity.GetMatrix()
 	End Method
 	
-	Method Name$()
-		Return "Blitz3D"
+	Method Info$()
+		Return "Blitz3D|b3d"
 	End Method
 	Method ModuleName$()
 		Return "b3dloader"
