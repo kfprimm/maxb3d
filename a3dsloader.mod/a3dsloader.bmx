@@ -82,8 +82,8 @@ Type TMeshLoader3DS Extends TMeshLoader
 		Return ReadInt(stream)
 	End Method
 		
-	Method Name$()
-		Return "Autodesk 3DS"
+	Method Info$()
+		Return "Autodesk 3DS|3ds"
 	End Method
 	Method ModuleName$()
 		Return "a3dsloader"

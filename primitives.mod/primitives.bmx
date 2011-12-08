@@ -475,7 +475,7 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 		End Select
 	End Method
 	
-	Method Name$()
+	Method Info$()
 		Return "Primitives"
 	End Method
 	Method ModuleName$()

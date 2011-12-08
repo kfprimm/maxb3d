@@ -39,7 +39,7 @@ Type TApplet
 		Case EVENT_WINDOWCLOSE
 			End
 		Case EVENT_TIMERTICK
-			TurnEntity mesh,0,1,0
+			TurnEntity mesh,1,1,0
 			RedrawGadget canvas
 		Case EVENT_GADGETPAINT
 			SetGraphics CanvasGraphics(canvas)

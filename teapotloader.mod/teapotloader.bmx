@@ -51,7 +51,7 @@ Type TMeshLoaderTeapot Extends TMeshLoader
 		Return True
 	End Method
 	
-	Method Name$()
+	Method Info$()
 		Return "Utah teapot"
 	End Method
 	Method ModuleName$()

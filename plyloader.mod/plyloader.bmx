@@ -56,8 +56,8 @@ Type TMeshLoaderPLY Extends TMeshLoader
 		Return True
 	End Method
 	
-	Method Name$()
-		Return "Polygon File Format"
+	Method Info$()
+		Return "Polygon File Format|.ply"
 	End Method
 	Method ModuleName$()
 		Return "plyloader"

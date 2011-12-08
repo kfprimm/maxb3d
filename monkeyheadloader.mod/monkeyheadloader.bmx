@@ -36,7 +36,7 @@ Type TMeshLoaderMONKEYHEAD Extends TMeshLoader
 		Return True
 	End Method
 	
-	Method Name$()
+	Method Info$()
 		Return "Suzanne"
 	End Method
 	Method ModuleName$()

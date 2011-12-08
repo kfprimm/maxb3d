@@ -68,8 +68,8 @@ Type TMeshLoaderMS3D Extends TMeshLoader
 		Return True
 	End Method
 	
-	Method Name$()
-		Return "Milkshape 3D"
+	Method Info$()
+		Return "Milkshape 3D|.ms3d"
 	End Method	
 	Method ModuleName$()
 		Return "ms3dloader"
