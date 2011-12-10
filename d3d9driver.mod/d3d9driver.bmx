@@ -9,7 +9,7 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
-Import Prime.D3D9BufferedMax2D
+Import Prime.D3D9Max2DEx
 
 ?Win32
 
@@ -453,7 +453,7 @@ End Rem
 Function D3D9MaxB3DDriver:TD3D9MaxB3DDriver()
 	If D3D9Max2DDriver()
 		Global driver:TD3D9MaxB3DDriver=New TD3D9MaxB3DDriver
-		driver._parent=D3D9BufferedMax2DDriver()
+		driver._parent=D3D9Max2DExDriver()
 		Return driver
 	End If
 End Function

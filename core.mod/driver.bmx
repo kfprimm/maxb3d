@@ -2,7 +2,7 @@
 Strict
 
 Import BRL.Max2D
-Import Prime.BufferedMax2D
+Import Prime.Max2DEx
 Import "light.bmx"
 Import "camera.bmx"
 Import "mesh.bmx"
@@ -30,8 +30,8 @@ Type TCaps
 	End Method
 End Type
 
-Type TMaxB3DDriver Extends TBufferedMax2DDriver
-	Global _parent:TBufferedMax2DDriver
+Type TMaxB3DDriver Extends TMax2DExDriver
+	Global _parent:TMax2DExDriver
 	
 	Field _texture:TTexture[8],_caps:TCaps
 	Field _prevwidth,_prevheight

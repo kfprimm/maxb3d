@@ -9,7 +9,7 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
-Import Prime.GLBufferedMax2D
+Import Prime.GLMax2DEx
 
 Private
 Function ModuleLog(message$)
@@ -90,7 +90,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			buffer=TGLBuffer(TTextureFrame(src)._buffer)
 			If buffer=Null
 				Local res:TGLTextureRes=UpdateTextureRes(TTextureFrame(src),0)
-				buffer=TGLBufferedMax2DDriver(_parent).MakeGLBuffer(res._id,width,height,flags)
+				buffer=TGLMax2DExDriver(_parent).MakeGLBuffer(res._id,width,height,flags)
 			EndIf
 		Default
 			buffer=_parent.MakeBuffer(src,width,height,flags)
@@ -113,7 +113,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			glPopClientAttrib
 			glPopAttrib
 			If _shaderdriver _shaderdriver.Use(Null,Null)	
-			TGLBufferedMax2DDriver(_parent).ResetGLContext _current
+			TGLMax2DExDriver(_parent).ResetGLContext _current
 			glMatrixMode GL_TEXTURE
 			glLoadIdentity
 			glMatrixMode GL_COLOR	
@@ -638,9 +638,9 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function GLMaxB3DDriver:TGLMaxB3DDriver()
-	If GLBufferedMax2DDriver()
+	If GLMax2DExDriver()
 		Global driver:TGLMaxB3DDriver=New TGLMaxB3DDriver
-		driver._parent=GLBufferedMax2DDriver()
+		driver._parent=GLMax2DExDriver()
 		Return driver
 	End If
 End Function
