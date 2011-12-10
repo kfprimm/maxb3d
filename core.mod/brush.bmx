@@ -1,8 +1,8 @@
 
 Strict
 
+Import Prime.Max2DEx
 Import "texture.bmx"
-Import "shader.bmx"
 
 Const FX_NONE        = 0
 Const FX_FULLBRIGHT  = 1

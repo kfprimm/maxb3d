@@ -1123,46 +1123,6 @@ Function GetTextureSize(texture:TTexture,width Var,height Var)
 	Return texture.GetSize(width,height)
 End Function
 
-' Shaders
-Rem
-	bbdoc: Needs documentation. #TODO
-End Rem
-Function CreateShader:TShader(name$)
-	Local shader:TShader=_currentworld.AddShader()
-	shader.SetName name
-	Return shader
-End Function
-Rem
-	bbdoc: Needs documentation. #TODO
-End Rem
-Function LoadShader:TShader(url:Object)
-	Return _currentworld.AddShader(url)
-End Function
-Rem
-	bbdoc: Needs documentation. #TODO
-End Rem
-Function CreateShaderFrag:TShaderFrag(code$,typ)
-	Return TShaderFrag.Create(code,typ)
-End Function
-Rem
-	bbdoc: Needs documentation. #TODO
-End Rem
-Function AddShaderCode:TShaderCode(shader:TShader,driver$="")
-	Return shader.AddCode(driver)
-End Function
-Rem
-	bbdoc: Needs documentation. #TODO
-End Rem
-Function AddShaderCodeFrag(code:TShaderCode,frag:TShaderFrag)
-	Return code.AddFrag(frag)
-End Function
-Rem
-	bbdoc: Needs documentation. #TODO
-End Rem
-Function AddShaderCodeFrags(code:TShaderCode,frags:TShaderFrag[])
-	Return code.AddFrags(frags)
-End Function
-
 'BSP
 Rem
 	bbdoc: Needs documentation. #TODO

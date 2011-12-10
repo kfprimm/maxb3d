@@ -21,7 +21,7 @@ Public
 Global GL_LIGHT[]=[GL_LIGHT0,GL_LIGHT1,GL_LIGHT2,GL_LIGHT3,GL_LIGHT4,GL_LIGHT5,GL_LIGHT6,GL_LIGHT7]
 
 Type TGLMaxB3DDriver Extends TMaxB3DDriver
-	Field _currentdata:TShaderData=New TShaderData
+	Field _currentdata:TMaxB3DShaderData= New TMaxB3DShaderData
 	
 	Method SetGraphics(g:TGraphics)
 		Super.SetGraphics g

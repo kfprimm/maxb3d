@@ -18,6 +18,12 @@ End Function
 
 Public
 
+Type TMaxB3DShaderData
+	Field _projection:TMatrix
+'	Field _modelview:TMatrix
+	Field _modelviewproj:TMatrix
+End Type
+
 Global _creategraphicshook=AllocHookId()
 
 Type TCaps
@@ -35,7 +41,6 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 	
 	Field _texture:TTexture[8],_caps:TCaps
 	Field _prevwidth,_prevheight
-	Field _shaderdriver:TShaderDriver
 	Field _in_max2d=True
 	
 	Method CreateGraphics:TGraphics( width,height,depth,hertz,flags )
@@ -132,9 +137,5 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 			EndIf
 			camera.SetViewport x,y,width,height
 		Next
-	End Method
-	
-	Method SetShaderDriver(driver:TShaderDriver)
-		_shaderdriver=driver
 	End Method
 End Type
