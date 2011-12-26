@@ -4,6 +4,12 @@ Strict
 Import MaxB3D.Core
 Import Prime.Newton
 
+Import "util.c"
+
+Extern
+	Function _byte_ptr_to_object:Object(p:Byte Ptr)
+End Extern
+
 Type TNewtonCollisionDriver Extends TCollisionDriver
 	Field _world:Byte Ptr
 	
@@ -41,7 +47,7 @@ Type TNewtonCollisionDriver Extends TCollisionDriver
 			If data._ptr NewtonDestroyBody(_world,data._ptr)
 
 			data._ptr=NewtonCreateBody(_world,collision,body._matrix.ToPtr())
-			NewtonBodySetUserData data._ptr, String(HandleFromObject(body)).ToCString()
+			NewtonBodySetUserData data._ptr, Byte Ptr(body) - 8
 			
 			If body._mass>0
 				Local inertia#[3],origin#[3]
@@ -61,7 +67,7 @@ Type TNewtonCollisionDriver Extends TCollisionDriver
 	End Method
 	
 	Function TransformCallback(body:Byte Ptr,matrix_data:Float Ptr,thread_index)
-		Local entity:TBody=TBody(HandleToObject(Int(String.FromCString(NewtonBodyGetUserData(body)))))
+		Local entity:TBody = TBody(_byte_ptr_to_object(NewtonBodyGetUserData(body)))
 		entity.SetMatrix TMatrix.FromPtr(matrix_data)
 		entity._update=False
 	End Function
@@ -73,10 +79,7 @@ Type TNewtonCollisionDriver Extends TCollisionDriver
 	End Function
 	
 	Function DestroyCallback(body:Byte Ptr)
-		Local str:Byte Ptr=NewtonBodyGetUserData(body)
-		Local handle=Int(String.FromCString(str))
-		MemFree str
-		Release handle
+		
 	End Function
 End Type
 

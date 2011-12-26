@@ -42,6 +42,21 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	
 	If KeyHit(KEY_P) run_physics=Not run_physics
 	
+	If MouseHit(1)
+		Local x#, y#, z#
+		GetEntityPosition camera,x,y,z
+		
+		Local cube_body:TBody=CreateBody()
+		SetEntityPosition cube_body,x,y,z
+		SetEntityBox cube_body,-1,-1,-1,2,2,2
+		SetBodyMass cube_body, 4
+		
+		
+		
+		Local cube_mesh:TMesh=CreateCube(cube_body)
+		SetEntityColor cube_mesh,Rand(255),Rand(255),Rand(255)
+	EndIf
+	
 	If run_physics UpdateWorld ,4
 	Local info:TRenderInfo=RenderWorld()
 	DoMax2D

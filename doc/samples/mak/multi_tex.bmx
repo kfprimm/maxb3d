@@ -22,7 +22,7 @@ Next
 Local grid:TTexture=LoadTexture(pixmap)
 SetTextureScale grid,.5,.5
 
-Local env:TTexture=LoadTexture("media/spheremap.bmp",TEXTURE_COLOR|TEXTURE_ALPHA|TEXTURE_SPHMAP)
+Local env:TTexture=LoadTexture("media/spheremap.bmp",TEXTURE_COLOR|TEXTURE_ALPHA|TEXTURE_SPHEREMAP)
 
 Local cube:TMesh=CreateCube()
 SetEntityTexture cube,logo,0,0

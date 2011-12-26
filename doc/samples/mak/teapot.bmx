@@ -6,7 +6,7 @@ Import MaxB3D.TeapotLoader
 
 Graphics 800,600
 
-Local texture:TTexture=LoadTexture("media/spheremap.bmp", TEXTURE_COLOR)
+Local texture:TTexture=LoadTexture("media/spheremap.bmp", TEXTURE_COLOR|TEXTURE_SPHEREMAP)
 
 Local teapot:TMesh=CreateTeapot()
 SetEntityTexture teapot,texture

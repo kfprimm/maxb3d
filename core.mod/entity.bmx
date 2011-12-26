@@ -7,6 +7,11 @@ Import "brush.bmx"
 Import "collision.bmx"
 Import "worldconfig.bmx"
 
+Const PICKMODE_OFF		= 1
+Const PICKMODE_SPHERE	= 2
+Const PICKMODE_POLYGON	= 3
+Const PICKMODE_BOX		= 4
+
 Type TEntity
 	Field _matrix:TMatrix=TMatrix.Identity(), _lockmatrix
 	
@@ -25,6 +30,7 @@ Type TEntity
 	Field _radiusx#,_radiusy#
 	Field _boxx#,_boxy#,_boxz#,_boxwidth#,_boxheight#,_boxdepth#
 	Field _type,_typelink:TLink
+	Field _pickmode, _obscurer
 	
 	Field _cullradius#
 	
@@ -390,9 +396,19 @@ Type TEntity
 	Method SetCullRadius(radius#)
 		_cullradius=-radius
 	End Method
+
 	Method GetCullParams(x# Var,y# Var,z# Var,radius# Var)
 		GetPosition x,y,z,True
 		radius=GetCullRadius()
+	End Method
+	
+	Method GetPickMode(mode Var, obscurer Var)
+		mode = _pickmode
+		obscurer = _obscurer
+	End Method	
+	Method SetPickMode(mode, obscurer=True)
+		_pickmode = mode
+		_obscurer = obscurer
 	End Method
 	
 	Method GetMatrix:TMatrix(alternate=False,copy=True)

@@ -14,7 +14,7 @@ SetEntityPosition camera,0,0,-3
 Local head:TMesh=CreateMonkeyHead()
 
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
-	TurnEntity head,1,1,0
+	TurnEntity head,0,1,0
 	RenderWorld
 	Flip
 Wend

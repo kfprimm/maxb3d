@@ -61,6 +61,12 @@ End Rem
 Function SetWireFrame(enable)
 	Return _currentworld.SetWireFrame(enable)
 End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function WorldPick:TPick[](src:Object, target:Object, sort = False)
+	return _currentworld.Pick(src,target, sort)
+End function
 
 'Bodies
 Rem

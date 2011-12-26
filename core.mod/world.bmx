@@ -7,6 +7,7 @@ Import "body.bmx"
 Import "pivot.bmx"
 Import "custom_entity.bmx"
 Import "driver.bmx"
+import "pick.bmx"
 
 Private
 Function ModuleLog(message$)
@@ -53,6 +54,77 @@ Type TWorld
 	End Method
 	Method SetWireFrame(enable)
 		_config.Wireframe=enable
+	End Method
+	
+	'EntityPick ( entity,range# )
+	'CameraPick ( camera,viewport_x#,viewport_y# )
+	'LinePick ( x#,y#,z#,dx#,dy#,dz#[,radius#] )
+	Method Pick:TPick[](src:Object, target:Object, sort = False)
+		Local ax#,ay#,az#,bx#,by#,bz#,radius#=0.0
+		TEntity.GetTargetPosition src,ax,ay,az
+		
+		
+		Global c_vec_a:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+		Global c_vec_b:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+		Global c_vec_radius:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+		Global c_col_info:Byte Ptr=C_CreateCollisionInfoObject(c_vec_a,c_vec_b,c_vec_radius)
+
+		Global c_line:Byte Ptr=C_CreateLineObject(0.0,0.0,0.0,0.0,0.0,0.0)
+
+		Global c_vec_i:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+		Global c_vec_j:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+		Global c_vec_k:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+
+		Global c_mat:Byte Ptr=C_CreateMatrixObject(c_vec_i,c_vec_j,c_vec_k)
+		Global c_vec_v:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+		Global c_tform:Byte Ptr=C_CreateTFormObject(c_mat,c_vec_v)
+		
+		C_UpdateLineObject(c_line,ax,ay,az,bx-ax,by-ay,bz-az)	
+		
+		Local c_col:Byte Ptr=C_CreateCollisionObject(), picks:TPick[]
+		
+		For Local entity:TEntity=EachIn _config.List[WORLDLIST_ENTITY]		
+			If entity._pickmode=PICKMODE_OFF Or Not entity.GetVisible() Then Continue
+			
+			Local matrix:TMatrix = entity._matrix
+			C_UpdateVecObject(c_vec_i,matrix._m[0,0],matrix._m[0,1],-matrix._m[0,2])
+			C_UpdateVecObject(c_vec_j,matrix._m[1,0],matrix._m[1,1],-matrix._m[1,2])
+			C_UpdateVecObject(c_vec_k,-matrix._m[2,0],-matrix._m[2,1],matrix._m[2,2])
+		
+			C_UpdateMatrixObject(c_mat,c_vec_i,c_vec_j,c_vec_k)
+			C_UpdateVecObject(c_vec_v,matrix._m[3,0],matrix._m[3,1],-matrix._m[3,2])
+			C_UpdateTFormObject(c_tform,c_mat,c_vec_v)
+		
+			If entity._pickmode<>PICKMODE_POLYGON C_UpdateCollisionInfoObject(c_col_info,entity._radiusx,entity._boxx,entity._boxy,entity._boxz,entity._boxx+entity._boxwidth,entity._boxy+entity._boxheight,entity._boxz+entity._boxdepth)
+		
+			Local tree:Byte Ptr=Null
+			If TMesh(entity)<>Null
+				tree=TMesh(entity).TreeCheck()
+			ElseIf entity._pickmode = PICKMODE_POLYGON
+				Continue
+			EndIf
+		
+			If C_Pick(c_col_info,c_line,radius,c_col,c_tform,tree,entity._pickmode)
+				Local info:TPick = new TPick
+				info.x  = C_CollisionX()
+				info.y  = C_CollisionX()
+				info.z  = C_CollisionX()
+				
+				info.nx = C_CollisionNX()
+				info.ny = C_CollisionNY()
+				info.nz = C_CollisionNZ()
+				
+				info.time = C_CollisionTime()
+				If TMesh(entity)<>Null info.surface = TMesh(entity)._surfaces[C_CollisionSurface()]
+				info.triangle=C_CollisionTriangle()
+				
+				picks :+ [info]
+			EndIf		
+		Next
+		
+		C_DeleteCollisionObject(c_col)
+		
+		Return picks		
 	End Method
 	
 	Method GetStream:Object(url:Object)

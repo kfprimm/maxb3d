@@ -1,5 +1,5 @@
 
-.PHONY: all clean media *.mod/doc modules docs samples doc/samples/*/*.bmx
+.PHONY: all clean media *.mod/doc modules docs samples doc/samples/*/*.bmx *.mod/doc/*.bmx doc/samples/*
 
 MEDIA_EXTS = bmp jpg
 B3DPATH = ~/.wine/dosdevices/c:/Program\ Files/Blitz3D
@@ -17,18 +17,21 @@ media: doc/media
 doc/media:
 	mkdir doc/media
 
-symlinks: clean media $(wildcard *.mod/doc)
+symlinks: clean media $(wildcard *.mod/doc) $(wildcard doc/samples/*)
 
 *.mod/doc:
 	ln -s $(PWD)/doc/media $@/media 
 
+doc/samples/*:
+	ln -s $(PWD)/doc/media $@/media
+
 modules:
-	bmk makemods maxb3d
+	bmk makemods
 	
 docs: $(wildcard *.mod/doc/*.bmx)
 
 *.mod/doc/*.bmx:
-	bmk makeapp -r -o doc/function-$(basename $(notdir $@)) $@
+	bmk makeapp -d -o doc/function-$(basename $(notdir $@)) $@
 
 samples: $(wildcard doc/samples/*/*.bmx)
 

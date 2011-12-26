@@ -28,12 +28,12 @@ Type TOpenALAudio3DDriver Extends TAudio3DDriver
 	End Method
 	
 	Method SetListener(matrix:TMatrix)	
-  	Local x#,y#,z#,dx#,dy#,dz#=1.0
+  		Local x#,y#,z#,dx#,dy#,dz#=1.0
 		matrix.GetPosition x,y,z
 		matrix.TransformVec3 dx,dy,dz
 		
 		dx:-x;dy:-y;dz:-z
-		
+
 		alListenerfv AL_POSITION,[x,y,z]
 		alListenerfv AL_VELOCITY,[0.0,0.0,0.0]
 		alListenerfv AL_ORIENTATION,[dx,dy,dz,0.0,1.0,0.0]
@@ -44,7 +44,7 @@ Type TOpenALAudio3DDriver Extends TAudio3DDriver
 		If target
 			Local x#,y#,z#
 			TEntity.GetTargetPosition target,x,y,z
-			
+				
 			alDistanceModel AL_INVERSE_DISTANCE_CLAMPED
 			alSourcefv source,AL_POSITION,[x,y,z]			
 			alSourcei source,AL_SOURCE_RELATIVE,False
@@ -68,6 +68,7 @@ If OpenALInstalled()
 			driver._parentname=name
 		EndIf 
 	Next
+	SetAudioDriver "Audio3D OpenAL"
 Else
 	ModuleLog "OpenAL not installed on system. No AL drivers available."
 EndIf

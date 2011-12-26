@@ -29,10 +29,12 @@ SetBrushFX brush, FX_FULLBRIGHT|FX_WIREFRAME
 Local hmap0:TMesh=LoadMesh(pixmap)
 SetEntityBrush hmap0, brush
 SetEntityColor hmap0, 255,0,0
+
 Local hmap1:TMesh=LoadMesh(pixmap)
 SetEntityBrush hmap1, brush
 SetEntityColor hmap1, 0,255,0
 SetEntityPosition hmap1, 0,.5,0
+
 Local hmap2:TMesh=LoadMesh(pixmap)
 SetEntityBrush hmap2, brush
 SetEntityColor hmap2, 0,0,255

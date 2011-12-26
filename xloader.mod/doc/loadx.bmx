@@ -11,11 +11,9 @@ Local light:TLight=CreateLight()
 Local camera:TCamera=CreateCamera()
 SetEntityPosition camera,0,0,-5
 
-Local mesh:TMesh=LoadMesh("media/Eye.x")
+Local mesh:TMesh=LoadMesh("media/teapot.x")
 'FitMesh mesh,-1,-1,-1,2,2,2
 SetEntityPosition mesh,0,0,10
-
-DebugLog "!"
 
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	SetWireFrame KeyDown(KEY_W)

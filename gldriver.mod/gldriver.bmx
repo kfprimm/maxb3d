@@ -348,7 +348,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 				glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT
 			EndIf
 	
-			If texture._flags&TEXTURE_SPHMAP				
+			If texture._flags&TEXTURE_SPHEREMAP				
 				glEnable GL_TEXTURE_GEN_S
 				glEnable GL_TEXTURE_GEN_T
 				glTexGeni GL_S,GL_TEXTURE_GEN_MODE,GL_SPHERE_MAP
