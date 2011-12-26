@@ -8,6 +8,7 @@
 /functions.mod/doc/bb/
 .bmx/
 doc/media/
+doc/samples/*/media
 doc/sample-*
 doc/function-*
 *.mod/doc/media
