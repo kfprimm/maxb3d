@@ -1,7 +1,14 @@
 
 Strict
 
-Import "animation.bmx"
+Rem
+  bbdoc: Vertex animator for MaxB3D meshes
+End Rem
+Module MaxB3D.VertexAnimator
+ModuleInfo "Author: Kevin Primm"
+ModuleInfo "License: MIT"
+
+Import MaxB3D.Core
 
 Type TVertexAnimator Extends TAnimator
 	Field _frames:TAnimKey[]

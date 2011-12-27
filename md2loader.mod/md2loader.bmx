@@ -9,6 +9,7 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
+Import MaxB3D.VertexAnimator
 Import BRL.EndianStream
 
 Private

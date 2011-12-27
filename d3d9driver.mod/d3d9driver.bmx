@@ -10,12 +10,27 @@ ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
 Import Prime.D3D9Max2DEx
+Import Prime.DirectXEx
 
 ?Win32
 
-Import "d3d9.bmx"
+Import "d3d9.cpp"
 
 Private 
+
+Extern "C"
+	Function maxb3dD3D9VertexElements:Byte Ptr()'="_maxb3dD3D9VertexElements@0"
+End Extern
+
+Function GetD3D9MaxB3DVertexDecl:IDirect3DVertexDeclaration9(d3ddev:IDirect3DDevice9)
+	Global decl:IDirect3DVertexDeclaration9,dev:IDirect3DDevice9
+	If decl=Null Or dev<>d3ddev
+		Assert d3ddev.CreateVertexDeclaration(maxb3dD3D9VertexElements(),decl)=D3D_OK,"Failed to create vertex declaration."
+		dev=d3ddev
+	EndIf
+	Return decl
+End Function
+
 Function Pow2Size( n )
 	Local t=1
 	While t<n
