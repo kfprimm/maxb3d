@@ -113,6 +113,20 @@ Type TCamera Extends TEntity
 		Return New TRay.Create(New TVector.Create3(x,y,z),New TVector.Create3(dx-x,dy-y,dz-x))		
 	End Method
 	
+	Method UpdateMatrices()
+		_lastviewport[0]=_viewx
+		_lastviewport[1]=_viewy
+		_lastviewport[2]=_viewwidth
+		_lastviewport[3]=_viewheight
+		
+		_lastmodelview = _matrix.Inverse()
+		
+		Local ratio#=(Float(_viewwidth)/_viewheight)
+		_lastprojection = TMatrix.PerspectiveFovRH(ATan((1.0/(_zoom*ratio)))*2.0,ratio,_near,_far)		
+
+		_lastfrustum=TFrustum.Extract(_lastmodelview, _lastprojection)
+	End Method
+	
 	Method Project(target:Object,x# Var,y# Var, offset#[] = Null)
 		Local z#
 		TEntity.GetTargetPosition target,x,y,z

@@ -159,24 +159,22 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Else
 			glDisable GL_FOG
 		EndIf
-
-		Local ratio#=(Float(camera._viewwidth)/camera._viewheight)
+		
+		camera.UpdateMatrices()
 		
 		glMatrixMode GL_PROJECTION
 		glLoadIdentity
-		glLoadMatrixf TMatrix.PerspectiveFovRH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,camera._near,camera._far).ToPtr()
+		glLoadMatrixf camera._lastprojection.ToPtr()
 		glScalef -1,1,-1
 		
 		glMatrixMode GL_MODELVIEW		
-		glLoadMatrixf camera._matrix.Inverse().ToPtr()
-		
-		glGetFloatv GL_MODELVIEW_MATRIX,camera._lastmodelview._m
-		glGetFloatv GL_PROJECTION_MATRIX,camera._lastprojection._m
-		glGetIntegerv GL_VIEWPORT,camera._lastviewport
+		glLoadMatrixf camera._lastmodelview.ToPtr()
 
-		_currentdata._projection=camera._lastprojection
-		
+		' Temporary hack
+		glGetFloatv GL_PROJECTION_MATRIX,camera._lastprojection._m		
 		camera._lastfrustum=TFrustum.Extract(camera._lastmodelview,camera._lastprojection)
+		
+		_currentdata._projection=camera._lastprojection
 	End Method	
 	
 	Method SetLight(light:TLight,index)
