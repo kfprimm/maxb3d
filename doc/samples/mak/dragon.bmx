@@ -4,7 +4,7 @@ Strict
 Import MaxB3D.Drivers
 Import MaxB3D.MD2Loader
 
-GLGraphics3D 800,600
+Graphics 800,600
 
 Local room_texture:TTexture=LoadTexture( "media/chorme-2.bmp" )
 SetTextureScale room_texture,1.0/3,1.0/3

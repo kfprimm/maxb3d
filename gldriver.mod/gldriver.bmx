@@ -220,9 +220,6 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			glLightfv GL_LIGHT[index],GL_LINEAR_ATTENUATION,range
 		EndIf		
 
-		If light._mode<>LIGHT_DIRECTIONAL		
-		EndIf
-
 		If light._mode=LIGHT_SPOT		
 			Local dir#[]=[0.0,0.0,-1.0]
 			Local outer#[]=[light._outer/2.0]
