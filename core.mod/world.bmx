@@ -56,12 +56,39 @@ Type TWorld
 		_config.Wireframe=enable
 	End Method
 	
+	Method PickTarget(target#[],x# Var,y# Var,z# Var,radius#)
+		If target.length = 1
+		
+		ElseIf target.length = 2
+			'Local camera:TCamera = TCamera(src)
+			'camera.Unproject target[0], target[1], 0, ax, ay, az
+			'camera.Unproject target[0], target[1], 1, bx, by, bz
+		Else
+		
+		EndIf
+	End Method
+	
 	'EntityPick ( entity,range# )
 	'CameraPick ( camera,viewport_x#,viewport_y# )
 	'LinePick ( x#,y#,z#,dx#,dy#,dz#[,radius#] )
 	Method Pick:TPick[](src:Object, target:Object, sort = False)
 		Local ax#,ay#,az#,bx#,by#,bz#,radius#=0.0
 		TEntity.GetTargetPosition src,ax,ay,az
+		
+		Local a#,b#,c#,d#,count,s# Ptr
+		If Int[](target)
+			s = VarPtr a
+			For Local i = 0 to Int[](target).length-1
+				
+			Next			
+		ElseIf Float[](target)
+			
+		Else
+			TEntity.GetTargetPosition target,bx,by,bz
+			bx = bx - ax
+			by = by - by
+			bz = bz - bz
+		EndIf
 		
 		
 		Global c_vec_a:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
@@ -92,7 +119,7 @@ Type TWorld
 			C_UpdateVecObject(c_vec_k,-matrix._m[2,0],-matrix._m[2,1],matrix._m[2,2])
 		
 			C_UpdateMatrixObject(c_mat,c_vec_i,c_vec_j,c_vec_k)
-			C_UpdateVecObject(c_vec_v,matrix._m[3,0],matrix._m[3,1],-matrix._m[3,2])
+			C_UpdateVecObject(c_vec_v,matrix._m[3,0],matrix._m[3,1],matrix._m[3,2])
 			C_UpdateTFormObject(c_tform,c_mat,c_vec_v)
 		
 			If entity._pickmode<>PICKMODE_POLYGON C_UpdateCollisionInfoObject(c_col_info,entity._radiusx,entity._boxx,entity._boxy,entity._boxz,entity._boxx+entity._boxwidth,entity._boxy+entity._boxheight,entity._boxz+entity._boxdepth)

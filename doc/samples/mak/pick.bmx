@@ -46,7 +46,9 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	If x>GraphicsWidth()-32 TurnEntity camera,0,-2,0
 	
 	Local picks:TPick[] = WorldPick(camera, [x, y])
-		
+	If picks.length > 0
+		SetEntityColor camera, 255,0,0
+	EndIf
 	Rem
 	e=CameraPick( camera,x,y )
 
