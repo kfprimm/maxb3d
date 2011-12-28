@@ -102,6 +102,7 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 		EndIf
 	End Method
 	
+	Method Abbr$() Abstract
 	Method SetBrush(brush:TBrush,hasalpha) Abstract
 	Method SetCamera(camera:TCamera) Abstract
 	Method SetLight(light:TLight,index) Abstract	

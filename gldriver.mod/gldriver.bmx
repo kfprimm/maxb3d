@@ -98,6 +98,10 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		Return buffer
 	End Method
 	
+	Method Abbr$()
+		Return "gl"
+	End Method
+	
 	Method GetCaps:TCaps()
 		Local caps:TGLCaps=New TGLCaps
 		caps.Extensions=String.FromCString(glGetString(GL_EXTENSIONS)).Split(" ")

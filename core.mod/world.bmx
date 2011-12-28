@@ -443,7 +443,7 @@ Type TWorld
 					Local tree:TBSPTree=bsp.GetRenderTree(camera.GetEye())
 					info.Triangles:+driver.RenderBSPTree(tree)
 				ElseIf custom
-					info.Triangles:+custom.Renderer("").Render(custom)
+					info.Triangles:+custom.Renderer(driver.Abbr()).Render(custom)
 				EndIf	
 			EndIf
 			driver.EndEntityRender entity		

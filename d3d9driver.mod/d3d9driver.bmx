@@ -63,6 +63,10 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		Return caps
 	End Method
 	
+	Method Abbr$()
+		Return "d3d9"
+	End Method
+	
 	Method SetMax2D(enable)
 		If enable
 			Global identity:TMatrix=TMatrix.Identity()
