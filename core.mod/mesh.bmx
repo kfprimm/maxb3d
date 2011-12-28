@@ -5,8 +5,6 @@ Import "worldconfig.bmx"
 Import "entity.bmx"
 Import "surface.bmx"
 Import "bone.bmx"
-Import "bone_animator.bmx"
-Import "vertex_animator.bmx"
 
 Import MaxB3D.Logging
 

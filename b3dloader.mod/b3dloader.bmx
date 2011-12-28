@@ -9,6 +9,7 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
+Import MaxB3D.BoneAnimator
 Import Prime.libB3D
 
 Type TMeshLoaderB3D Extends TMeshLoader

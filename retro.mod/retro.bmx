@@ -18,23 +18,59 @@ Import MaxB3D.A3DSLoader
 Import MaxB3D.B3DLoader
 Import MaxB3D.MD2Loader
 
+Private
+Global _renderinfo:TRenderInfo = New TRenderInfo
+
+Public
+
+Function Graphics3D(width, height, depth = 32, mode = 0)
+	Select mode
+	Case 0
+?Debug
+		depth = 0  
+?Not Debug
+		depth = 32
+?
+	Case 1
+		depth = 32
+	Case 2
+		depth = 0
+	End select
+	Graphics width,height,depth
+End Function
 Rem
-# Graphics3D
 # Dither
 # WBuffer
 # AntiAlias
-# Wireframe
-# HWMultiTex
-# AmbientLight
+End Rem
+Function Wireframe(enable)
+	_currentworld.SetWireFrame enable
+End Function
+'# HWMultiTex
+Function AmbientLight(red, green, blue)
+	_currentworld.SetAmbientLight red, green, blue
+End Function
+Rem
 # ClearCollisions
 # Collisions
-# UpdateWorld
+End Rem
+Function UpdateWorld(speed#)
+	_currentworld.Update(speed, speed)
+End Function
+Function RenderWorld(tween#)
+	_renderinfo = _currentworld.Render(tween)
+End Function
+Rem
 # CaptureWorld
-# RenderWorld
 # ClearWorld
 # LoaderMatrix
 # TrisRendered
+End Rem
+Function TrisRendered()
+	return _renderinfo.triangles
+End Function
 
+Rem
 # CreateTexture
 # LoadTexture
 # LoadAnimTexture
@@ -206,27 +242,71 @@ Rem
 # AnimLength
 # AnimTime
 # Animating
+End Rem
 
-# FreeEntity
-# CopyEntity
-# EntityColor
-# EntityAlpha
-# EntityShininess
-# EntityTexture
-# EntityBlend
-# EntityFX
-# EntityAutoFade
-# PaintEntity
-# EntityOrder
-# ShowEntity
-# HideEntity
-# NameEntity
-# EntityParent
-# GetParent
+Function FreeEntity(entity:TEntity)
+	Return entity.Free()
+End Function
+Function CopyEntity:TEntity(entity:TEntity, parent:TEntity = Null)
+	Return entity.Copy(parent)
+End Function
+Function EntityColor(entity:TEntity, red, green, blue)
+	Return entity.SetColor(red, green, blue)
+End Function
+Function EntityAlpha(entity:TEntity, alpha#)
+	Return entity.SetAlpha(alpha)
+End Function
+Function EntityShininess(entity:TEntity, shine#)
+	Return entity.SetShine(shine)
+End Function
+Function EntityTexture(entity:TEntity, texture:TTexture, frame = 0, index = 0)
+	Return entity.SetTexture(texture, frame, index)
+End Function
+Function EntityBlend(entity:TEntity, blend)
+	Return entity.SetBlend(blend)
+End Function
+Function EntityFX(entity:TEntity, fx)
+	Return entity.SetFX(fx)
+End Function
+'# EntityAutoFade
+Function PaintEntity(entity:TEntity, brush:TBrush)
+	Return entity.SetBrush(brush)
+End Function
+Function EntityOrder(entity:TEntity, order)
+	Return entity.SetOrder(order)
+End Function
+Function HideEntity(entity:TEntity)
+	Return entity.SetVisible(False)
+End Function
+Function ShowEntity(entity:TEntity)
+	Return entity.SetVisible(True)
+End Function
+Function NameEntity(entity:TEntity, name$)
+	Return entity.SetName(name)
+End Function
+Function EntityParent(entity:TEntity, parent:TEntity, glob = True)
+	Return entity.SetParent(parent, glob)
+End Function
+Function GetParent:TEntity(entity:TEntity)
+	Return entity.GetParent()
+End Function
 
-# EntityX
-# EntityY
-# EntityZ
+Function EntityX#(entity:TEntity, glob = False)
+	Local x#,y#,z#
+	entity.GetPosition x,y,z,glob
+	Return x
+End Function
+Function EntityY#(entity:TEntity, glob = False)
+	Local x#,y#,z#
+	entity.GetPosition x,y,z,glob
+	Return y
+End Function
+Function EntityZ#(entity:TEntity, glob = False)
+	Local x#,y#,z#
+	entity.GetPosition x,y,z,glob
+	Return z
+End Function
+Rem
 # EntityRoll
 # EntityYaw
 # EntityPitch
@@ -266,8 +346,12 @@ Rem
 # CollisionEntity
 # CollisionSurface
 # CollisionTriangle
-# GetEntityType
+End Rem
+Function GetEntityType(entity:TEntity)
+	Return entity.GetType()
+End Function
 
+Rem
 # VectorYaw
 # VectorPitch
 
