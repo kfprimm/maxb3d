@@ -34,6 +34,8 @@ Type TEntity
 	
 	Field _cullradius#
 	
+	Field _alphaorder#
+	
 	Field _linklist:TList=CreateList()
 	
 	Method New()
@@ -410,6 +412,10 @@ Type TEntity
 	Method SetPickMode(mode, obscurer=True)
 		_pickmode = mode
 		_obscurer = obscurer
+	End Method
+	
+	Method HasAlpha()
+		Return _brush._a<>1 Or _brush._fx&FX_FORCEALPHA
 	End Method
 	
 	Method GetMatrix:TMatrix(alternate=False,copy=True)

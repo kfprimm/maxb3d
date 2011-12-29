@@ -27,7 +27,7 @@ Type TMesh Extends TAnimEntity
 	Field _minx#,_miny#,_minz#,_maxx#,_maxy#,_maxz#
 	
 	Method HasAlpha()
-		If _brush._a<>1 Or _brush._fx&FX_FORCEALPHA Return True
+		If Super.HasAlpha() Return True
 		For Local surface:TSurface=EachIn _surfaces
 			If surface.HasAlpha() Return True
 		Next

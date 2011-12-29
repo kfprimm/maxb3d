@@ -350,7 +350,35 @@ Type TWorld
 		Local list:TList=CreateList()
 		For Local entity:TEntity=EachIn _config.List[WORLDLIST_RENDER]
 			If entity.GetVisible()=False Or entity._brush._a=0 Continue
-			If camera.InView(entity) list.AddLast entity
+			If camera.InView(entity)
+				Local link:TLink=list._head
+				If entity._order > 0
+					Repeat
+						link=link._succ
+					Until link=list._head Or TEntity(link.Value())._order <= entity._order
+					list.InsertBeforeLink(entity,link)
+				ElseIf entity._order < 0
+					Repeat
+						link=link._pred
+					Until link=list._head Or TEntity(link.Value())._order >= entity._order
+					list.InsertAfterLink(entity,link)				
+				Else
+					If entity.HasAlpha()
+						entity._alphaorder = camera.GetDistance(entity)
+						Repeat
+							link=link._pred
+							If link=list._head Then Exit
+						Until TEntity(link.Value())._order >= 0 And (TEntity(link.Value())._alphaorder >= entity._alphaorder Or TEntity(link.Value())._alphaorder = 0.0)
+						list.InsertAfterLink(entity,link)
+					Else
+						entity._alphaorder = 0
+						Repeat
+							link=link._succ
+						Until link=list._head Or TEntity(link.Value())._order <= 0
+						list.InsertBeforeLink(entity,link)
+					EndIf
+				EndIf	
+			EndIf
 		Next
 		
 		UpdateSprites list,driver,camera
