@@ -106,6 +106,13 @@ Type TCamera Extends TEntity
 		_zoom=zoom
 	End Method
 	
+	Method GetFOV#()
+		Return ATan(_zoom / 1.0)
+	End Method
+	Method SetFOV(angle#)
+		_zoom = 1.0 / Tan(angle / 2.0)
+	End Method
+	
 	Method GetEye:TRay()
 		Local x#,y#,z#,dx#,dy#,dz#=1.0,o:TVector,d:TVector
 		GetPosition x,y,z,True
@@ -170,8 +177,10 @@ Type TCamera Extends TEntity
 		Local entity:TEntity=TEntity(target),point#[]=Float[](target)
 		If entity
 			entity.GetCullParams x,y,z,radius
-		Else
+		ElseIf point
 			x=point[0];y=point[1];z=point[2];radius=point[3]
+		Else
+			Return 0
 		EndIf
 		Return _lastfrustum.IntersectsPoint(x,y,z,radius)
 	End Method

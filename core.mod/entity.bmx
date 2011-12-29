@@ -119,11 +119,12 @@ Type TEntity
 	
 	Method FindChild:TEntity(name$,recursive=False)
 		For Local child:TEntity=EachIn _childlist
-			If child._name=name Return child
+			If child.GetName()=name Return child
 		Next
 		If recursive
 			For Local child:TEntity=EachIn _childlist
-				If child.FindChild(name) Return child
+				Local entity:TEntity = child.FindChild(name, True)
+				If entity Return entity
 			Next
 		EndIf
 	End Method

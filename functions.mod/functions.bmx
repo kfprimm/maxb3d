@@ -305,6 +305,18 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function GetCameraFOV#(camera:TCamera)
+	Return camera.GetFOV()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetCameraFOV(camera:TCamera,angle#)
+	Return camera.SetFOV(angle)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function CameraInView#(camera:TCamera,target:Object)
 	Return camera.InView(target)
 End Function
@@ -351,6 +363,12 @@ Rem
 End Rem
 Function CountEntityChildren(entity:TEntity,recursive=False)
 	Return entity.CountChildren(recursive)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function FindEntityChild:TEntity(entity:TEntity, name$, recursive = False)
+	Return entity.FindChild(name, recursive)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO

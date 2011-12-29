@@ -62,6 +62,8 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		Local meshchunk:TMESHChunk=TMESHChunk(node.kind),bonechunk:TBONEChunk=TBONEChunk(node.kind)
 				
 		Select node.kind
+		Case Null
+			entity=_currentworld.AddPivot(parent)
 		Case meshchunk			
 			If entity=Null entity=_currentworld.AddMesh("*null*",parent)
 			Local mesh:TMesh=TMesh(entity)
