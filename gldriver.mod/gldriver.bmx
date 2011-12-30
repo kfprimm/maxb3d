@@ -237,7 +237,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			
 		Local ambient#[]=[WorldConfig.AmbientRed/255.0,WorldConfig.AmbientGreen/255.0,WorldConfig.AmbientBlue/255.0]			
 					
-		If brush._fx&FX_FORCEALPHA Or hasalpha
+		If hasalpha
 			glEnable GL_BLEND
 			glDepthMask GL_FALSE
 		Else

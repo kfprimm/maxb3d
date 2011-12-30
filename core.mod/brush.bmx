@@ -67,6 +67,11 @@ Type TBrush
 		_blend=brush._blend;_fx=brush._fx
 	End Method
 	
+	Method HasAlpha()
+		If _a<>1 Or _fx&FX_FORCEALPHA Or _blend = BLEND_MULTIPLY Or _blend = BLEND_ADD Return True
+		If _texture[0] <> Null If _texture[0]._flags&TEXTURE_ALPHA Return True
+	End Method
+	
 	Method GetName$()
 		Return _name
 	End Method

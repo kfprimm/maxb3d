@@ -201,6 +201,7 @@ Type TWorld
 			Return Null
 		EndIf
 				
+		If url texture.SetName url.ToString()
 		texture.SetSize -1,-1,pixmap.length
 		For Local i=0 To pixmap.length-1
 			texture.SetPixmap pixmap[i],i
@@ -452,11 +453,11 @@ Type TWorld
 					If surface._brush._a=0 Continue					
 					Local resource:TSurfaceRes=driver.MergeSurfaceRes(surface,animation_surface,merge_data)				'driver.UpdateSurfaceRes(surface)
 					brush=surface._brush.Merge(mesh._brush)
-					driver.SetBrush brush,surface.HasAlpha() Or brush._fx&FX_FORCEALPHA
+					driver.SetBrush brush,surface.HasAlpha() Or brush.HasAlpha()
 					info.Triangles:+driver.RenderSurface(resource,brush)
 				Next
 			Else
-				driver.SetBrush brush,brush._a<>1
+				driver.SetBrush brush, brush.HasAlpha()
 				If flat					
 					info.Triangles:+driver.RenderFlat(flat)
 				ElseIf sprite				
