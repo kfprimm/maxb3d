@@ -185,10 +185,10 @@ roamhandle roam_create(float *heightdata, int size)
 {
     roam rm;
 
+    rm=(roam)malloc(sizeof(roam_struct));
+    
     rm->size=0;
     rm->heights=NULL;
-
-    rm=(roam)malloc(sizeof(roam_struct));
 
     roam_set_heightdata(rm, heightdata, size);
     
