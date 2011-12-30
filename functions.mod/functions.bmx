@@ -731,6 +731,12 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function CenterMesh(mesh:TMesh)
+	Return mesh.Center()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function GetMeshSize(mesh:TMesh,width# Var,height# Var,depth# Var)
 	Return mesh.GetSize(width,height,depth)
 End Function
