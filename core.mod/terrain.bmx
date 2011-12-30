@@ -29,10 +29,17 @@ Type TTerrain Extends TEntity
 		EndIf
 	End Method
 	
+	Method Lists[]()
+		Return Super.Lists()+[WORLDLIST_TERRAIN, WORLDLIST_RENDER]
+	End Method
+	
+	Method CopyData:TEntity(entity:TEntity)
+		Local terrain:TTerrain = TTerrain(entity)
+		Return Super.CopyData(entity)
+	End Method
+	
 	Method Copy:TTerrain(parent:TEntity=Null)
-		Local terrain:TTerrain=New TTerrain
-		terrain.SetParent parent
-		Return terrain
+		Return TTerrain(Super.Copy_(parent))
 	End Method
 	
 	Method SetMap(url:Object)

@@ -96,6 +96,10 @@ Type TListener Extends TEntity
 		Assert _listener=Null, "Only one listener can exist!"
 	End Method
 	
+	Method Lists[]()
+		Return Super.Lists()
+	End Method
+	
 	Method Copy:TListener(parent:TEntity=Null)
 		Return Null
 	End Method

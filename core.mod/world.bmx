@@ -90,7 +90,6 @@ Type TWorld
 			bz = bz - bz
 		EndIf
 		
-		
 		Global c_vec_a:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
 		Global c_vec_b:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
 		Global c_vec_radius:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
@@ -235,29 +234,18 @@ Type TWorld
 		Return brush
 	End Method
 	
-	Method AddEntity(entity:TEntity,parent:TEntity,otherlist)
-		entity.SetParent(parent)
-		entity.AddLink _config.AddObject(entity,WORLDLIST_ENTITY)
-		entity.AddLink _config.AddObject(entity,otherlist)
-	End Method
-	
 	Method AddPivot:TPivot(parent:TEntity=Null)
-		Local pivot:TPivot=New TPivot
-		pivot.AddToWorld parent,[WORLDLIST_PIVOT]
-		Return pivot		
+		Return TPivot(New TPivot.AddToWorld(_config, parent))
 	End Method
 	
 	Method AddCamera:TCamera(parent:TEntity=Null)
-		Local camera:TCamera=New TCamera
-		camera.AddToWorld parent,[WORLDLIST_CAMERA]
-		Return camera
+		Return TCamera(New TCamera.AddToWorld(_config, parent))
 	End Method
 	
 	Method AddLight:TLight(mode,parent:TEntity=Null)
 		Local light:TLight=New TLight
 		light.SetMode mode
-		light.AddToWorld parent,[WORLDLIST_LIGHT]
-		Return light
+		Return TLight(light.AddToWorld(_config, parent))
 	End Method	
 	
 	Method AddMesh:TMesh(url:Object,parent:TEntity=Null)
@@ -269,47 +257,37 @@ Type TWorld
 			Return Null
 		EndIf
 		_tmp_res_path=""
-		mesh.AddToWorld parent,[WORLDLIST_MESH,WORLDLIST_RENDER]
-		Return mesh
+		Return TMesh(mesh.AddToWorld(_config, parent))
 	End Method
 	
 	Method AddFlat:TFlat(parent:TEntity=Null)
-		Local flat:TFlat=New TFlat
-		flat.AddToWorld parent,[WORLDLIST_FLAT,WORLDLIST_RENDER]
-		Return flat
+		Return TFlat(New TFlat.AddToWorld(_config, parent))
 	End Method
 	
 	Method AddSprite:TSprite(url:Object,flags=TEXTURE_DEFAULT,parent:TEntity=Null)
-		Local sprite:TSprite=New TSprite
+		Local sprite:TSprite=New TSprite 
 		sprite.SetTexture AddTexture(url,flags)
-		sprite.AddToWorld parent,[WORLDLIST_SPRITE,WORLDLIST_RENDER]
-		Return sprite
+		Return TSprite(sprite.AddToWorld(_config, parent))
 	End Method
 	
 	Method AddTerrain:TTerrain(url:Object,parent:TEntity=Null)
 		Local terrain:TTerrain=New TTerrain
 		terrain.SetMap url
-		terrain.AddToWorld parent,[WORLDLIST_TERRAIN,WORLDLIST_RENDER]
-		Return terrain
+		Return TTerrain(terrain.AddToWorld(_config, parent))
 	End Method
 	
 	Method AddBody:TBody()
-		Local body:TBody=New TBody
-		body.AddToWorld Null,[WORLDLIST_BODY]
-		Return body
+		Return TBody(New TBody.AddToWorld(_config, Null))
 	End Method
 	
 	Method AddBone:TBone(parent:TEntity=Null)
-		Local bone:TBone=New TBone
-		bone.AddToWorld parent,[WORLDLIST_BONE]
-		Return bone
+		Return TBone(New TBone.AddToWorld(_config, parent))
 	End Method
 	
 	Method AddBSPModel:TBSPModel(url:Object,parent:TEntity=Null)
 		Local bsp:TBSPModel=New TBSPModel
 		bsp.SetTree TBSPTree(url)
-		bsp.AddToWorld parent,[WORLDLIST_BSPMODEL,WORLDLIST_RENDER]
-		Return bsp
+		Return TBSPModel(bsp.AddToWorld(_config, parent))
 	End Method
 	
 	Method Render:TRenderInfo(tween#=1.0)

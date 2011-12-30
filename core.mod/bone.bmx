@@ -8,11 +8,17 @@ Type TBone Extends TAnimEntity
 	Field _surface:TSurface[]
 	Field _info:TWeightInfo[]
 	Field _key:TAnimKey[]
-		
+	
+	Method Lists[]()
+		Return Super.Lists() + [WORLDLIST_BONE]
+	End Method
+	
+	Method CopyData:TEntity(entity:TEntity)
+		Return Super.CopyData(entity)
+	End Method
+	
 	Method Copy:TBone(parent:TEntity=Null)
-		Local bone:TBone=New TBone
-		bone.AddToWorld parent,[WORLDLIST_BONE]
-		Return bone
+		Return TBone(Super.Copy_(parent))
 	End Method
 	
 	Method AddSurface(surface:TSurface)

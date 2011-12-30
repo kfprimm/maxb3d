@@ -15,10 +15,24 @@ Type TSprite Extends TEntity
 	
 	Field _view_matrix:TMatrix=New TMatrix
 	
+	Method Lists[]()
+		Return Super.Lists()+[WORLDLIST_SPRITE, WORLDLIST_RENDER]
+	End Method
+	
+	Method CopyData:TEntity(entity:TEntity)
+		Local sprite:TSprite = TSprite(entity)
+		Local x#,y#
+		sprite.GetHandle x,y
+		
+		SetAngle sprite.GetAngle()
+		SetHandle x,y
+		SetViewMode sprite.GetViewMode()
+		
+		Return Super.CopyData(entity)
+	End Method
+	
 	Method Copy:TSprite(parent:TEntity=Null)
-		Local sprite:TSprite=New TSprite
-		sprite.AddToWorld parent, [WORLDLIST_SPRITE, WORLDLIST_RENDER]
-		Return sprite
+		Return TSprite(Super.Copy_(parent))
 	End Method
 	
 	Method GetMatrix:TMatrix(alternate=False,copy=True)

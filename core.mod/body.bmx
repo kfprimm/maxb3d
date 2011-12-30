@@ -15,9 +15,18 @@ Type TBody Extends TEntity
 		_shape = BODY_SPHERE
 	End Method
 	
+	Method Lists[]()
+		Return Super.Lists() + [WORLDLIST_BODY]
+	End Method
+	
+	Method CopyData:TEntity(entity:TEntity)
+		Local body:TBody = TBody(entity)
+		SetMass body.GetMass()
+		Return Super.CopyData(entity)
+	End Method
+	
 	Method Copy:TBody(parent:TEntity=Null)
-		Local body:TBody=New TBody
-		Return body
+		Return TBody(Super.Copy_(parent))
 	End Method
 	
 	Method SetScale(x#,y#,z#,glob=False)

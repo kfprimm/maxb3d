@@ -17,9 +17,25 @@ Type TLight Extends TEntity
 		SetMode LIGHT_DIRECTIONAL
 	End Method
 	
+	Method Lists[]()
+		Return Super.Lists() + [WORLDLIST_LIGHT]
+	End Method
+	
+	Method CopyData:TEntity(entity:TEntity)
+		Local light:TLight = TLight(entity)
+
+		Local inner#, outer#
+		light.GetAngles inner, outer
+		
+		SetAngles inner,outer
+		SetRange light.GetRange()
+		SetMode light.GetMode()
+		
+		Return Super.CopyData(entity)
+	End Method
+	
 	Method Copy:TLight(parent:TEntity=Null)
-		Local light:TLight=New TLight
-		Return light
+		Return TLight(Super.Copy_(parent))
 	End Method
 	
 	Method GetMode()

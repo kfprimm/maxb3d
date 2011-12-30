@@ -37,17 +37,31 @@ Type TCamera Extends TEntity
 		SetZoom 1.0
 	End Method
 	
+	Method Lists[]()
+		Return Super.Lists() + [WORLDLIST_CAMERA]
+	End Method
+
+	Method CopyData:TEntity(entity:TEntity)
+		Local camera:TCamera = TCamera(entity)
+		Local red,green,blue,fognear#,fogfar#,x,y,width,height,near#,far#
+		camera.GetFogColor red,green,blue
+		camera.GetFogRange fognear,fogfar
+		camera.GetViewport x,y,width,height
+		camera.GetRange near,far
+		
+		SetMode camera.GetMode()
+		SetFogMode camera.GetFogMode()
+		SetFogColor red,green,blue
+		SetFogRange fognear,fogfar
+		SetViewport x,y,width,height
+		SetClsMode camera.GetClsMode()
+		SetRange near,far
+		SetZoom camera.GetZoom()
+		Return Super.CopyData(entity)
+	End Method
+	
 	Method Copy:TCamera(parent:TEntity=Null)
-		Local camera:TCamera=New TCamera
-		camera.SetMode _projmode
-		camera.SetFogMode _fogmode
-		camera.SetFogColor _fogr*255.0,_fogg*255.0,_fogb*255.0
-		camera.SetFogRange _fognear,_fogfar
-		camera.SetViewport _viewx,_viewy,_viewwidth,_viewheight
-		camera.SetClsMode _clsmode
-		camera.SetRange _near,_far
-		camera.SetZoom _zoom
-		Return camera
+		Return TCamera(Super.Copy_(parent))
 	End Method
 	
 	Method GetMode()

@@ -33,33 +33,27 @@ Type TMesh Extends TAnimEntity
 		Next
 	End Method
 	
-	Method CopyData(entity:TEntity)
-		Super.CopyData entity
-		
+	Method Lists[]()
+		Return Super.Lists()+[WORLDLIST_MESH, WORLDLIST_RENDER]
+	End Method
+	
+	Method CopyData:TEntity(entity:TEntity)
 		Local mesh:TMesh=TMesh(entity)
+		For Local surface:TSurface=EachIn mesh._surfaces
+			AppendSurface surface
+		Next		
+		Return Super.CopyData(entity)
 	End Method
 	
 	Method Copy:TMesh(parent:TEntity=Null)
-		Local mesh:TMesh=New TMesh
-		mesh.CopyData Self
-		
-		For Local surface:TSurface=EachIn _surfaces
-			mesh.AppendSurface surface
-		Next
-		
-		mesh.AddToWorld parent,[WORLDLIST_MESH,WORLDLIST_RENDER]		
-		Return mesh
+		Return TMesh(Super.Copy_(parent))
 	End Method
 	
 	Method Clone:TMesh(parent:TEntity=Null)
-		Local mesh:TMesh=New TMesh
-		mesh.CopyData Self
-		
-		For Local surface:TSurface=EachIn _surfaces
-			mesh.AppendSurface surface.Copy()
+		Local mesh:TMesh=Copy(parent)
+		For Local i=0 To _surfaces.length-1
+			mesh._surfaces[i] = _surfaces[i].Copy()
 		Next
-		
-		mesh.AddToWorld parent,[WORLDLIST_MESH,WORLDLIST_RENDER]
 		Return mesh
 	End Method
 	

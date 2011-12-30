@@ -13,6 +13,7 @@ Const PICKMODE_POLYGON	= 3
 Const PICKMODE_BOX		= 4
 
 Type TEntity
+	Field _config:TWorldConfig
 	Field _matrix:TMatrix=TMatrix.Identity(), _lockmatrix
 	
 	Field _name$
@@ -43,6 +44,9 @@ Type TEntity
 	End Method
 	
 	Method Free()
+		For Local child:TEntity=EachIn _childlist
+			child.Free()
+		Next
 		For Local link:TLink=EachIn _linklist
 			RemoveLink link
 		Next
@@ -52,16 +56,27 @@ Type TEntity
 		_linklist.AddLast link
 	End Method
 	
-	Method AddToWorld(parent:TEntity=Null,list[])
-		SetParent parent,False
-		AddLink WorldConfig.AddObject(Self,WORLDLIST_ENTITY)
-		For Local l=EachIn list
-			AddLink WorldConfig.AddObject(Self,l)
-		Next
+	Method Lists[]()
+		Return [WORLDLIST_ENTITY]
 	End Method
 	
-	Method CopyData(entity:TEntity)
+	Method AddToWorld:TEntity(config:TWorldConfig, parent:TEntity=Null)
+		_config = config
+		SetParent parent,False
+		For Local l=EachIn Lists()
+			AddLink _config.AddObject(Self,l)
+		Next
+		Return Self
+	End Method
+	
+	Method CopyData:TEntity(entity:TEntity)
 		SetBrush entity.GetBrush()
+		SetName entity.GetName()
+		Return Self
+	End Method
+	
+	Method Copy_:TEntity(parent:TEntity=Null)
+		Return New Self.CopyData(Self).AddToWorld(_config,parent)
 	End Method
 	
 	Method Copy:TEntity(parent:TEntity=Null) Abstract
