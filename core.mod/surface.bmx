@@ -246,7 +246,7 @@ Type TSurface
 	End Method
 		
 	Method HasAlpha()
-		Return _brush._a<>1 Or _brush._fx&FX_FORCEALPHA
+		Return _brush.HasAlpha()
 	End Method	
 End Type
 
