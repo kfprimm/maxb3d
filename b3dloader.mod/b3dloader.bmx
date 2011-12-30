@@ -32,7 +32,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 				texture[i].SetBlend chunk.blend
 				texture[i].SetPosition chunk.x_pos,chunk.y_pos
 				texture[i].SetScale chunk.x_scale,chunk.y_scale
-				texture[i].SetRotation chunk.rotation
+				texture[i].SetRotation chunk.rotation*(180.0/Pi)
 			EndIf
 		Next
 		
