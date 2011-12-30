@@ -264,7 +264,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSV,D3DTADDRESS_WRAP
 			EndIf
 			
-			If texture._flags&TEXTURE_SPHMAP
+			If texture._flags&TEXTURE_SPHEREMAP
 				_d3ddev.SetTextureStageState i,D3DTSS_TEXCOORDINDEX,D3DTSS_TCI_SPHEREMAP
 			Else
 				_d3ddev.SetTextureStageState i,D3DTSS_TEXCOORDINDEX,texture._coords
