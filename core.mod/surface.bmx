@@ -32,7 +32,13 @@ Type TSurface
 		If data&SURFACE_POS surface._vertexpos=_vertexpos[..]
 		If data&SURFACE_NML surface._vertexnml=_vertexnml[..]
 		If data&SURFACE_CLR surface._vertexclr=_vertexclr[..]
-		If data&SURFACE_TEX surface._vertextex=_vertextex[..];surface._texcoordsize=_texcoordsize
+		If data&SURFACE_TEX
+			surface._vertextex = New Float[][_texcoordsize]
+			For Local i=0 To _texcoordsize-1
+				surface._vertextex[i]=_vertextex[i][..]
+			Next
+			surface._texcoordsize=_texcoordsize
+		EndIf
 		If data&SURFACE_TRI surface._trianglecnt=_trianglecnt;surface._triangle=_triangle[..]
 		Return surface
 	End Method
