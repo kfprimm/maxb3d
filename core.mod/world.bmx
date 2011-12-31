@@ -7,7 +7,9 @@ Import "body.bmx"
 Import "pivot.bmx"
 Import "custom_entity.bmx"
 Import "driver.bmx"
-import "pick.bmx"
+Import "pick.bmx"
+Import "meshloader.bmx"
+Import "meshloaderempty.bmx"
 
 Private
 Function ModuleLog(message$)
@@ -200,9 +202,10 @@ Type TWorld
 			Return Null
 		EndIf
 				
-		If url texture.SetName url.ToString()
+		texture.SetName url.ToString()
 		texture.SetSize -1,-1,pixmap.length
 		For Local i=0 To pixmap.length-1
+			If flags&TEXTURE_MASKED pixmap[i] = MaskPixmap(pixmap[i],0,0,0)
 			texture.SetPixmap pixmap[i],i
 		Next			
 		texture.SetFlags flags

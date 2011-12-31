@@ -672,7 +672,7 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateMesh:TMesh(parent:TEntity=Null)
-	Return _currentworld.AddMesh("*null*",parent)
+	Return _currentworld.AddMesh("//empty",parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
