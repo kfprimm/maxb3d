@@ -19,7 +19,7 @@ End Function
 Public
 
 Type TMeshLoader3DS Extends TMeshLoader	
-	Method Run(mesh:TMesh,stream:TStream,url:Object)	
+	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)	
 		If stream=Null Return False
 		Local file:T3DSFile=T3DSFile.Read(stream)
 		If file=Null Return False

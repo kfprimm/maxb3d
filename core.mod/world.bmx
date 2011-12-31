@@ -271,7 +271,7 @@ Type TWorld
 	Method AddMesh:TMesh(url:Object,parent:TEntity=Null)
 		Local mesh:TMesh=New TMesh
 		If String(url) _tmp_res_path=ExtractDir(String(url))
-		If Not TMeshLoader.Load(mesh,GetStream(url))
+		If Not TMeshLoader.Load(_config,mesh,GetStream(url))
 			_tmp_res_path=""
 			If url ModuleLog "Unable to load mesh url. ("+url.ToString()+")" Else ModuleLog "Unable to load mesh url. (null)"
 			Return Null

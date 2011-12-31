@@ -19,7 +19,7 @@ End Function
 Public
 
 Type TMeshLoaderOBJ Extends TMeshLoader
-	Method Run(mesh:TMesh,stream:TStream,url:Object)
+	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
 		If Not stream Return False
 		
 		Local surface:TSurface=New TSurface

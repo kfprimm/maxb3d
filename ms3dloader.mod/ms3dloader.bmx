@@ -12,7 +12,7 @@ Import MaxB3D.Core
 Import Prime.libMS3D
 
 Type TMeshLoaderMS3D Extends TMeshLoader
-	Method Run(mesh:TMesh,stream:TStream,url:Object)
+	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
 		Local model:TMS3DFile=New TMS3DFile.Read(stream)
 		If model=Null Return Null
 		

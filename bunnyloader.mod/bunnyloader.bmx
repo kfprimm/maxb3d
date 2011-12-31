@@ -25,7 +25,7 @@ End Function
 
 ' 8146 Verticies,8127 Normals,16301 Triangles
 Type TMeshLoaderBunny Extends TMeshLoader
-	Method Run(mesh:TMesh,stream:TStream,url:Object)
+	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
 		If String(url)<>"//bunny"Return False
 		
 		Global surface:TSurface

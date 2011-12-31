@@ -24,7 +24,7 @@ Type TMeshLoader
 		loader._next=Self 
 	End Method
 	
-	Function Load(mesh:TMesh,url:Object)
+	Function Load(config:TWorldConfig,mesh:TMesh,url:Object)
 		Local loader:TMeshLoader=_start
 		Local stream:TStream=TStream(url)
 		If stream=Null stream=ReadStream(stream)
@@ -33,7 +33,7 @@ Type TMeshLoader
 ?Not Debug
 			Try
 ?
-				If loader.Run(mesh,stream,url) Return True
+				If loader.Run(config,mesh,stream,url) Return True
 ?Not Debug
 			Catch a$
 				ModuleLog "Exception throw from "+loader.ModuleName()+"."
@@ -45,7 +45,7 @@ Type TMeshLoader
 		Return False
 	End Function
 	
-	Method Run(mesh:TMesh,stream:TStream,url:Object) Abstract
+	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object) Abstract
 	
 	Method Info$() Abstract
 	Method ModuleName$() Abstract

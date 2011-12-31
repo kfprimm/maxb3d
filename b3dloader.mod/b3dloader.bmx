@@ -15,7 +15,7 @@ Import Prime.libB3D
 Type TMeshLoaderB3D Extends TMeshLoader
 	Field _mesh:TMesh
 	
-	Method Run(mesh:TMesh,stream:TStream,url:Object)
+	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
 		Local model:TBB3DChunk = TBB3DChunk(url)		
 		If model=Null model = TBB3DChunk.Load(stream)
 		If model=Null Return False	
@@ -54,21 +54,21 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		' model.dump StandardIOStream
 		 
 		If model.node
-			ParseNode model.node,mesh,brush,mesh
+			ParseNode config,model.node,mesh,brush,mesh
 			_mesh = Null
 			Return True
 		EndIf
 		Return False
 	End Method
 	
-	Method ParseNode(node:TNODEChunk,parent:TEntity,brush:TBrush[],entity:TEntity=Null)
+	Method ParseNode(config:TWorldConfig,node:TNODEChunk,parent:TEntity,brush:TBrush[],entity:TEntity=Null)
 		Local meshchunk:TMESHChunk=TMESHChunk(node.kind),bonechunk:TBONEChunk=TBONEChunk(node.kind)
 				
 		Select node.kind
 		Case Null
 			entity=_currentworld.AddPivot(parent)
 		Case meshchunk			
-			If entity=Null entity=_currentworld.AddMesh("//empty",parent)
+			If entity=Null entity=New TMesh.AddToWorld(config, parent)
 			Local mesh:TMesh=TMesh(entity)
 			mesh._animator=New TBoneAnimator
 			_mesh=mesh
@@ -142,7 +142,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		entity.SetScale node.scale[0],node.scale[1],node.scale[2]
 		
 		For Local child:TNODEChunk=EachIn node.node
-			ParseNode child,entity,brush
+			ParseNode config,child,entity,brush
 		Next
 		If TMesh(entity) If TBoneAnimator(TMesh(entity)._animator)._root=Null TMesh(entity)._animator=Null
 		If TBone(entity) TBone(entity)._start_matrix=entity.GetMatrix()

@@ -18,7 +18,7 @@ Global md2_anorms#[][]= [[ -0.525731,  0.000000,  0.850651 ],[ -0.442863,  0.238
 Public
 
 Type TMeshLoaderMD2 Extends TMeshLoader
-	Method Run(mesh:TMesh,stream:TStream,url:Object)
+	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
 		If stream=Null Return False
 		stream=LittleEndianStream(stream)
 		

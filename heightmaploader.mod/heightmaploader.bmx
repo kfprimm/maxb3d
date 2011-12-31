@@ -11,7 +11,7 @@ ModuleInfo "License: MIT"
 Import MaxB3D.Core
 
 Type TMeshLoaderHMAP Extends TMeshLoader
-	Method Run(mesh:TMesh,stream:TStream,url:Object)
+	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
 		Local pixmap:TPixmap=TPixmap(url)
 		If pixmap=Null pixmap=LoadPixmap(stream)
 		If pixmap=Null Return False

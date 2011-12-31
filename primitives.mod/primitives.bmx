@@ -42,7 +42,7 @@ Function CreateTorus:TMesh(radius#,width#,segments,sides,parent:TEntity=Null)
 End Function
 
 Type TMeshLoaderPrimitives Extends TMeshLoader
-	Method Run(mesh:TMesh,stream:TStream,url:Object)
+	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
 		Local str$=String(url)
 		Local params$[]=str[str.Find("(")+1..str.FindLast(")")].Split(",")
 		

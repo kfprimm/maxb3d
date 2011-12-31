@@ -9,7 +9,7 @@ Import MaxB3D.Core
 Import Prime.libx
 
 Type TMeshLoaderX Extends TMeshLoader
-	Method Run(mesh:TMesh,stream:TStream,url:Object)
+	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
 		If stream = Null Return False
 		
 		Local file:TXFile=TXFile.Read(url)

@@ -4,7 +4,7 @@ Strict
 Import "meshloader.bmx"
 
 Type TMeshLoaderEmpty Extends TMeshLoader
-	Method Run(mesh:TMesh,stream:TStream,url:Object)
+	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
 		Return String(url)="//empty"
 	End Method
 	

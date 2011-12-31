@@ -18,7 +18,7 @@ End Function
 Public
 
 Type TMeshLoaderPLY Extends TMeshLoader
-	Method Run(mesh:TMesh,stream:TStream,url:Object)
+	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
 		If stream=Null Return
 		Local file:TPlyFile=TPlyFile.Read(stream)
 		If file=Null Return Null
