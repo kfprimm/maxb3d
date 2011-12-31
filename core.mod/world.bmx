@@ -89,8 +89,8 @@ Type TWorld
 		
 		Local a#,b#,c#,d#,count,s# Ptr
 		If Int[](target)
-			s = VarPtr a
-			For Local i = 0 to Int[](target).length-1
+			s = Varptr a
+			For Local i = 0 To Int[](target).length-1
 				
 			Next			
 		ElseIf Float[](target)
@@ -143,7 +143,7 @@ Type TWorld
 			EndIf
 		
 			If C_Pick(c_col_info,c_line,radius,c_col,c_tform,tree,entity._pickmode)
-				Local info:TPick = new TPick
+				Local info:TPick = New TPick
 				info.x  = C_CollisionX()
 				info.y  = C_CollisionX()
 				info.z  = C_CollisionX()
@@ -343,7 +343,7 @@ Type TWorld
 		
 		If driver._in_max2d driver.EndMax2D
 		
-		driver.SetCamera camera
+		driver.SetCamera camera,_config
 		SetLighting	driver,camera
 		
 		Local list:TList=CreateList()
@@ -451,11 +451,11 @@ Type TWorld
 					If surface._brush._a=0 Continue					
 					Local resource:TSurfaceRes=driver.MergeSurfaceRes(surface,animation_surface,merge_data)				'driver.UpdateSurfaceRes(surface)
 					brush=surface._brush.Merge(mesh._brush)
-					driver.SetBrush brush,surface.HasAlpha() Or brush.HasAlpha()
+					driver.SetBrush brush,surface.HasAlpha() Or brush.HasAlpha(),_config
 					info.Triangles:+driver.RenderSurface(resource,brush)
 				Next
 			Else
-				driver.SetBrush brush, brush.HasAlpha()
+				driver.SetBrush brush, brush.HasAlpha(),_config
 				If flat					
 					info.Triangles:+driver.RenderFlat(flat)
 				ElseIf sprite				

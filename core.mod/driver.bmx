@@ -42,6 +42,7 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 	Field _texture:TTexture[8],_caps:TCaps
 	Field _prevwidth,_prevheight
 	Field _in_max2d=True
+	Field _configs:TWorldConfig[]
 	
 	Method CreateGraphics:TGraphics( width,height,depth,hertz,flags )
 		RunHooks _creategraphicshook,Null
@@ -57,8 +58,10 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 		_parent.SetGraphics(g)
 		_current=g
 		If _prevwidth<>GraphicsWidth() Or _prevheight<>GraphicsHeight()
-			WorldConfig.Width=GraphicsWidth()
-			WorldConfig.Height=GraphicsHeight()	
+			For Local config:TWorldConfig = EachIn _configs
+				config.Width=GraphicsWidth()
+				config.Height=GraphicsHeight()
+			Next
 			ScaleViewports	
 			_prevwidth=GraphicsWidth();_prevheight=GraphicsHeight()
 		EndIf
@@ -76,8 +79,10 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 	End Method
 	
 	Method SetBuffer(buffer:TBuffer)
-		WorldConfig.Width=buffer._width
-		WorldConfig.Height=buffer._height			
+		For Local config:TWorldConfig = EachIn _configs
+			config.Width=buffer._width
+			config.Height=buffer._height			
+		Next
 		Return _parent.SetBuffer(buffer)
 	End Method
 	
@@ -103,8 +108,8 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 	End Method
 	
 	Method Abbr$() Abstract
-	Method SetBrush(brush:TBrush,hasalpha) Abstract
-	Method SetCamera(camera:TCamera) Abstract
+	Method SetBrush(brush:TBrush,hasalpha,config:TWorldConfig) Abstract
+	Method SetCamera(camera:TCamera,config:TWorldConfig) Abstract
 	Method SetLight(light:TLight,index) Abstract	
 	
 	Method BeginEntityRender(entity:TEntity) Abstract
@@ -122,21 +127,23 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 	Method MergeSurfaceRes:TSurfaceRes(base:TSurface,animation:TSurface,data) Abstract
 		
 	Method ScaleViewports()
-		For Local camera:TCamera=EachIn WorldConfig.List[WORLDLIST_CAMERA]
-			Local x,y,width,height
-			camera.GetViewport x,y,width,height
-			Local sx#=WorldConfig.Width/Float(_prevwidth),sy#=WorldConfig.Height/Float(_prevheight)
-			If width=0
-				width=GraphicsWidth()
-			Else
-				x:*sx;width:*sx
-			EndIf
-			If height=0
-				height=GraphicsHeight()
-			Else
-				y:*sy;height:*sy
-			EndIf
-			camera.SetViewport x,y,width,height
+		For Local config:TWorldConfig = EachIn _configs
+			For Local camera:TCamera=EachIn config.List[WORLDLIST_CAMERA]
+				Local x,y,width,height
+				camera.GetViewport x,y,width,height
+				Local sx#=config.Width/Float(_prevwidth),sy#=config.Height/Float(_prevheight)
+				If width=0
+					width=GraphicsWidth()
+				Else
+					x:*sx;width:*sx
+				EndIf
+				If height=0
+					height=GraphicsHeight()
+				Else
+					y:*sy;height:*sy
+				EndIf
+				camera.SetViewport x,y,width,height
+			Next
 		Next
 	End Method
 End Type

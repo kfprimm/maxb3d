@@ -133,8 +133,8 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			EnableStates()
 		EndIf
 	End Method	
-	Method SetCamera(camera:TCamera)
-		Local vy#=WorldConfig.Height-camera._viewheight-camera._viewy
+	Method SetCamera(camera:TCamera, config:TWorldConfig)
+		Local vy#=config.Height-camera._viewheight-camera._viewy
 		glViewport(camera._viewx,vy,camera._viewwidth,camera._viewheight)
 		glScissor(camera._viewx,vy,camera._viewwidth,camera._viewheight)
 		glClearColor(camera._brush._r,camera._brush._g,camera._brush._b,1.0)
@@ -232,10 +232,10 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glPopMatrix
 	End Method
 	
-	Method SetBrush(brush:TBrush,hasalpha)
+	Method SetBrush(brush:TBrush,hasalpha,config:TWorldConfig)
 		glDisable GL_ALPHA_TEST
 			
-		Local ambient#[]=[WorldConfig.AmbientRed/255.0,WorldConfig.AmbientGreen/255.0,WorldConfig.AmbientBlue/255.0]			
+		Local ambient#[]=[config.AmbientRed/255.0,config.AmbientGreen/255.0,config.AmbientBlue/255.0]			
 					
 		If hasalpha
 			glEnable GL_BLEND
@@ -282,7 +282,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			glEnable GL_CULL_FACE
 		EndIf
 		
-		If brush._fx&FX_WIREFRAME Or WorldConfig.Wireframe
+		If brush._fx&FX_WIREFRAME Or config.Wireframe
 			glPolygonMode GL_FRONT_AND_BACK,GL_LINE
 		Else
 			glPolygonMode GL_FRONT_AND_BACK,GL_FILL
@@ -321,7 +321,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			glTranslatef texture._px,-texture._py,0
 			glScalef -texture._sx,texture._sy,1
 			
-			If texture._flags&TEXTURE_ALPHA or texture._flags&TEXTURE_MASKED
+			If texture._flags&TEXTURE_ALPHA Or texture._flags&TEXTURE_MASKED
 				glEnable GL_ALPHA_TEST
 			Else
 				glDisable GL_ALPHA_TEST

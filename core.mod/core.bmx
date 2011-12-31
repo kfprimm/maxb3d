@@ -43,7 +43,6 @@ Rem
 End Rem
 Function SetWorld(world:TWorld)
 	_currentworld=world
-	WorldConfig=_currentworld._config
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO

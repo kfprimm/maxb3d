@@ -393,8 +393,8 @@ Type TEntity
 		EndIf
 		
 		If typ>0
-			If WorldConfig.CollisionType[typ]=Null WorldConfig.CollisionType[typ]=CreateList()
-			_typelink=WorldConfig.CollisionType[typ].AddLast(Self)
+			If _config.CollisionType[typ]=Null _config.CollisionType[typ]=CreateList()
+			_typelink=_config.CollisionType[typ].AddLast(Self)
 			AddLink _typelink
 		EndIf		
 		

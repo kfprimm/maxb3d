@@ -3,8 +3,6 @@ Strict
 
 Import BRL.LinkedList
 
-Global WorldConfig:TWorldConfig
-
 Const WORLDLIST_ENTITY    = 0
 Const WORLDLIST_CAMERA    = 1
 Const WORLDLIST_LIGHT     = 2

@@ -114,7 +114,6 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			
 			_d3ddev.SetRenderState D3DRS_LIGHTING,True
 			_d3ddev.SetRenderState D3DRS_NORMALIZENORMALS,True
-			_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(WorldConfig.AmbientRed,WorldConfig.AmbientGreen,WorldConfig.AmbientBlue)
 			_d3ddev.SetRenderState D3DRS_COLORVERTEX, True
 			_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE,D3DMCS_MATERIAL
 			
@@ -127,7 +126,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		EndIf	
 	End Method
 	
-	Method SetCamera(camera:TCamera)
+	Method SetCamera(camera:TCamera,config:TWorldConfig)
 		Local clearflags		
 		If camera._clsmode&CLSMODE_COLOR clearflags:|D3DCLEAR_TARGET
 		If camera._clsmode&CLSMODE_DEPTH clearflags:|D3DCLEAR_ZBUFFER
@@ -189,7 +188,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.LightEnable index,True
 	End Method
 	
-	Method SetBrush(brush:TBrush,hasalpha)
+	Method SetBrush(brush:TBrush,hasalpha,config:TWorldConfig)
 		_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE,False
 		
 		Local alpha_blending = (brush._fx&FX_FORCEALPHA Or hasalpha)>0
@@ -199,7 +198,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		If brush._fx&FX_FULLBRIGHT
 			_d3ddev.SetRenderState D3DRS_AMBIENT,$ffffffff
 		Else
-			_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(WorldConfig.AmbientRed,WorldConfig.AmbientGreen,WorldConfig.AmbientBlue)
+			_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(config.AmbientRed,config.AmbientGreen,config.AmbientBlue)
 		EndIf
 		
 		If brush._fx&FX_NOCULLING
@@ -208,7 +207,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CW
 		EndIf
 		
-		If brush._fx&FX_WIREFRAME Or WorldConfig.Wireframe
+		If brush._fx&FX_WIREFRAME Or config.Wireframe
 			_d3ddev.SetRenderState D3DRS_FILLMODE,D3DFILL_WIREFRAME
 		Else
 			_d3ddev.SetRenderState D3DRS_FILLMODE,D3DFILL_SOLID

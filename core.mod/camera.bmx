@@ -30,7 +30,7 @@ Type TCamera Extends TEntity
 		SetMode CAMMODE_PERSP
 		SetFogMode FOGMODE_NONE
 		SetFogRange 1,1000
-		SetViewport 0,0,WorldConfig.Width,WorldConfig.Height
+		SetViewport 0,0,_config.Width,_config.Height
 		SetClsMode CLSMODE_COLOR|CLSMODE_DEPTH
 		SetColor 0,0,0
 		SetRange 1,1000
