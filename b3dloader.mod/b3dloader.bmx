@@ -55,6 +55,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		 
 		If model.node
 			ParseNode model.node,mesh,brush,mesh
+			_mesh = Null
 			Return True
 		EndIf
 		Return False
