@@ -16,7 +16,8 @@ Type TMeshLoaderB3D Extends TMeshLoader
 	Field _mesh:TMesh
 	
 	Method Run(mesh:TMesh,stream:TStream,url:Object)
-		Local model:TBB3DChunk=TBB3DChunk.Load(url)
+		Local model:TBB3DChunk = TBB3DChunk(url)		
+		If model=Null model = TBB3DChunk.Load(stream)
 		If model=Null Return False	
 		
 		Local olddir$=CurrentDir()
