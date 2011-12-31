@@ -1,7 +1,7 @@
 
 .PHONY: all clean media *.mod/doc modules docs samples doc/samples/*/*.bmx *.mod/doc/*.bmx doc/samples/*
 
-MEDIA_EXTS = bmp jpg md2 x b3d 3ds tga
+MEDIA_EXTS = bmp jpg tga png md2 x b3d 3ds 
 B3DPATH = ~/.wine/dosdevices/c:/Program\ Files/Blitz3D
 
 all: modules docs samples
