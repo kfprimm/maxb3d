@@ -14,31 +14,31 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateCube:TMesh(parent:TEntity=Null)
-	Return _currentworld.AddMesh("*cube*",parent)
+	Return _currentworld.AddMesh("//cube",parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateCone:TMesh(segments=8,solid=True,parent:TEntity=Null)
-	Return _currentworld.AddMesh("*cone*("+segments+","+solid+")",parent)
+	Return _currentworld.AddMesh("//cone("+segments+","+solid+")",parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateCylinder:TMesh(segments=8,solid=True,parent:TEntity=Null)
-	Return _currentworld.AddMesh("*cylinder*("+segments+","+solid+")",parent)
+	Return _currentworld.AddMesh("//cylinder("+segments+","+solid+")",parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateSphere:TMesh(segments=8,parent:TEntity=Null)
-	Return _currentworld.AddMesh("*sphere*("+segments+")",parent)
+	Return _currentworld.AddMesh("//sphere("+segments+")",parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateTorus:TMesh(radius#,width#,segments,sides,parent:TEntity=Null)
-	Return _currentworld.AddMesh("*torus*("+radius+","+width+","+segments+","+sides+")",parent)
+	Return _currentworld.AddMesh("//torus("+radius+","+width+","+segments+","+sides+")",parent)
 End Function
 
 Type TMeshLoaderPrimitives Extends TMeshLoader
@@ -46,7 +46,10 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 		Local str$=String(url)
 		Local params$[]=str[str.Find("(")+1..str.FindLast(")")].Split(",")
 		
-		Select str[str.Find("*")+1..str.FindLast("*")]
+		Local name$ = str[str.Find("//")+2..]
+		If str.Find("(") > -1 name = name[..name.Find("(")]
+		DebugLog name
+		Select name
 		Case "sphere"
 			Local segments=Int(params[0])
 			If segments<2 Or segments>100 Then Return Null

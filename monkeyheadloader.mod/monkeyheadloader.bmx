@@ -15,7 +15,7 @@ End Extern
 
 Type TMeshLoaderMONKEYHEAD Extends TMeshLoader
 	Method Run(mesh:TMesh,stream:TStream,url:Object)
-		If String(url)<>"*monkeyhead*" Return False
+		If String(url)<>"//monkeyhead" Return False
 		Global surface:TSurface
 		If Not surface
 			surface=New TSurface

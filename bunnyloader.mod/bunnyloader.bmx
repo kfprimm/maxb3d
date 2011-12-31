@@ -20,13 +20,13 @@ Rem
 	bbdoc: Creates a Stanford bunny mesh.
 End Rem
 Function CreateBunny:TMesh(parent:TEntity=Null)
-	Return _currentworld.AddMesh("*bunny*",parent)
+	Return _currentworld.AddMesh("//bunny",parent)
 End Function
 
 ' 8146 Verticies,8127 Normals,16301 Triangles
 Type TMeshLoaderBunny Extends TMeshLoader
 	Method Run(mesh:TMesh,stream:TStream,url:Object)
-		If String(url)<>"*bunny*"Return False
+		If String(url)<>"//bunny"Return False
 		
 		Global surface:TSurface
 		If Not surface		

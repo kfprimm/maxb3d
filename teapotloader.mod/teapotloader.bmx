@@ -17,14 +17,14 @@ Rem
 	bbdoc: Creates a teapot mesh.
 End Rem
 Function CreateTeapot:TMesh(parent:TEntity=Null)
-	Return _currentworld.AddMesh("*teapot*",parent)
+	Return _currentworld.AddMesh("//teapot",parent)
 End Function
 
 Type TMeshLoaderTeapot Extends TMeshLoader
 	Field _surface:TSurface
 	
 	Method Run(mesh:TMesh,stream:TStream,url:Object)
-		If String(url)<>"*teapot*" Return False
+		If String(url)<>"//teapot" Return False
 		If _surface=Null
 			stream=ReadStream("incbin::data.dat")
 			Local vertexcount=ReadInt(stream),trianglecount=ReadInt(stream)
