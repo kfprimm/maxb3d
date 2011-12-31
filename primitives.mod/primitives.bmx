@@ -48,7 +48,7 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 		
 		Local name$ = str[str.Find("//")+2..]
 		If str.Find("(") > -1 name = name[..name.Find("(")]
-		DebugLog name
+
 		Select name
 		Case "sphere"
 			Local segments=Int(params[0])
