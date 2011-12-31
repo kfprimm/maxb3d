@@ -94,7 +94,6 @@ Type TTerrain Extends TEntity
 	End Method
 	
 	Method Update(x#,y#,z#,frustrum:Float Ptr)
-		DebugLog "lde"
 		If _handle = Null
 			_handle=roam_create(_heights, _size)
 			SetDetail _lmax,_max_tris,_clmax	
