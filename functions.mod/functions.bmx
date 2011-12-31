@@ -67,6 +67,18 @@ End Rem
 Function WorldPick:TPick[](src:Object, target:Object, sort = False)
 	return _currentworld.Pick(src,target, sort)
 End function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function ClearTextureFilters()
+	Return _currentworld.ClearTextureFilters()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function AddTextureFilter(text$, flags)
+	Return _currentworld.AddTextureFilter(text, flags)
+End Function
 
 'Bodies
 Rem

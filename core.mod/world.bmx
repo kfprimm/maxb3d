@@ -22,15 +22,25 @@ Type TWorld
 	Field _config:TWorldConfig=New TWorldConfig
 	Field _resource_path$[],_tmp_res_path$
 	Field _collisiondriver:TCollisionDriver
+	Field _texturefilters$[][]
 	
 	Method New()
 		SetAmbientLight 127,127,127
 		SetCollisionDriver TCollisionDriver._default
+		AddTextureFilter "", TEXTURE_COLOR|TEXTURE_MIPMAP
 	End Method
 	
 	Method AddResourcePath(path$)
 		_resource_path=_resource_path[.._resource_path.length+1]
 		_resource_path[_resource_path.length-1]=path
+	End Method
+	
+	Method ClearTextureFilters()
+		_texturefilters = Null
+	End Method
+	
+	Method AddTextureFilter(text$, flags)
+		_texturefilters :+ [[text, String(flags)]]
 	End Method
 	
 	Method SetCollisionDriver(driver:TCollisionDriver)
@@ -201,7 +211,14 @@ Type TWorld
 			If url ModuleLog "Invalid texture url passed. ("+url.ToString()+")" Else ModuleLog "Invalid texture url passed. ("+url.ToString()+")"
 			Return Null
 		EndIf
-				
+		
+		If String(url)
+			Local path$ = String(url)
+			For Local filter$[] = EachIn _texturefilters
+				If path.Find(filter[0]) > -1 flags :| Int(filter[1])
+			Next
+		EndIf
+		
 		texture.SetName url.ToString()
 		texture.SetSize -1,-1,pixmap.length
 		For Local i=0 To pixmap.length-1
