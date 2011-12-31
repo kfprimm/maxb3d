@@ -66,7 +66,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		Case Null
 			entity=_currentworld.AddPivot(parent)
 		Case meshchunk			
-			If entity=Null entity=_currentworld.AddMesh("*empty*",parent)
+			If entity=Null entity=_currentworld.AddMesh("//empty",parent)
 			Local mesh:TMesh=TMesh(entity)
 			mesh._animator=New TBoneAnimator
 			_mesh=mesh
