@@ -321,7 +321,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			glTranslatef texture._px,-texture._py,0
 			glScalef -texture._sx,texture._sy,1
 			
-			If texture._flags&TEXTURE_ALPHA
+			If texture._flags&TEXTURE_ALPHA or texture._flags&TEXTURE_MASKED
 				glEnable GL_ALPHA_TEST
 			Else
 				glDisable GL_ALPHA_TEST
@@ -353,10 +353,10 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 				glTexGeni GL_S,GL_TEXTURE_GEN_MODE,GL_SPHERE_MAP
 				glTexGeni GL_T,GL_TEXTURE_GEN_MODE,GL_SPHERE_MAP
 			Else
-				glDisable GL_TEXTURE_GEN_S 
+				glDisable GL_TEXTURE_GEN_S
 				glDisable GL_TEXTURE_GEN_T
 			EndIf
-			
+
 			Select texture._blend
 			Case BLEND_NONE glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE)
 			Case BLEND_ALPHA 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE)
@@ -367,10 +367,10 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 				glTexEnvf GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT
 				glTexEnvf GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_DOT3_RGB_EXT
 			Case BLEND_MULTIPLY2
-				glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE)
-				glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE)
-				glTexEnvi(GL_TEXTURE_ENV,GL_RGB_SCALE,2.0)
-			Default glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE)
+				glTexEnvi GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE
+				glTexEnvi GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE
+				glTexEnvi GL_TEXTURE_ENV,GL_RGB_SCALE,2.0
+			Default glTexEnvf GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE
 			End Select			
 		Next	
 		
