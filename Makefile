@@ -31,10 +31,10 @@ modules:
 docs: $(wildcard *.mod/doc/*.bmx)
 
 *.mod/doc/*.bmx:
-	bmk makeapp -d -o doc/function-$(basename $(notdir $@)) $@
+	bmk makeapp -t gui -d -o doc/function-$(basename $(notdir $@)) $@
 
 samples: $(wildcard doc/samples/*/*.bmx)
 
 doc/samples/*/*.bmx:
-	bmk makeapp -r -o doc/sample-$(basename $(notdir $@)) $@
+	bmk makeapp -t gui -d -o doc/sample-$(basename $(notdir $@)) $@
 	
