@@ -49,5 +49,5 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateMonkeyHead:TMesh(parent:TEntity=Null)
-	Return _currentworld.AddMesh("*monkeyhead*",parent)
+	Return _currentworld.AddMesh("//monkeyhead",parent)
 End Function
