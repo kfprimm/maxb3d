@@ -33,6 +33,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 				texture[i].SetPosition chunk.x_pos,chunk.y_pos
 				texture[i].SetScale chunk.x_scale,chunk.y_scale
 				texture[i].SetRotation chunk.rotation*(180.0/Pi)
+				If chunk.flags&65536 texture[i].SetCoords 1
 			EndIf
 		Next
 		
@@ -83,7 +84,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 				For Local j=0 To vrts.SetCount()-1
 					Local u#,v#
 					If vrts.SetSize()>1 u=vrts.tex_coords[i][j,0];v=vrts.tex_coords[i][j,1]
-					vertsurface.SetTexCoords i,1-u,v
+					vertsurface.SetTexCoords i,1-u,v,j
 				Next
 			Next
 			
