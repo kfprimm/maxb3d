@@ -23,27 +23,27 @@ SetEntityName primitives[1], "Suzanne (Blender Monkey)"
 primitives[2] = CreateTeapot()
 SetEntityName primitives[2], "Utah Teapot"
 
-Local current
+Local curr
 
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
-	For Local i = 0 to 9
+	For Local i = 0 To 9
 		If KeyHit(KEY_0 + i)
-			current = i
+			curr = i
 			Exit
 		EndIf
 	Next
 	
-	If KeyHit(KEY_UP) Or KeyHit(KEY_LEFT) current :- 1
-	If KeyHit(KEY_DOWN) Or KeyHit(KEY_RIGHT) current :+ 1
+	If KeyHit(KEY_UP) Or KeyHit(KEY_LEFT) curr :- 1
+	If KeyHit(KEY_DOWN) Or KeyHit(KEY_RIGHT) curr :+ 1
 	
-	If current > primitives.length -1 current = 0
-	If current < 0 current = primitives.length - 1 
+	If curr > primitives.length -1 curr = 0
+	If curr < 0 curr = primitives.length - 1 
 	
 	For Local i = 0 To primitives.length-1 
-		SetEntityVisible primitives[i], current = i
+		SetEntityVisible primitives[i], curr = i
 	Next
 	
-	TurnEntity primitives[current],0,1,0
+	TurnEntity primitives[curr],0,1,0
 	
 	SetWireFrame KeyDown(KEY_W)
 	
@@ -51,7 +51,7 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	DoMax2D
 	DrawText "Press 1, 2, or 3 to select a particular meshes.",0,0
 	DrawText "Press Up/Left or Down/Right to cycle through meshes.",0,15
-	DrawText "Current mesh: "+GetEntityName(primitives[current]),0,30
+	DrawText "Current mesh: "+GetEntityName(primitives[curr]),0,30
 	
 	Flip
 Wend
