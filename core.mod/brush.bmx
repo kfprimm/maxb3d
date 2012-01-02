@@ -8,9 +8,9 @@ Const FX_NONE        = 0
 Const FX_FULLBRIGHT  = 1
 Const FX_VERTEXCOLOR = 2
 Const FX_FLATSHADED  = 4
-Const FX_NOFOG	       = 8
+Const FX_NOFOG	     = 8
 Const FX_NOCULLING   = 16
-Const FX_FORCEALPHA  = 32
+Const FX_ALPHABLEND  = 32
 Const FX_WIREFRAME   = 64
 
 Type TBrush
@@ -68,7 +68,7 @@ Type TBrush
 	End Method
 	
 	Method HasAlpha()
-		If _a<>1 Or _fx&FX_FORCEALPHA Or _blend = BLEND_MULTIPLY Or _blend = BLEND_ADD Return True
+		If _a<>1 Or _fx&FX_ALPHABLEND Or _blend = BLEND_MULTIPLY Or _blend = BLEND_ADD Return True
 		If _texture[0] <> Null If _texture[0]._flags&TEXTURE_ALPHA Return True
 	End Method
 	
