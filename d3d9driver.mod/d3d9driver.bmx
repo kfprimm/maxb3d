@@ -95,18 +95,14 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			
 			_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE,True
 			
-			For Local i=2 To 7
+			For Local i=1 To 7
 				_d3ddev.SetTexture i,Null
 			Next
 				
 			_d3ddev.SetFVF D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1
 			
-			_d3ddev.SetTextureStageState 0,D3DTSS_COLORARG1,D3DTA_TEXTURE		
-			_d3ddev.SetTextureStageState 0,D3DTSS_COLORARG2,D3DTA_DIFFUSE		
-			_d3ddev.SetTextureStageState 0,D3DTSS_COLOROP,D3DTOP_SELECTARG2
-			_d3ddev.SetTextureStageState 0,D3DTSS_ALPHAARG1,D3DTA_TEXTURE
-			_d3ddev.SetTextureStageState 0,D3DTSS_ALPHAARG2,D3DTA_DIFFUSE
-			_d3ddev.SetTextureStageState 0,D3DTSS_ALPHAOP,D3DTOP_SELECTARG2
+			_d3ddev.SetTextureStageState 0,D3DTSS_COLOROP,D3DTOP_MODULATE
+			_d3ddev.SetTextureStageState 0,D3DTSS_ALPHAOP,D3DTOP_MODULATE
 			
 			_d3ddev.SetTextureStageState 0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP
 		
@@ -127,10 +123,10 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			
 			_d3ddev.SetRenderState D3DRS_LIGHTING,True
 			_d3ddev.SetRenderState D3DRS_NORMALIZENORMALS,True
+			
 			_d3ddev.SetRenderState D3DRS_COLORVERTEX, True
 			_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE,D3DMCS_MATERIAL
-			
-			_d3ddev.SetRenderState D3DRS_SHADEMODE,D3DSHADE_GOURAUD
+			_d3ddev.SetRenderState D3DRS_AMBIENTMATERIALSOURCE,D3DMCS_MATERIAL 
 						
 			'_d3ddev.SetRenderState D3DRS_ALPHAREF, 1
 			'_d3ddev.SetRenderState D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL
@@ -145,6 +141,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		Local viewport[]=[camera._viewx,camera._viewy,camera._viewwidth-camera._viewx,camera._viewheight-camera._viewy]
 		_d3ddev.SetScissorRect viewport
 		_d3ddev.Clear(1,viewport,clearflags,D3DCOLOR_XRGB(camera._brush._r*255,camera._brush._g*255,camera._brush._b*255),1.0,0)
+		
+		_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(config.AmbientRed,config.AmbientGreen,config.AmbientBlue)
 		
 		Select camera._fogmode
 		Case FOGMODE_LINEAR
@@ -206,9 +204,9 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		End Select
 		
 		If brush._fx&FX_FULLBRIGHT
-			_d3ddev.SetRenderState D3DRS_AMBIENT,$ffffffff
+			_d3ddev.SetRenderState D3DRS_LIGHTING,False
 		Else
-			_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(config.AmbientRed,config.AmbientGreen,config.AmbientBlue)
+			_d3ddev.SetRenderState D3DRS_LIGHTING,True
 		EndIf
 		
 		If brush._fx&FX_VERTEXCOLOR
@@ -238,7 +236,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		Local material:D3DMATERIAL9 = New D3DMATERIAL9
 		material.Diffuse_r=brush._r;material.Diffuse_g=brush._g;material.Diffuse_b=brush._b;material.Diffuse_a=brush._a
 		material.Ambient_r=brush._r;material.Ambient_g=brush._g;material.Ambient_b=brush._b;material.Ambient_a=brush._a
-
+		
 		_d3ddev.SetMaterial material
 		
 		Local alpha_test
@@ -298,8 +296,6 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 				_d3ddev.SetTextureStageState i,D3DTSS_TEXCOORDINDEX,texture._coords
 			EndIf
 			
-			'If texture._name="lightmap-1.png" DebugLog texture._blend
-
 			Select texture._blend
 			Case BLEND_ALPHA
 				_d3ddev.SetTextureStageState i,D3DTSS_COLOROP,D3DTOP_MODULATE
