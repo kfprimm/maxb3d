@@ -249,7 +249,7 @@ Type TEntity
 
 		Local dist22#=Sqr((xdiff*xdiff)+(zdiff*zdiff))
 		Local pitch#=ATan2(ydiff,dist22)
-		Local yaw#=-ATan2(xdiff,-zdiff)
+		Local yaw#=ATan2(xdiff,-zdiff)
 
 		SetRotation pitch,yaw,roll,True
 	End Method
