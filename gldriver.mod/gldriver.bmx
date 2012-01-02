@@ -69,7 +69,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glEnableClientState GL_COLOR_ARRAY
 		glEnableClientState GL_NORMAL_ARRAY
 		
-		glFrontFace GL_CCW
+		glFrontFace GL_CW
 		
 		glLightModeli GL_LIGHT_MODEL_COLOR_CONTROL,GL_SEPARATE_SPECULAR_COLOR
 		glLightModeli GL_LIGHT_MODEL_LOCAL_VIEWER,GL_TRUE
@@ -93,7 +93,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 				buffer=TGLMax2DExDriver(_parent).MakeGLBuffer(res._id,width,height,flags)
 			EndIf
 		Default
-			buffer=_parent.MakeBuffer(src,width,height,flags)
+			buffer=TMax2DExDriver(_parent).MakeBuffer(src,width,height,flags)
 		End Select
 		Return buffer
 	End Method
@@ -167,18 +167,13 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		camera.UpdateMatrices()
 		
 		glMatrixMode GL_PROJECTION
-		glLoadIdentity
-		glLoadMatrixf camera._lastprojection.ToPtr()
-		glScalef -1,1,-1
-		
+		glLoadMatrixf camera._projection.ToPtr()	
 		glMatrixMode GL_MODELVIEW		
-		glLoadMatrixf camera._lastmodelview.ToPtr()
+		glLoadMatrixf camera._modelview.ToPtr()
 
 		' Temporary hack
-		glGetFloatv GL_PROJECTION_MATRIX,camera._lastprojection._m		
-		camera._lastfrustum=TFrustum.Extract(camera._lastmodelview,camera._lastprojection)
-		
-		_currentdata._projection=camera._lastprojection
+		glGetFloatv GL_PROJECTION_MATRIX,camera._projection._m		
+		camera._frustum=TFrustum.Extract(camera._modelview,camera._projection)
 	End Method	
 	
 	Method SetLight(light:TLight,index)
@@ -233,7 +228,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 	End Method
 	
 	Method SetBrush(brush:TBrush,hasalpha,config:TWorldConfig)
-		glDisable GL_ALPHA_TEST
+		Local alpha_test
 			
 		Local ambient#[]=[config.AmbientRed/255.0,config.AmbientGreen/255.0,config.AmbientBlue/255.0]			
 					
@@ -321,11 +316,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			glTranslatef texture._px,-texture._py,0
 			glScalef -texture._sx,texture._sy,1
 			
-			If texture._flags&TEXTURE_ALPHA Or texture._flags&TEXTURE_MASKED
-				glEnable GL_ALPHA_TEST
-			Else
-				glDisable GL_ALPHA_TEST
-			EndIf
+			alpha_test :| texture._flags&TEXTURE_ALPHA Or texture._flags&TEXTURE_MASKED
 		
 			If texture._flags&TEXTURE_MIPMAP
 				glTexParameteri GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR
@@ -374,6 +365,12 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			End Select			
 		Next	
 		
+		If alpha_test
+			glEnable GL_ALPHA_TEST
+		Else
+			glDisable GL_ALPHA_TEST
+		EndIf
+				
 		If _shaderdriver _shaderdriver.Use(brush._shader,_currentdata)	
 	End Method
 	
@@ -424,7 +421,6 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		
 		Global matrix:TMatrix=New TMatrix
 		glGetFloatv GL_MODELVIEW_MATRIX,matrix._m
-		_currentdata._modelviewproj=matrix.Multiply(_currentdata._projection)
 	End Method
 	Method EndEntityRender(entity:TEntity)
 		glMatrixMode GL_MODELVIEW

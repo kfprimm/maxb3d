@@ -55,7 +55,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	End Method
 		
 	Method MakeBuffer:TBuffer(src:Object,width,height,flags)
-		Return _parent.MakeBuffer(src,width,height,flags)
+		Return TMax2DExDriver(_parent).MakeBuffer(src,width,height,flags)
 	End Method
 	
 	Method GetCaps:TCaps()
@@ -77,6 +77,9 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			 0.0,0.0,1.0,0.0,..
 			 -1-(1.0/width),1+(1.0/height),1.0,1.0]
 			
+			SetBlend -1
+			SetBlend SOLIDBLEND
+			
 			_d3ddev.SetTransform D3DTS_PROJECTION,matrix
 			_d3ddev.SetTransform D3DTS_WORLD,identity.ToPtr()
 			_d3ddev.SetTransform D3DTS_VIEW,identity.ToPtr()
@@ -92,17 +95,27 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			
 			_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE,True
 			
-			_d3ddev.SetRenderState D3DRS_WRAP0, 0
-			
-			_d3ddev.SetRenderState D3DRS_FOGENABLE,False
-			
 			For Local i=2 To 7
 				_d3ddev.SetTexture i,Null
 			Next
+				
+			_d3ddev.SetFVF D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1
 			
-			_d3ddev.SetTextureStageState 0,D3DTSS_COLOROP,D3DTOP_MODULATE
-			_d3ddev.SetTextureStageState 0,D3DTSS_ALPHAOP,D3DTOP_MODULATE
+			_d3ddev.SetTextureStageState 0,D3DTSS_COLORARG1,D3DTA_TEXTURE		
+			_d3ddev.SetTextureStageState 0,D3DTSS_COLORARG2,D3DTA_DIFFUSE		
+			_d3ddev.SetTextureStageState 0,D3DTSS_COLOROP,D3DTOP_SELECTARG2
+			_d3ddev.SetTextureStageState 0,D3DTSS_ALPHAARG1,D3DTA_TEXTURE
+			_d3ddev.SetTextureStageState 0,D3DTSS_ALPHAARG2,D3DTA_DIFFUSE
+			_d3ddev.SetTextureStageState 0,D3DTSS_ALPHAOP,D3DTOP_SELECTARG2
 			
+			_d3ddev.SetTextureStageState 0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP
+		
+			_d3ddev.SetTextureStageState 0,D3DTSS_MAGFILTER,D3DTFG_POINT
+			_d3ddev.SetTextureStageState 0,D3DTSS_MINFILTER,D3DTFN_POINT
+			_d3ddev.SetTextureStageState 0,D3DTSS_MIPFILTER,D3DTFP_POINT
+			
+			_d3ddev.SetRenderState D3DRS_FOGENABLE,False
+								
 			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_NONE
 			_d3ddev.SetRenderState D3DRS_FILLMODE,D3DFILL_SOLID
 		Else
@@ -118,11 +131,9 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE,D3DMCS_MATERIAL
 			
 			_d3ddev.SetRenderState D3DRS_SHADEMODE,D3DSHADE_GOURAUD
-			
+						
 			'_d3ddev.SetRenderState D3DRS_ALPHAREF, 1
 			'_d3ddev.SetRenderState D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL
-					
-			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CW	
 		EndIf	
 	End Method
 	
@@ -144,23 +155,13 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			_d3ddev.SetRenderState D3DRS_FOGENABLE,False
 		End Select
 		
-		Local ratio#=(Float(camera._viewwidth)/camera._viewheight)		
-		Local proj_matrix:TMatrix=TMatrix.PerspectiveFovRH(ATan((1.0/(camera._zoom*ratio)))*2.0,ratio#,Max(0,camera._near-0.396250010),camera._far) ' Ugly hack. Real cause needs investigation.
-		proj_matrix=TMatrix.Scale(-1,1,-1).Multiply(proj_matrix)
-		_d3ddev.SetTransform D3DTS_PROJECTION,proj_matrix.ToPtr()
+		Local oldnear# = camera._near ' Ugh, hack. Need to investigate cause.
+		camera._near :- 0.396250010 
+		camera.UpdateMatrices()
+		camera._near = oldnear
 		
-		Local matrix:TMatrix=camera._matrix.Inverse()
-		_d3ddev.SetTransform D3DTS_VIEW,matrix.ToPtr()
-		
-		camera._lastmodelview=matrix
-		camera._lastprojection=proj_matrix
-		
-		camera._lastviewport[0]=camera._viewx
-		camera._lastviewport[1]=camera._viewy
-		camera._lastviewport[2]=camera._viewwidth
-		camera._lastviewport[3]=camera._viewheight
-		
-		camera._lastfrustum=TFrustum.Extract(camera._lastmodelview,camera._lastprojection)
+		_d3ddev.SetTransform D3DTS_PROJECTION,camera._projection.ToPtr() 
+		_d3ddev.SetTransform D3DTS_VIEW,camera._modelview.ToPtr()
 	End Method
 	
 	Method SetLight(light:TLight,index)
@@ -188,12 +189,21 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.LightEnable index,True
 	End Method
 	
-	Method SetBrush(brush:TBrush,hasalpha,config:TWorldConfig)
-		_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE,False
+	Method SetBrush(brush:TBrush,hasalpha,config:TWorldConfig)		
+		_d3ddev.SetRenderState D3DRS_ALPHABLENDENABLE,hasalpha
+		_d3ddev.SetRenderState D3DRS_ZWRITEENABLE,Not hasalpha
 		
-		Local alpha_blending = (brush._fx&FX_FORCEALPHA Or hasalpha)>0
-		_d3ddev.SetRenderState D3DRS_ALPHABLENDENABLE,alpha_blending 
-		_d3ddev.SetRenderState D3DRS_ZWRITEENABLE,Not alpha_blending 
+		Select brush._blend
+		Case BLEND_NONE, BLEND_ALPHA
+			_d3ddev.SetRenderState D3DRS_SRCBLEND,D3DBLEND_SRCALPHA
+			_d3ddev.SetRenderState D3DRS_DESTBLEND,D3DBLEND_INVSRCALPHA
+		Case BLEND_MULTIPLY
+			_d3ddev.SetRenderState D3DRS_SRCBLEND,D3DBLEND_DESTCOLOR
+			_d3ddev.SetRenderState D3DRS_DESTBLEND,D3DBLEND_ZERO
+		Case BLEND_ADD
+			_d3ddev.SetRenderState D3DRS_SRCBLEND,D3DBLEND_SRCALPHA
+			_d3ddev.SetRenderState D3DRS_DESTBLEND,D3DBLEND_ONE
+		End Select
 		
 		If brush._fx&FX_FULLBRIGHT
 			_d3ddev.SetRenderState D3DRS_AMBIENT,$ffffffff
@@ -201,10 +211,22 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(config.AmbientRed,config.AmbientGreen,config.AmbientBlue)
 		EndIf
 		
+		If brush._fx&FX_VERTEXCOLOR
+			_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR1
+		Else
+			_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL
+		EndIf
+		
+		If brush._fx&FX_FLATSHADED
+			_d3ddev.SetRenderState D3DRS_SHADEMODE, D3DSHADE_FLAT
+		Else
+			_d3ddev.SetRenderState D3DRS_SHADEMODE, D3DSHADE_GOURAUD
+		EndIf
+
 		If brush._fx&FX_NOCULLING
 			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_NONE
 		Else
-			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CW
+			_d3ddev.SetRenderState D3DRS_CULLMODE,D3DCULL_CCW
 		EndIf
 		
 		If brush._fx&FX_WIREFRAME Or config.Wireframe
@@ -219,6 +241,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 
 		_d3ddev.SetMaterial material
 		
+		Local alpha_test
 		For Local i=0 To 7
 			Local texture:TTexture=brush._texture[i]
 			If texture=Null Or texture._blend=BLEND_NONE 
@@ -239,16 +262,22 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			_d3ddev.SetTransform D3DTS_TEXTURE0+i,matrix.ToPtr()
 
 			_d3ddev.SetTextureStageState i,D3DTSS_TEXTURETRANSFORMFLAGS,D3DTTFF_COUNT2
+			_d3ddev.SetTextureStageState i,D3DTSS_ADDRESS,0
 			
 			_d3ddev.SetSamplerState i,D3DSAMP_MAGFILTER,D3DTEXF_LINEAR
 			_d3ddev.SetSamplerState i,D3DSAMP_MINFILTER,D3DTEXF_LINEAR
 						
-			_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE, texture._flags&TEXTURE_ALPHA			
-			
+			'_d3ddev.SetRenderState D3DRS_WRAP0+i, D3DWRAP_U|D3DWRAP_V
+			alpha_test :| (texture._flags&TEXTURE_ALPHA Or texture._flags&TEXTURE_MASKED)
+					
 			If texture._flags&TEXTURE_MIPMAP				
 				_d3ddev.SetSamplerState i,D3DSAMP_MIPFILTER,D3DTEXF_LINEAR
+				_d3ddev.SetTextureStageState i,D3DTSS_MAGFILTER,D3DTEXF_LINEAR
+				_d3ddev.SetTextureStageState i,D3DTSS_MINFILTER,D3DTEXF_LINEAR
 			Else
 				_d3ddev.SetSamplerState i,D3DSAMP_MIPFILTER,D3DTEXF_NONE
+				_d3ddev.SetTextureStageState i,D3DTSS_MAGFILTER,D3DTEXF_POINT
+				_d3ddev.SetTextureStageState i,D3DTSS_MINFILTER,D3DTEXF_POINT
 			EndIf
 			
 			If texture._flags&TEXTURE_CLAMPU
@@ -256,7 +285,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			Else
 				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSU,D3DTADDRESS_WRAP
 			EndIf
-			
+
 			If texture._flags&TEXTURE_CLAMPV
 				_d3ddev.SetSamplerState i,D3DSAMP_ADDRESSU,D3DTADDRESS_CLAMP
 			Else
@@ -269,12 +298,12 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 				_d3ddev.SetTextureStageState i,D3DTSS_TEXCOORDINDEX,texture._coords
 			EndIf
 			
-			'_d3ddev.SetTextureStageState i,D3DTSS_COLOROP,D3DTOP_SELECTARG1
-			'_d3ddev.SetTextureStageState i,D3DTSS_ALPHAOP,D3DTOP_SELECTARG2
-			
+			'If texture._name="lightmap-1.png" DebugLog texture._blend
+
 			Select texture._blend
 			Case BLEND_ALPHA
-				'glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_DECAL)
+				_d3ddev.SetTextureStageState i,D3DTSS_COLOROP,D3DTOP_MODULATE
+				_d3ddev.SetTextureStageState i,D3DTSS_ALPHAOP,D3DTOP_MODULATE
 			Case BLEND_MULTIPLY
 				_d3ddev.SetTextureStageState i,D3DTSS_COLOROP,D3DTOP_MODULATE
 				_d3ddev.SetTextureStageState i,D3DTSS_ALPHAOP,D3DTOP_MODULATE
@@ -288,10 +317,11 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 				_d3ddev.SetTextureStageState i,D3DTSS_COLOROP,D3DTOP_MODULATE2X
 				_d3ddev.SetTextureStageState i,D3DTSS_ALPHAOP,D3DTOP_MODULATE2X
 			Default
-				_d3ddev.SetTextureStageState i,D3DTSS_COLOROP,D3DTOP_MODULATE
-				_d3ddev.SetTextureStageState i,D3DTSS_ALPHAOP,D3DTOP_MODULATE
+				_d3ddev.SetTextureStageState i,D3DTSS_COLOROP,D3DTOP_SELECTARG2
+				_d3ddev.SetTextureStageState i,D3DTSS_ALPHAOP,D3DTOP_SELECTARG2
 			End Select			
 		Next
+		_d3ddev.SetRenderState D3DRS_ALPHATESTENABLE, alpha_test
 	End Method
 	
 	Method RenderSurface(resource:TSurfaceRes,brush:TBrush)
@@ -303,6 +333,13 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		_d3ddev.SetStreamSource 1,res._nml,0,12
 		_d3ddev.SetStreamSource 2,res._clr,0,16
 		_d3ddev.SetStreamSource 3,res._tex[0],0,8
+		_d3ddev.SetStreamSource 4,res._tex[1],0,8
+		_d3ddev.SetStreamSource 5,res._tex[2],0,8
+		_d3ddev.SetStreamSource 6,res._tex[3],0,8
+		_d3ddev.SetStreamSource 7,res._tex[4],0,8
+		_d3ddev.SetStreamSource 8,res._tex[5],0,8
+		_d3ddev.SetStreamSource 9,res._tex[6],0,8
+		_d3ddev.SetStreamSource 10,res._tex[7],0,8
 		_d3ddev.SetIndices res._tri
 		_d3ddev.DrawIndexedPrimitive D3DPT_TRIANGLELIST,0,0,res._vertexcnt,0,res._trianglecnt
 
@@ -469,7 +506,7 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function D3D9MaxB3DDriver:TD3D9MaxB3DDriver()
-	If D3D9Max2DDriver()
+	If D3D9Max2DExDriver()
 		Global driver:TD3D9MaxB3DDriver=New TD3D9MaxB3DDriver
 		driver._parent=D3D9Max2DExDriver()
 		Return driver
