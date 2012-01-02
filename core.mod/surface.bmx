@@ -173,10 +173,11 @@ Type TSurface
 			matrix.TransformVec3 _vertexpos[i*3+0],_vertexpos[i*3+1],_vertexpos[i*3+2]
 			'matrix.TransformVector _vertexnml[i+0],_vertexnml[i+1],_vertexnml[i+2],w
 		Next
+		_reset:|1;_resetbounds=True
 	End Method
 	
 	Method UpdateBounds(force=False)
-		If Not _resetbounds And force=false Return
+		If Not _resetbounds And force=False Return
 		_minx=999999999;_miny=999999999;_minz=999999999
 		_maxx=-999999999;_maxy=-999999999;_maxz=-999999999
 		For Local v=0 To _vertexcnt-1
