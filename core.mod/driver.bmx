@@ -37,12 +37,11 @@ Type TCaps
 End Type
 
 Type TMaxB3DDriver Extends TMax2DExDriver
-	Global _parent:TMax2DExDriver
+	Global _configs:TWorldConfig[]
 	
 	Field _texture:TTexture[8],_caps:TCaps
 	Field _prevwidth,_prevheight
 	Field _in_max2d=True
-	Field _configs:TWorldConfig[]
 	
 	Method CreateGraphics:TGraphics( width,height,depth,hertz,flags )
 		RunHooks _creategraphicshook,Null
@@ -83,11 +82,11 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 			config.Width=buffer._width
 			config.Height=buffer._height			
 		Next
-		Return _parent.SetBuffer(buffer)
+		Return TMax2DExDriver(_parent).SetBuffer(buffer)
 	End Method
 	
 	Method BackBuffer:TBuffer()
-		Return _parent.BackBuffer()
+		Return TMax2DExDriver(_parent).BackBuffer()
 	End Method
 
 	Method GetCaps:TCaps() Abstract
