@@ -12,7 +12,7 @@ SetTextureScale room_texture,1.0/3,1.0/3
 Local room:TMesh=CreateCube()
 SetEntityTexture room,room_texture
 SetEntityAlpha room,.4
-SetEntityFX room,1
+SetEntityFX room,FX_FULLBRIGHT
 FitMesh room,-250,0,-250,500,500,500
 FlipMesh room
 
