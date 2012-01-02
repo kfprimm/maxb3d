@@ -3,7 +3,7 @@ Strict
 
 Import MaxB3D.Drivers
 
-GLGraphics3D 800,600
+Graphics 800,600
 SetAmbientLight 0,0,0
 
 Local logo:TTexture=LoadTexture("media/blitzlogo.bmp")
