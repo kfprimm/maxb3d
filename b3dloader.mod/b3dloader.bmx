@@ -102,7 +102,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 				mesh.AppendSurface surface
 			Next
 		Case bonechunk
-			entity=_currentworld.AddBone(parent)
+			entity=New TBone.Init(config, parent)
 			Local bone:TBone=TBone(entity)
 			
 			For Local surface:TSurface=EachIn _mesh._surfaces
@@ -131,7 +131,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 				TBoneAnimator(_mesh._animator).AddBone bone,keys
 			Next
 		Default
-			entity=_currentworld.AddPivot(parent)
+			entity=New TPivot.Init(config, parent)
 		End Select		
 		
 		entity.SetName node.name
