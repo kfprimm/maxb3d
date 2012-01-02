@@ -2,6 +2,7 @@
 Strict
 
 Import Prime.Max2DEx
+Import Prime.Enumerator
 Import "texture.bmx"
 
 Const FX_NONE        = 0
@@ -134,5 +135,9 @@ Type TBrush
 	End Method
 	Method SetShader(shader:TShader)
 		_shader=shader
+	End Method
+	
+	Method ObjectEnumerator:TObjectArrayEnumerator()
+		Return New TObjectArrayEnumerator.Create(_texture)
 	End Method
 End Type

@@ -344,26 +344,8 @@ Type TMesh Extends TAnimEntity
 		radius=Max(Max(rx,ry),rz)
 	End Method
 	
-	Method ObjectEnumerator:TSurfaceEnumerator()
-		Return New TSurfaceEnumerator.Create(_surfaces)
-	End Method
-End Type
-
-Type TSurfaceEnumerator
-	Field _surfaces:TSurface[],_pos=-1
-	
-	Method Create:TSurfaceEnumerator(surfaces:TSurface[])
-		_surfaces=surfaces[..]
-		Return Self
-	End Method
-	
-	Method NextObject:Object()
-		_pos:+1
-		Return _surfaces[_pos]
-	End Method
-	
-	Method HasNext()
-		Return _pos<_surfaces.length-1
+	Method ObjectEnumerator:TObjectArrayEnumerator()
+		Return New TObjectArrayEnumerator.Create(_surfaces)
 	End Method
 End Type
 

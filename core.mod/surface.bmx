@@ -255,6 +255,10 @@ Type TSurface
 	Method HasAlpha()
 		Return _brush.HasAlpha()
 	End Method	
+	
+	Method ObjectEnumerator:TObjectArrayEnumerator()
+		Return _brush.ObjectEnumerator()
+	End Method
 End Type
 
 Type TSurfaceRes Extends TDriverResource
