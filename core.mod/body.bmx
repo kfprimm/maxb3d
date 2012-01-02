@@ -11,8 +11,10 @@ Type TBody Extends TEntity
 	Field _mass#,_shape
 	Field _data:Object,_update
 	
-	Method New()
+	Method Init:TEntity(config:TWorldConfig,parent:TEntity)
+		Super.Init(config, parent)
 		_shape = BODY_SPHERE
+		Return Self
 	End Method
 	
 	Method Lists[]()

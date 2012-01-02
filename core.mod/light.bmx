@@ -11,10 +11,12 @@ Type TLight Extends TEntity
 	Field _range#,_inner#,_outer#
 	Field _mode
 	
-	Method New()
+	Method Init:TEntity(config:TWorldConfig,parent:TEntity)
+		Super.Init(config, parent)
 		SetRange 1000
 		SetAngles 0,90
 		SetMode LIGHT_DIRECTIONAL
+		Return Self
 	End Method
 	
 	Method Lists[]()

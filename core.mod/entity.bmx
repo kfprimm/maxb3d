@@ -39,8 +39,16 @@ Type TEntity
 	
 	Field _linklist:TList=CreateList()
 	
-	Method New()
+	Method Init:TEntity(config:TWorldConfig,parent:TEntity)
+		_config = config
+		SetParent parent,False
+		For Local l=EachIn Lists()
+			AddLink _config.AddObject(Self,l)
+		Next
+		
 		SetScale 1,1,1
+		
+		Return Self
 	End Method
 	
 	Method Free()
@@ -60,15 +68,6 @@ Type TEntity
 		Return [WORLDLIST_ENTITY]
 	End Method
 	
-	Method AddToWorld:TEntity(config:TWorldConfig, parent:TEntity=Null)
-		_config = config
-		SetParent parent,False
-		For Local l=EachIn Lists()
-			AddLink _config.AddObject(Self,l)
-		Next
-		Return Self
-	End Method
-	
 	Method CopyData:TEntity(entity:TEntity)
 		SetBrush entity.GetBrush()
 		SetName entity.GetName()
@@ -76,7 +75,7 @@ Type TEntity
 	End Method
 	
 	Method Copy_:TEntity(parent:TEntity=Null)
-		Return New Self.CopyData(Self).AddToWorld(_config,parent)
+		Return New Self.CopyData(Self).Init(_config,parent)
 	End Method
 	
 	Method Copy:TEntity(parent:TEntity=Null) Abstract
@@ -237,7 +236,7 @@ Type TEntity
 	End Method
 	
 	Method Turn(pitch#,yaw#,roll#,glob=False)
-		_rx:-pitch;_ry:+yaw;_rz:+roll
+		_rx:+pitch;_ry:+yaw;_rz:+roll
 		RefreshMatrix()
 	End Method
 	
@@ -278,16 +277,17 @@ Type TEntity
 		If glob
 			_matrix.GetRotation pitch,yaw,roll
 			pitch:*-1
+			yaw:*-1
 		Else
-			pitch=-_rx;yaw=_ry;roll=_rz
+			pitch=_rx;yaw=_ry;roll=_rz
 		EndIf
 	End Method
 	Method SetRotation(pitch#,yaw#,roll#,glob=False)
-		_rx=-pitch;_ry=yaw;_rz=roll
+		_rx=pitch;_ry=yaw;_rz=roll
 		If glob And _parent<>Null
 			Local rx#,ry#,rz#
 			_parent.GetRotation rx,ry,rz
-			_rx:-rx;_ry:+ry;_rz:+rz			
+			_rx:+rx;_ry:+ry;_rz:+rz			
 		EndIf
 		RefreshMatrix()
 	End Method
@@ -310,7 +310,7 @@ Type TEntity
 	
 	Method Move(x#,y#,z#)
 		Local matrix:TMatrix=TMatrix.Identity()
-		matrix=TMatrix.YawPitchRoll(_ry,_rx,_rz).Multiply(matrix)
+		matrix=TMatrix.YawPitchRoll(-_ry,-_rx,_rz).Multiply(matrix)
 		matrix=TMatrix.Translation(x,y,z).Multiply(matrix)
 	
 		matrix.GetPosition(x,y,z)		
@@ -475,7 +475,7 @@ Type TEntity
 	Method UpdateMatrix(loadidentity)
 		If loadidentity _matrix=TMatrix.Identity()
 		_matrix=TMatrix.Translation(_px,_py,_pz).Multiply(_matrix)
-		_matrix=TMatrix.YawPitchRoll(_ry,_rx,_rz).Multiply(_matrix)
+		_matrix=TMatrix.YawPitchRoll(-_ry,-_rx,_rz).Multiply(_matrix)
 		_matrix=TMatrix.Scale(_sx,_sy,_sz).Multiply(_matrix)
 	End Method
 	

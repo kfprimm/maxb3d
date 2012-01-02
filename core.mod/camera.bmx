@@ -21,12 +21,13 @@ Type TCamera Extends TEntity
 	Field _clsmode,_near#,_far#
 	Field _zoom#
 	
-	Field _lastmodelview:TMatrix=New TMatrix
-	Field _lastprojection:TMatrix=New TMatrix
-	Field _lastviewport[4]
-	Field _lastfrustum:TFrustum
+	Field _modelview:TMatrix=New TMatrix
+	Field _projection:TMatrix=New TMatrix
+	Field _viewport[4]
+	Field _frustum:TFrustum
 	
-	Method New()
+	Method Init:TEntity(config:TWorldConfig,parent:TEntity)
+		Super.Init(config, parent)
 		SetMode CAMMODE_PERSP
 		SetFogMode FOGMODE_NONE
 		SetFogRange 1,1000
@@ -35,6 +36,7 @@ Type TCamera Extends TEntity
 		SetColor 0,0,0
 		SetRange 1,1000
 		SetZoom 1.0
+		Return Self
 	End Method
 	
 	Method Lists[]()
@@ -135,17 +137,17 @@ Type TCamera Extends TEntity
 	End Method
 	
 	Method UpdateMatrices()
-		_lastviewport[0]=_viewx
-		_lastviewport[1]=_viewy
-		_lastviewport[2]=_viewwidth
-		_lastviewport[3]=_viewheight
+		_viewport[0]=_viewx
+		_viewport[1]=_viewy
+		_viewport[2]=_viewwidth
+		_viewport[3]=_viewheight
 		
-		_lastmodelview = _matrix.Inverse()
+		_modelview = _matrix.Inverse()
 		
 		Local ratio#=(Float(_viewwidth)/_viewheight)
-		_lastprojection = TMatrix.PerspectiveFovRH(ATan((1.0/(_zoom*ratio)))*2.0,ratio,_near,_far)		
+		_projection = TMatrix.Scale(1,1,-1).Multiply(TMatrix.PerspectiveFovRH(ATan((1.0/(_zoom*ratio)))*2.0,ratio,_near,_far))
 
-		_lastfrustum=TFrustum.Extract(_lastmodelview, _lastprojection)
+		_frustum=TFrustum.Extract(_modelview, _projection)
 	End Method
 	
 	Method Project(target:Object,x# Var,y# Var, offset#[] = Null)
@@ -159,23 +161,23 @@ Type TCamera Extends TEntity
 		EndIf
 		
 		Local w#=1.0
-	   _lastmodelview.TransformVec4 x,y,z,w
-	   _lastprojection.TransformVec4 x,y,z,w
+	   _modelview.TransformVec4 x,y,z,w
+	   _projection.TransformVec4 x,y,z,w
 	   If w=0 Return False
 	   x:/w;y:/w;z:/w
 	    
 	   x=x*0.5+0.5;y=-y*0.5+0.5;z=z*0.5+0.5;
 	
-	   x=x*_lastviewport[2]+_lastviewport[0]
-	   y=y*_lastviewport[3]+_lastviewport[1]
+	   x=x*_viewport[2]+_viewport[0]
+	   y=y*_viewport[3]+_viewport[1]
 		Return True
 	End Method
 	
 	Method Unproject(wx#,wy#,wz#,x# Var,y# Var,z# Var)
-		Local matrix:TMatrix=_lastprojection.Multiply(_lastmodelview).Inverse()
+		Local matrix:TMatrix=_projection.Multiply(_modelview).Inverse()
 		
-		x=(wx-_lastviewport[0])*2/_lastviewport[2] - 1.0
-		y=(wy-_lastviewport[1])*2/_lastviewport[3] - 1.0
+		x=(wx-_viewport[0])*2/_viewport[2] - 1.0
+		y=(wy-_viewport[1])*2/_viewport[3] - 1.0
 		z=2*wz-1.0
 		Local w#=1.0
 				
@@ -196,6 +198,6 @@ Type TCamera Extends TEntity
 		Else
 			Return 0
 		EndIf
-		Return _lastfrustum.IntersectsPoint(x,y,z,radius)
+		Return _frustum.IntersectsPoint(x,y,z,radius)
 	End Method
 End Type

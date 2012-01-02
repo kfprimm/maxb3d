@@ -28,6 +28,8 @@ Type TWorld
 		SetAmbientLight 127,127,127
 		SetCollisionDriver TCollisionDriver._default
 		AddTextureFilter "", TEXTURE_COLOR|TEXTURE_MIPMAP
+		
+		TMaxB3DDriver._configs :+ [_config]
 	End Method
 	
 	Method AddResourcePath(path$)
@@ -255,17 +257,17 @@ Type TWorld
 	End Method
 	
 	Method AddPivot:TPivot(parent:TEntity=Null)
-		Return TPivot(New TPivot.AddToWorld(_config, parent))
+		Return TPivot(New TPivot.Init(_config, parent))
 	End Method
 	
 	Method AddCamera:TCamera(parent:TEntity=Null)
-		Return TCamera(New TCamera.AddToWorld(_config, parent))
+		Return TCamera(New TCamera.Init(_config, parent))
 	End Method
 	
 	Method AddLight:TLight(mode,parent:TEntity=Null)
 		Local light:TLight=New TLight
 		light.SetMode mode
-		Return TLight(light.AddToWorld(_config, parent))
+		Return TLight(light.Init(_config, parent))
 	End Method	
 	
 	Method AddMesh:TMesh(url:Object,parent:TEntity=Null)
@@ -277,37 +279,37 @@ Type TWorld
 			Return Null
 		EndIf
 		_tmp_res_path=""
-		Return TMesh(mesh.AddToWorld(_config, parent))
+		Return TMesh(mesh.Init(_config, parent))
 	End Method
 	
 	Method AddFlat:TFlat(parent:TEntity=Null)
-		Return TFlat(New TFlat.AddToWorld(_config, parent))
+		Return TFlat(New TFlat.Init(_config, parent))
 	End Method
 	
 	Method AddSprite:TSprite(url:Object,flags=TEXTURE_DEFAULT,parent:TEntity=Null)
 		Local sprite:TSprite=New TSprite 
 		sprite.SetTexture AddTexture(url,flags)
-		Return TSprite(sprite.AddToWorld(_config, parent))
+		Return TSprite(sprite.Init(_config, parent))
 	End Method
 	
 	Method AddTerrain:TTerrain(url:Object,parent:TEntity=Null)
 		Local terrain:TTerrain=New TTerrain
 		terrain.SetMap url
-		Return TTerrain(terrain.AddToWorld(_config, parent))
+		Return TTerrain(terrain.Init(_config, parent))
 	End Method
 	
 	Method AddBody:TBody()
-		Return TBody(New TBody.AddToWorld(_config, Null))
+		Return TBody(New TBody.Init(_config, Null))
 	End Method
 	
 	Method AddBone:TBone(parent:TEntity=Null)
-		Return TBone(New TBone.AddToWorld(_config, parent))
+		Return TBone(New TBone.Init(_config, parent))
 	End Method
 	
 	Method AddBSPModel:TBSPModel(url:Object,parent:TEntity=Null)
 		Local bsp:TBSPModel=New TBSPModel
 		bsp.SetTree TBSPTree(url)
-		Return TBSPModel(bsp.AddToWorld(_config, parent))
+		Return TBSPModel(bsp.Init(_config, parent))
 	End Method
 	
 	Method Render:TRenderInfo(tween#=1.0)
@@ -464,7 +466,7 @@ Type TWorld
 				ElseIf terrain
 					Local x#,y#,z#
 					camera.GetPosition x,y,z,True
-					terrain.Update x,y,z,camera._lastfrustum.ToPtr()
+					terrain.Update x,y,z,camera._frustum.ToPtr()
 					info.Triangles:+driver.RenderTerrain(terrain)
 				ElseIf bsp
 					Local tree:TBSPTree=bsp.GetRenderTree(camera.GetEye())
