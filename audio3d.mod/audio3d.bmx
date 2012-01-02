@@ -67,6 +67,7 @@ Type TSound3D Extends TSound
 	Field _parent:TSound
 	
 	Function FromSound:TSound3D(sound:TSound,driver:TAudio3DDriver)
+		If sound = Null Return
 		Local sound3d:TSound3D=New TSound3D
 		sound3d._parent=sound
 		sound3d._driver=driver
