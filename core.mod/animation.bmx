@@ -45,14 +45,4 @@ Type TAnimator
 	Method Update() Abstract
 	Method GetFrameCount() Abstract
 	Method SetKey(frame,key:Object) Abstract
-	
-	Method InterpolateSurfaces:TSurface(surface0:TSurface,surface1:TSurface,diff#,output:TSurface)
-		For Local v=0 To output._vertexcnt-1
-			Local x1#,y1#,z1#,x2#,y2#,z2#
-			surface0.GetCoords v,x1,y1,z1
-			surface1.GetCoords v,x2,y2,z2
-			output.SetCoords v,x1+(x2-x1)*diff,y1+(y2-y1)*diff,z1+(z2-z1)*diff			
-		Next
-		Return output
-	End Method
 End Type

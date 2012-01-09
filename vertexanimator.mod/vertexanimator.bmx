@@ -30,7 +30,7 @@ Type TVertexAnimator Extends TAnimator
 		
 		If _inter_frame=Null _inter_frame=TSurface(_frames[0]._object).Copy()
 		
-		_anim_frame=InterpolateSurfaces(TSurface(FindKey(frame0)._object),TSurface(FindKey(frame1)._object),_frame-Floor(_frame),_inter_frame)
+		_anim_frame=TSurface(FindKey(frame0)._object).Interpolate(TSurface(FindKey(frame1)._object),_frame-Floor(_frame),_inter_frame)
 		_lastframe=_frame
 	End Method
 		

@@ -259,6 +259,23 @@ Type TSurface
 	Method ObjectEnumerator:TObjectArrayEnumerator()
 		Return _brush.ObjectEnumerator()
 	End Method
+	
+	Method Interpolate:TSurface(other:TSurface,diff#,output:TSurface=Null)
+		If output = Null
+			Local vcnt,tcnt
+			GetSize vcnt,tcnt
+			output = New TSurface
+			output.Resize(vcnt,tcnt)
+		EndIf
+		
+		For Local v=0 To output._vertexcnt-1
+			Local x1#,y1#,z1#,x2#,y2#,z2#
+			GetCoords v,x1,y1,z1
+			other.GetCoords v,x2,y2,z2
+			output.SetCoords v,x1+(x2-x1)*diff,y1+(y2-y1)*diff,z1+(z2-z1)*diff			
+		Next
+		Return output
+	End Method
 End Type
 
 Type TSurfaceRes Extends TDriverResource
