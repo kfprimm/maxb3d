@@ -28,7 +28,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		
 		For Local i=0 To texture.length-1
 			Local chunk:TTEXSChunk=model.texs[i]			
-			texture[i]=_currentworld.AddTexture(chunk.file,chunk.flags)
+			texture[i]=New TTexture.Init(config,chunk.file,chunk.flags)
 			If texture[i]
 				texture[i].SetBlend chunk.blend
 				texture[i].SetPosition chunk.x_pos,chunk.y_pos
@@ -40,7 +40,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 		
 		For Local i=0 To brush.length-1
 			Local chunk:TBRUSChunk=model.brus[i]
-			brush[i]=_currentworld.AddBrush()
+			brush[i]=New TBrush.Init(config,Null)
 			brush[i].SetName chunk.name
 			brush[i].SetColor chunk.red*255,chunk.green*255,chunk.blue*255;brush[i].SetAlpha chunk.alpha
 			brush[i].SetShine chunk.shininess
@@ -66,7 +66,7 @@ Type TMeshLoaderB3D Extends TMeshLoader
 				
 		Select node.kind
 		Case Null
-			entity=_currentworld.AddPivot(parent)
+			entity=New TPivot.Init(config,parent)
 		Case meshchunk			
 			If entity=Null entity=New TMesh.Init(config, parent)
 			Local mesh:TMesh=TMesh(entity)

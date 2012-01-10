@@ -13,6 +13,13 @@ Extern
 	Function get_monkeyhead(verts:Float Ptr Var,normals:Float Ptr Var,tris:Short Ptr Var,vert_count Var,tri_count Var)
 End Extern
 
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function CreateMonkeyHead:TMesh(parent:TEntity=Null)
+	Return CurrentWorld().AddMesh("//monkeyhead",parent)
+End Function
+
 Type TMeshLoaderMONKEYHEAD Extends TMeshLoader
 	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
 		If String(url)<>"//monkeyhead" Return False
@@ -45,9 +52,3 @@ Type TMeshLoaderMONKEYHEAD Extends TMeshLoader
 End Type
 New TMeshLoaderMONKEYHEAD
 
-Rem
-	bbdoc: Needs documentation. #TODO
-End Rem
-Function CreateMonkeyHead:TMesh(parent:TEntity=Null)
-	Return _currentworld.AddMesh("//monkeyhead",parent)
-End Function

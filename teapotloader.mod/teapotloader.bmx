@@ -17,7 +17,7 @@ Rem
 	bbdoc: Creates a teapot mesh.
 End Rem
 Function CreateTeapot:TMesh(parent:TEntity=Null)
-	Return _currentworld.AddMesh("//teapot",parent)
+	Return CurrentWorld().AddMesh("//teapot",parent)
 End Function
 
 Type TMeshLoaderTeapot Extends TMeshLoader

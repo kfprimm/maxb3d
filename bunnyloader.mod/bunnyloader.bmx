@@ -20,7 +20,7 @@ Rem
 	bbdoc: Creates a Stanford bunny mesh.
 End Rem
 Function CreateBunny:TMesh(parent:TEntity=Null)
-	Return _currentworld.AddMesh("//bunny",parent)
+	Return CurrentWorld().AddMesh("//bunny",parent)
 End Function
 
 ' 8146 Verticies,8127 Normals,16301 Triangles

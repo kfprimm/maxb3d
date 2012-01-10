@@ -14,31 +14,31 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateCube:TMesh(parent:TEntity=Null)
-	Return _currentworld.AddMesh("//cube",parent)
+	Return CurrentWorld().AddMesh("//cube",parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateCone:TMesh(segments=8,solid=True,parent:TEntity=Null)
-	Return _currentworld.AddMesh("//cone("+segments+","+solid+")",parent)
+	Return CurrentWorld().AddMesh("//cone("+segments+","+solid+")",parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateCylinder:TMesh(segments=8,solid=True,parent:TEntity=Null)
-	Return _currentworld.AddMesh("//cylinder("+segments+","+solid+")",parent)
+	Return CurrentWorld().AddMesh("//cylinder("+segments+","+solid+")",parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateSphere:TMesh(segments=8,parent:TEntity=Null)
-	Return _currentworld.AddMesh("//sphere("+segments+")",parent)
+	Return CurrentWorld().AddMesh("//sphere("+segments+")",parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateTorus:TMesh(radius#,width#,segments,sides,parent:TEntity=Null)
-	Return _currentworld.AddMesh("//torus("+radius+","+width+","+segments+","+sides+")",parent)
+	Return CurrentWorld().AddMesh("//torus("+radius+","+width+","+segments+","+sides+")",parent)
 End Function
 
 Type TMeshLoaderPrimitives Extends TMeshLoader

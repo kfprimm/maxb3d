@@ -19,9 +19,9 @@ Type TMeshLoaderMS3D Extends TMeshLoader
 		Local materials:TMS3DMaterial[]=model.Materials
 		Local brushes:TBrush[materials.length]
 		For Local i=0 To materials.length-1
-			Local texture:TTexture=_currentworld.AddTexture(materials[i].texture)
+			Local texture:TTexture=New TTexture.Init(config,materials[i].texture,TEXTURE_COLOR)
 			
-			brushes[i]=_currentworld.AddBrush()
+			brushes[i]=New TBrush.Init(config, Null)
 			brushes[i].SetTexture texture,0
 		Next
 		
@@ -59,7 +59,7 @@ Type TMeshLoaderMS3D Extends TMeshLoader
 			Local parent:TEntity=mesh.FindChild(joint.parentName,True)
 			If parent=Null parent=mesh
 			
-			Local bone:TBone=_currentworld.AddBone(parent)
+			Local bone:TBone=New TBone.Init(config, parent)
 			bone.SetName joint.name
 			bone.SetPosition joint.position[0],joint.position[1],joint.position[2]
 			bone.SetRotation joint.rotation[0],joint.rotation[1],joint.rotation[2]

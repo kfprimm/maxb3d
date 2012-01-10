@@ -28,9 +28,9 @@ Type TMeshLoader3DS Extends TMeshLoader
 		
 		Local brushes:TBrush[file.Materials.length]
 		For Local i=0 To brushes.length-1
-			brushes[i]=_currentworld.AddBrush()
+			brushes[i]=New TBrush.Init(config,Null)
 			brushes[i].SetColor file.Materials[i].DiffuseColor.r*255,file.Materials[i].DiffuseColor.g*255,file.Materials[i].DiffuseColor.b*255
-			brushes[i].SetTexture _currentworld.AddTexture(file.Materials[i].TextureFile)
+			brushes[i].SetTexture New TTexture.Init(config,file.Materials[i].TextureFile,TEXTURE_COLOR)
 		Next
 		
 		Local surfaces:TSurface[file.Materials.length+1]
