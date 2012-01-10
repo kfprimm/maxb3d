@@ -10,4 +10,4 @@ In order to compile various MaxB3D modules, you will need a few extra modules. G
 http://github.com/kfprimm/prime.mod
 
 In order for the D3D driver to work properly, follow these directions,
-https://github.com/kfprimm/maxb3d/wiki/BRL.DXGraphics-and-BRL.D3D9Max2D-Tweak
+https://github.com/kfprimm/maxb3d/wiki/BRL.DXGraphics-Tweak
