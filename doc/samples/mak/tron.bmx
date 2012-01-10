@@ -79,7 +79,7 @@ TurnEntity light,45,45,0
 Local add_flag=False,add_cnt
 
 While Not KeyHit(KEY_ESCAPE) And Not AppTerminate()
-	SetWireFrame KeyHit(KEY_W)
+	SetWireFrame KeyDown(KEY_W)
 	
 	If KeyDown(KEY_A) cam_d=cam_d-1
 	If KeyDown(KEY_Z) cam_d=cam_d+1
