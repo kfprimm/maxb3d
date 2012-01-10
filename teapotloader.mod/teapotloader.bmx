@@ -8,7 +8,7 @@ Module MaxB3D.TeapotLoader
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
-Import MaxB3D.Core
+Import MaxB3D.StringFunctionLoader
 Import BRL.RamStream
 
 Incbin "data.dat"
@@ -20,13 +20,13 @@ Function CreateTeapot:TMesh(parent:TEntity=Null)
 	Return CurrentWorld().AddMesh("//teapot",parent)
 End Function
 
-Type TMeshLoaderTeapot Extends TMeshLoader
+Type TMeshLoaderTeapot Extends TStringFunctionMeshLoader
 	Field _surface:TSurface
 	
-	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
-		If String(url)<>"//teapot" Return False
+	Method RunFunction(func$,params$[],config:TWorldConfig,mesh:TMesh)
+		If func<>"teapot" Return False
 		If _surface=Null
-			stream=ReadStream("incbin::data.dat")
+			Local stream:TStream=ReadStream("incbin::data.dat")
 			Local vertexcount=ReadInt(stream),trianglecount=ReadInt(stream)
 			
 			_surface=New TSurface

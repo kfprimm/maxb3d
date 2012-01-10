@@ -8,7 +8,7 @@ Module MaxB3D.Primitives
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
-Import MaxB3D.Core
+Import MaxB3D.StringFunctionLoader
 
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -41,15 +41,9 @@ Function CreateTorus:TMesh(radius#,width#,segments,sides,parent:TEntity=Null)
 	Return CurrentWorld().AddMesh("//torus("+radius+","+width+","+segments+","+sides+")",parent)
 End Function
 
-Type TMeshLoaderPrimitives Extends TMeshLoader
-	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
-		Local str$=String(url)
-		Local params$[]=str[str.Find("(")+1..str.FindLast(")")].Split(",")
-		
-		Local name$ = str[str.Find("//")+2..]
-		If str.Find("(") > -1 name = name[..name.Find("(")]
-
-		Select name
+Type TMeshLoaderPrimitives Extends TStringFunctionMeshLoader
+	Method RunFunction(func$,params$[],config:TWorldConfig,mesh:TMesh)
+		Select func
 		Case "sphere"
 			Local segments=Int(params[0])
 			If segments<2 Or segments>100 Then Return Null
@@ -484,7 +478,6 @@ Type TMeshLoaderPrimitives Extends TMeshLoader
 	Method ModuleName$()
 		Return "primitives"
 	End Method
-
 	
 	Function FlipNormals(surface:TSurface)
 		For Local v=0 To surface._vertexcnt-1

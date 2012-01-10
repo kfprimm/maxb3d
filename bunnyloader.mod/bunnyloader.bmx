@@ -7,7 +7,7 @@ End Rem
 Module MaxB3D.BunnyLoader
 ModuleInfo "Author: Kevin Primm"
 
-Import MaxB3D.Core
+Import MaxB3D.StringFunctionLoader
 Import "stanford_bunny.c"
 
 Extern
@@ -24,9 +24,9 @@ Function CreateBunny:TMesh(parent:TEntity=Null)
 End Function
 
 ' 8146 Verticies,8127 Normals,16301 Triangles
-Type TMeshLoaderBunny Extends TMeshLoader
-	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
-		If String(url)<>"//bunny"Return False
+Type TMeshLoaderBunny Extends TStringFunctionMeshLoader
+	Method RunFunction(func$,params$[],config:TWorldConfig,mesh:TMesh)
+		If func<>"bunny"Return False
 		
 		Global surface:TSurface
 		If Not surface		

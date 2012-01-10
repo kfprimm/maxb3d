@@ -6,7 +6,7 @@ Rem
 End Rem
 Module MaxB3D.MonkeyHeadLoader
 
-Import MaxB3D.Core
+Import MaxB3D.StringFunctionLoader
 Import "data.c"
 
 Extern
@@ -20,9 +20,10 @@ Function CreateMonkeyHead:TMesh(parent:TEntity=Null)
 	Return CurrentWorld().AddMesh("//monkeyhead",parent)
 End Function
 
-Type TMeshLoaderMONKEYHEAD Extends TMeshLoader
-	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
-		If String(url)<>"//monkeyhead" Return False
+Type TMeshLoaderMONKEYHEAD Extends TStringFunctionMeshLoader
+	Method RunFunction(func$,params$[],config:TWorldConfig,mesh:TMesh)
+		If func<>"monkeyhead" Return False
+		
 		Global surface:TSurface
 		If Not surface
 			surface=New TSurface
