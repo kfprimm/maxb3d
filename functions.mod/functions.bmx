@@ -64,6 +64,18 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function GetDither()
+	Return _currentworld.GetDither()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetDither(enable)
+	Return _currentworld.SetDither(enable)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function WorldPick:TPick[](src:Object, target:Object, sort = False)
 	return _currentworld.Pick(src,target, sort)
 End function

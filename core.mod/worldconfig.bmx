@@ -26,7 +26,7 @@ Const MAX_COLLISION_TYPES=100
 Type TWorldConfig
 	Field Width,Height
 	Field AmbientRed,AmbientGreen,AmbientBlue
-	Field Wireframe
+	Field Wireframe,Dither
 	
 	Field List:TList[WORLDLIST_ARRAYSIZE]
 	Field CollisionType:TList[MAX_COLLISION_TYPES]

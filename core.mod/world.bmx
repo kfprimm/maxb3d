@@ -70,6 +70,13 @@ Type TWorld
 		_config.Wireframe=enable
 	End Method
 	
+	Method GetDither()
+		Return _config.Dither
+	End Method
+	Method SetDither(enable)
+		_config.Dither=enable
+	End Method
+	
 	Method PickTarget(target#[],x# Var,y# Var,z# Var,radius#)
 		If target.length = 1
 		

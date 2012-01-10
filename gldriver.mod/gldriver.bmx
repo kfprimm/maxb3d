@@ -134,6 +134,12 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		EndIf
 	End Method	
 	Method SetCamera(camera:TCamera, config:TWorldConfig)
+		If config.Dither
+			glEnable GL_DITHER
+		Else
+			glDisable GL_DITHER
+		EndIf
+		
 		Local vy#=config.Height-camera._viewheight-camera._viewy
 		glViewport(camera._viewx,vy,camera._viewwidth,camera._viewheight)
 		glScissor(camera._viewx,vy,camera._viewwidth,camera._viewheight)

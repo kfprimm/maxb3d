@@ -134,6 +134,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	End Method
 	
 	Method SetCamera(camera:TCamera,config:TWorldConfig)
+		_d3ddev.SetRenderState D3DRS_DITHERENABLE, config.Dither
+		
 		Local clearflags		
 		If camera._clsmode&CLSMODE_COLOR clearflags:|D3DCLEAR_TARGET
 		If camera._clsmode&CLSMODE_DEPTH clearflags:|D3DCLEAR_ZBUFFER
