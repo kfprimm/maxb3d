@@ -17,6 +17,12 @@ Import MaxB3D.B3DCollision
 Import MaxB3D.A3DSLoader
 Import MaxB3D.B3DLoader
 Import MaxB3D.MD2Loader
+Import MaxB3D.XLoader
+
+Import BRL.BMPLoader
+Import BRL.JPGLoader
+Import BRL.PNGLoader
+Import BRL.TGALoader
 
 Private
 Global _renderinfo:TRenderInfo = New TRenderInfo
@@ -64,7 +70,6 @@ Rem
 # CaptureWorld
 # ClearWorld
 # LoaderMatrix
-# TrisRendered
 End Rem
 Function TrisRendered()
 	return _renderinfo.triangles
@@ -80,25 +85,60 @@ Rem
 # ScaleTexture
 # PositionTexture
 # RotateTexture
-# TextureWidth
-# TextureHeight
-# TextureBuffer
+End Rem
+Function TextureWidth(texture:TTexture)
+	Local width,height
+	texture.GetSize width,height
+	Return width
+End Function
+Function TextureHeight(texture:TTexture)
+	Local width,height
+	texture.GetSize width,height
+	Return height
+End Function
+Rem
 # TextureName
 # GetBrushTexture
-# ClearTextureFilters
-# TextureFilter
+End Rem
+Function ClearTextureFilters()
+	Return _currentworld.ClearTextureFilters()
+End Function
+Function TextureFilter(text$, flags)
+	Return _currentworld.AddTextureFilter(text, flags)
+End Function
+Rem
 # SetCubeFace
 # SetCubeMode
+End Rem
 
-# CreateBrush
+Function CreateBrush:TBrush(red=255,green=255,blue=255)
+	Return _currentworld.AddBrush([red,green,blue])
+End Function
+Function CopyBrush:TBrush(brush:TBrush)
+	Return brush.Copy()
+End Function
+Function BrushColor(brush:TBrush,red,green,blue)
+	Return brush.SetColor(red,green,blue)
+End Function
+Function BrushAlpha(brush:TBrush,alpha#)
+	Return brush.SetAlpha(alpha)
+End Function
+Function BrushShininess(brush:TBrush,shine#)
+	Return brush.SetShine(shine)
+End Function
+Function BrushTexture(brush:TBrush,texture:TTexture,index=0,frame=0)
+	Return brush.SetTexture(texture,index,frame)
+End Function
+Function BrushFX(brush:TBrush,fx)
+	Return brush.SetFX(fx)
+End Function
+Function BrushBlend(brush:TBrush,fx)
+	Return brush.SetBlend(fx)
+End Function
+
+Rem
 # LoadBrush
 # FreeBrush
-# BrushColor
-# BrushAlpha
-# BrushShininess
-# BrushTexture
-# BrushBlend
-# BrushFX
 # GetEntityBrush
 # GetSurfaceBrush
 
@@ -180,13 +220,26 @@ Rem
 # ProjectedZ
 # EntityInView
 
-# CreateLight
-# LightRange
-# LightColor
-# LightConeAngles
+End Rem
 
-# CreatePivot
+Function CreateLight:TLight(typ=LIGHT_DIRECTIONAL,parent:TEntity=Null)
+	Return _currentworld.AddLight(typ,parent)
+End Function
+Function LightRange(light:TLight,range#)
+	Return light.SetRange(range)
+End Function
+Function LightColor(light:TLight,red,green,blue)
+	Return light.SetColor(red,green,blue)
+End Function
+Function LightConeAngles(light:TLight,inner#,outer#)
+	Return light.SetAngles(inner,outer)
+End Function
 
+Function CreatePivot:TPivot(parent:TEntity=Null)
+	Return _currentworld.AddPivot(parent)
+End Function
+
+Rem
 # CreateSprite
 # LoadSprite
 # RotateSprite
@@ -363,3 +416,5 @@ Rem
 # Windowed3D
 # HWTexUnits
 End Rem
+
+SetWorld CreateWorld()
