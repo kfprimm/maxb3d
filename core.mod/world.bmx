@@ -22,7 +22,6 @@ Type TWorld
 	Field _config:TWorldConfig=New TWorldConfig
 	Field _resource_path$[],_tmp_res_path$
 	Field _collisiondriver:TCollisionDriver
-	Field _texturefilters$[][]
 	
 	Method New()
 		SetAmbientLight 127,127,127
@@ -38,11 +37,11 @@ Type TWorld
 	End Method
 	
 	Method ClearTextureFilters()
-		_texturefilters = Null
+		_config.TextureFilters = Null
 	End Method
 	
 	Method AddTextureFilter(text$, flags)
-		_texturefilters :+ [[text, String(flags)]]
+		_config.TextureFilters :+ [[text, String(flags)]]
 	End Method
 	
 	Method SetCollisionDriver(driver:TCollisionDriver)
@@ -191,76 +190,12 @@ Type TWorld
 	End Method
 	
 	Method AddTexture:TTexture(url:Object,flags=TEXTURE_DEFAULT)
-		Local texture:TTexture=New TTexture,pixmap:TPixmap[]
-		If Int[](url)
-			Local arr[]=Int[](url),width,height,frames=1
-			If arr.length=0 Return Null
-			If arr.length=1 width=arr[0];height=arr[0]
-			If arr.length>1 width=arr[0];height=arr[1]
-			If arr.length>2 frames=arr[2]	
-			pixmap=New TPixmap[frames]
-			For Local i=0 To frames-1
-				pixmap[i]=CreatePixmap(width,height,PF_BGRA8888)
-			Next
-		ElseIf TPixmap(url) 
-			pixmap=[TPixmap(url)]
-			If pixmap[0]=Null 
-				If url ModuleLog "Invalid texture url passed. ("+url.ToString()+")" Else ModuleLog "Invalid texture url passed. ("+url.ToString()+")"
-				Return Null
-			EndIf
-		Else
-			pixmap=[LoadPixmap(GetStream(url))]
-			If pixmap[0]=Null 
-				If url ModuleLog "Invalid texture url passed. ("+url.ToString()+")" Else ModuleLog "Invalid texture url passed. ("+url.ToString()+")"
-				Return Null
-			EndIf
-		EndIf
-		
-		If pixmap.length=0
-			If url ModuleLog "Invalid texture url passed. ("+url.ToString()+")" Else ModuleLog "Invalid texture url passed. ("+url.ToString()+")"
-			Return Null
-		EndIf
-		
-		If String(url)
-			Local path$ = String(url)
-			For Local filter$[] = EachIn _texturefilters
-				If path.Find(filter[0]) > -1 flags :| Int(filter[1])
-			Next
-		EndIf
-		
-		texture.SetName url.ToString()
-		texture.SetSize -1,-1,pixmap.length
-		For Local i=0 To pixmap.length-1
-			If flags&TEXTURE_MASKED pixmap[i] = MaskPixmap(pixmap[i],0,0,0)
-			texture.SetPixmap pixmap[i],i
-		Next			
-		texture.SetFlags flags
-		_config.AddObject texture,WORLDLIST_TEXTURE
-		Return texture
+		If Not Int[](url) And Not TPixmap(url) url = GetStream(url)
+		Return New TTexture.Init(_config,url,flags)
 	End Method
 	
 	Method AddBrush:TBrush(url:Object=Null)
-		Local brush:TBrush=New TBrush
-		Local red=255,green=255,blue=255,texture:TTexture
-		If Int[](url)
-			Local clr[]=Int[](url)
-			If clr.length>0 red=clr[0]
-			If clr.length>1 green=clr[1]
-			If clr.length>2 blue=clr[2]
-		ElseIf Float[](url)
-			Local clr[]=Int[](url)
-			If clr.length>0 red=clr[0]*255
-			If clr.length>1 green=clr[1]*255
-			If clr.length>2 blue=clr[2]*255
-		ElseIf TTexture(url)
-			texture=TTexture(url)
-		ElseIf url<>Null
-			texture=AddTexture(url)
-		EndIf
-		brush.SetTexture texture,0
-		brush.SetColor red,green,blue
-		_config.AddObject brush,WORLDLIST_BRUSH
-		Return brush
+		Return New TBrush.Init(_config, url)
 	End Method
 	
 	Method AddPivot:TPivot(parent:TEntity=Null)

@@ -24,8 +24,6 @@ Type TMaxB3DShaderData
 	Field _modelviewproj:TMatrix
 End Type
 
-Global _creategraphicshook=AllocHookId()
-
 Type TCaps
 	Field PointSprites
 	Field MaxPointSize#
@@ -44,12 +42,10 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 	Field _in_max2d=True
 	
 	Method CreateGraphics:TGraphics( width,height,depth,hertz,flags )
-		RunHooks _creategraphicshook,Null
 		Return Super.CreateGraphics(width,height,depth,hertz,flags)
 	End Method
 	
 	Method AttachGraphics:TGraphics( widget,flags )
-		RunHooks _creategraphicshook,Null
 		Return Super.AttachGraphics(widget,flags)
 	End Method
 	

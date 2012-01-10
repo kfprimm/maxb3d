@@ -9,6 +9,10 @@ Type TBone Extends TAnimEntity
 	Field _info:TWeightInfo[]
 	Field _key:TAnimKey[]
 	
+	Method Init:TBone(config:TWorldConfig,parent:TEntity=Null)
+		Return TBone(Super.Init(config,parent))
+	End Method
+	
 	Method Lists[]()
 		Return Super.Lists() + [WORLDLIST_BONE]
 	End Method

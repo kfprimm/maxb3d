@@ -12,19 +12,13 @@ ModuleInfo "Credit: Terrain system adapted from Warner's engine."
 
 Import BRL.Max2D
 
-Import MaxB3D.Logging
 Import "driver.bmx"
 Import "world.bmx"
 
 Private
-Function _maxb3d_world_initialize:Object(id,data:Object,context:Object)
-	If GetWorld()=Null SetWorld CreateWorld()
-End Function
-AddHook _creategraphicshook,_maxb3d_world_initialize
+Global _currentworld:TWorld
 
 Public
-
-Global _currentworld:TWorld
 
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -35,7 +29,7 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function GetWorld:TWorld()
+Function CurrentWorld:TWorld()
 	Return _currentworld
 End Function
 Rem

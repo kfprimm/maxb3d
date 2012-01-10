@@ -28,6 +28,8 @@ Type TWorldConfig
 	Field AmbientRed,AmbientGreen,AmbientBlue
 	Field Wireframe,Dither
 	
+	Field TextureFilters$[][]
+	
 	Field List:TList[WORLDLIST_ARRAYSIZE]
 	Field CollisionType:TList[MAX_COLLISION_TYPES]
 	Field CollisionPairs:TList=CreateList()
@@ -36,6 +38,13 @@ Type TWorldConfig
 		For Local i=0 To WORLDLIST_ARRAYSIZE-1
 			List[i]=CreateList()
 		Next
+	End Method
+	
+	Method ProcessTextureFilters(path$,flags)
+		For Local filter$[] = EachIn TextureFilters
+			If path.Find(filter[0]) > -1 flags :| Int(filter[1])
+		Next
+		Return flags
 	End Method
 	
 	Method AddObject:TLink(obj:Object,index)	

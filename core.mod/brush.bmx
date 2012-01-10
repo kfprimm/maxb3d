@@ -22,6 +22,30 @@ Type TBrush
 	Field _blend,_fx
 	Field _shader:TShader
 	
+	Method Init:TBrush(config:TWorldConfig, url:Object)
+		Local red=255,green=255,blue=255,texture:TTexture
+		If Int[](url)
+			Local clr[]=Int[](url)
+			If clr.length>0 red=clr[0]
+			If clr.length>1 green=clr[1]
+			If clr.length>2 blue=clr[2]
+		ElseIf Float[](url)
+			Local clr[]=Int[](url)
+			If clr.length>0 red=clr[0]*255
+			If clr.length>1 green=clr[1]*255
+			If clr.length>2 blue=clr[2]*255
+		ElseIf TTexture(url)
+			texture=TTexture(url)
+		ElseIf url<>Null
+			texture=New TTexture.Init(config, url, TEXTURE_COLOR)
+		EndIf
+		
+		SetTexture texture,0
+		SetColor red,green,blue
+		config.AddObject Self,WORLDLIST_BRUSH
+		Return Self
+	End Method
+	
 	Method Copy:TBrush()
 		Local newbrush:TBrush=New TBrush
 		newbrush.Load Self

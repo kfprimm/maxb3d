@@ -15,43 +15,43 @@ Rem
 	about: Tweening is not yet implemented.
 End Rem
 Function RenderWorld:TRenderInfo(tween#=1.0)
-	Return _currentworld.Render(tween)
+	Return CurrentWorld().Render(tween)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function RenderCamera:TRenderInfo(camera:TCamera)
-	Return _currentworld.RenderCamera(camera)
+	Return CurrentWorld().RenderCamera(camera)
 End Function
 Rem
 	bbdoc: Advances all animations and updates collision/physics.
 End Rem
 Function UpdateWorld(anim_speed#=1.0,collision_speed#=1.0)
-	Return _currentworld.Update(anim_speed,collision_speed)
+	Return CurrentWorld().Update(anim_speed,collision_speed)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function SetCollisions(src,dest,methd,response)
-	Return _currentworld.SetCollisions(src,dest,methd,response)
+	Return CurrentWorld().SetCollisions(src,dest,methd,response)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function GetAmbientLight(red Var,green Var,blue Var)
-	Return _currentworld.GetAmbientLight(red,green,blue)
+	Return CurrentWorld().GetAmbientLight(red,green,blue)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function SetAmbientLight(red,green,blue)
-	Return _currentworld.SetAmbientLight(red,green,blue)
+	Return CurrentWorld().SetAmbientLight(red,green,blue)
 End Function
 Rem
 	returns: Wireframe rendering state, see #SetWireframe
 End Rem
 Function GetWireFrame()
-	Return _currentworld.GetWireFrame()
+	Return CurrentWorld().GetWireFrame()
 End Function
 Rem
 	bbdoc: Enable/disable global wireframe rendering.
@@ -59,37 +59,37 @@ Rem
 			a single entity's wireframe to be rendered.
 End Rem
 Function SetWireFrame(enable)
-	Return _currentworld.SetWireFrame(enable)
+	Return CurrentWorld().SetWireFrame(enable)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function GetDither()
-	Return _currentworld.GetDither()
+	Return CurrentWorld().GetDither()
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function SetDither(enable)
-	Return _currentworld.SetDither(enable)
+	Return CurrentWorld().SetDither(enable)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function WorldPick:TPick[](src:Object, target:Object, sort = False)
-	return _currentworld.Pick(src,target, sort)
+	return CurrentWorld().Pick(src,target, sort)
 End function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function ClearTextureFilters()
-	Return _currentworld.ClearTextureFilters()
+	Return CurrentWorld().ClearTextureFilters()
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function AddTextureFilter(text$, flags)
-	Return _currentworld.AddTextureFilter(text, flags)
+	Return CurrentWorld().AddTextureFilter(text, flags)
 End Function
 
 'Bodies
@@ -97,7 +97,7 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateBody:TBody()
-	Return _currentworld.AddBody()
+	Return CurrentWorld().AddBody()
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -117,7 +117,7 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateBrush:TBrush(url:Object=Null)
-	Return _currentworld.AddBrush(url)
+	Return CurrentWorld().AddBrush(url)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -228,7 +228,7 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateCamera:TCamera(parent:TEntity=Null)
-	Return _currentworld.AddCamera(parent)
+	Return CurrentWorld().AddCamera(parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -664,7 +664,7 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateLight:TLight(typ=LIGHT_DIRECTIONAL,parent:TEntity=Null)
-	Return _currentworld.AddLight(typ,parent)
+	Return CurrentWorld().AddLight(typ,parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -696,13 +696,13 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateMesh:TMesh(parent:TEntity=Null)
-	Return _currentworld.AddMesh("//empty",parent)
+	Return CurrentWorld().AddMesh("//empty",parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function LoadMesh:TMesh(url:Object,parent:TEntity=Null)
-	Return _currentworld.AddMesh(url,parent)
+	Return CurrentWorld().AddMesh(url,parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -862,7 +862,7 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreatePivot:TPivot(parent:TEntity=Null)
-	Return _currentworld.AddPivot(parent)
+	Return CurrentWorld().AddPivot(parent)
 End Function
 
 'Flats (plane)
@@ -870,7 +870,7 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateFlat:TFlat(parent:TEntity=Null)
-	Return _currentworld.AddFlat(parent)
+	Return CurrentWorld().AddFlat(parent)
 End Function
 
 'Sprite
@@ -878,13 +878,13 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateSprite:TSprite(parent:TEntity=Null)
-	Return _currentworld.AddSprite(Null,TEXTURE_DEFAULT,parent)
+	Return CurrentWorld().AddSprite(Null,TEXTURE_DEFAULT,parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function LoadSprite:TSprite(url:Object,flags=TEXTURE_DEFAULT,parent:TEntity=Null)
-	Return _currentworld.AddSprite(url,flags,parent)
+	Return CurrentWorld().AddSprite(url,flags,parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -1038,13 +1038,13 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateTerrain:TTerrain(size,parent:TEntity=Null)
-	Return _currentworld.AddTerrain([size],parent)
+	Return CurrentWorld().AddTerrain([size],parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function LoadTerrain:TTerrain(url:Object,parent:TEntity=Null)
-	Return _currentworld.AddTerrain(url,parent)
+	Return CurrentWorld().AddTerrain(url,parent)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -1076,7 +1076,7 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function CreateTexture:TTexture(width,height,flags=TEXTURE_COLOR|TEXTURE_MIPMAP,frames=1)
-	Local texture:TTexture=_currentworld.AddTexture([width,height,frames],flags)
+	Local texture:TTexture=CurrentWorld().AddTexture([width,height,frames],flags)
 	texture.SetPixmap(CreatePixmap(width,height,PF_RGBA8888))
 	Return texture
 End Function
@@ -1084,7 +1084,7 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function LoadTexture:TTexture(url:Object,flags=TEXTURE_COLOR|TEXTURE_MIPMAP)
-	Return _currentworld.AddTexture(url,flags)
+	Return CurrentWorld().AddTexture(url,flags)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -1182,5 +1182,7 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function LoadBSPModel:TBSPModel(url:Object,parent:TEntity=Null)
-	Return _currentworld.AddBSPModel(url,parent)
+	Return CurrentWorld().AddBSPModel(url,parent)
 End Function
+
+SetWorld CreateWorld()

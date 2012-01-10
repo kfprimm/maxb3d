@@ -1,8 +1,17 @@
 
 Strict
 
+Import MaxB3D.Logging
 Import BRL.Pixmap
+Import "worldconfig.bmx"
 Import "resource.bmx"
+
+Private
+Function ModuleLog(message$)
+	TMaxB3DLogger.Write "core/texture",message
+End Function
+
+Public
 
 Const TEXTURE_COLOR		= 1
 Const TEXTURE_ALPHA		= 2
@@ -38,6 +47,53 @@ Type TTexture
 	Field _px#,_py#,_r#,_sx#=1.0,_sy#=1.0
 	Field _width=-1,_height=-1,_frame:TTextureFrame[]
 	Field _name$
+	
+	Method Init:TTexture(config:TWorldConfig,url:Object,flags)
+		Local pixmap:TPixmap[]
+		
+		If Int[](url)
+			Local arr[]=Int[](url),width,height,frames=1
+			If arr.length=0 Return Null
+			If arr.length=1 width=arr[0];height=arr[0]
+			If arr.length>1 width=arr[0];height=arr[1]
+			If arr.length>2 frames=arr[2]	
+			pixmap=New TPixmap[frames]
+			For Local i=0 To frames-1
+				pixmap[i]=CreatePixmap(width,height,PF_BGRA8888)
+			Next
+		ElseIf TPixmap(url) 
+			pixmap=[TPixmap(url)]
+			If pixmap[0]=Null 
+				If url ModuleLog "Invalid texture url passed. ("+url.ToString()+")" Else ModuleLog "Invalid texture url passed. ("+url.ToString()+")"
+				Return Null
+			EndIf
+		Else
+			pixmap=[LoadPixmap(url)]
+			If pixmap[0]=Null 
+				If url ModuleLog "Invalid texture url passed. ("+url.ToString()+")" Else ModuleLog "Invalid texture url passed. ("+url.ToString()+")"
+				Return Null
+			EndIf
+		EndIf
+		
+		If pixmap.length=0
+			If url ModuleLog "Invalid texture url passed. ("+url.ToString()+")" Else ModuleLog "Invalid texture url passed. ("+url.ToString()+")"
+			Return Null
+		EndIf
+		
+		If String(url) flags = config.ProcessTextureFilters(String(url),flags)
+		
+		SetName url.ToString()
+		SetSize -1,-1,pixmap.length
+		For Local i=0 To pixmap.length-1
+			If flags&TEXTURE_MASKED pixmap[i] = MaskPixmap(pixmap[i],0,0,0)
+			SetPixmap pixmap[i],i
+		Next			
+		SetFlags flags
+		config.AddObject Self,WORLDLIST_TEXTURE
+		
+		Return Self
+	End Method
+	
 		
 	Method Lock:TPixmap(index=0)
 		_frame[index]._locked=True
@@ -49,7 +105,7 @@ Type TTexture
 		_frame[index]._updateres=True
 	End Method
 	
-	Method SetPixmap:TPixmap(pixmap:TPixmap,index=0)
+	Method SetPixmap(pixmap:TPixmap,index=0)
 		If pixmap=Null _frame[index]=Null;Return
 		If _frame[index]=Null _frame[index]=New TTextureFrame
 		_frame[index]._pixmap=ConvertPixmap(pixmap,PF_BGRA8888)

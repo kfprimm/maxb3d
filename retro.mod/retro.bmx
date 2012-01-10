@@ -25,6 +25,7 @@ Import BRL.PNGLoader
 Import BRL.TGALoader
 
 Private
+Global _currentworld:TWorld
 Global _renderinfo:TRenderInfo = New TRenderInfo
 
 Public

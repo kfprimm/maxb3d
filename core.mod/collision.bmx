@@ -35,4 +35,9 @@ Type TCollisionDriver
 	Method Update(config:TWorldConfig,speed#) Abstract
 End Type
 
+Type TNullCollisionDriver Extends TCollisionDriver
+	Method Update(config:TWorldConfig,speed#) ; End Method
+End Type
+New TNullCollisionDriver
+
 
