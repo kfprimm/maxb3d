@@ -517,12 +517,8 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		For Local poly:TBSPPolygon=EachIn node.On
 			glBegin GL_POLYGON
 			glNormal3f poly.Plane.x,poly.Plane.y,poly.Plane.z
-			Local ptA:TVector=poly.Point[0],v0
-			For Local i=1 To poly.Count()-2
-				Local ptB:TVector=poly.Point[i],ptC:TVector=poly.Point[i+1]
-				glVertex3f ptA.x,ptA.y,ptA.z
-				glVertex3f ptB.x,ptB.y,ptB.z
-				glVertex3f ptC.x,ptC.y,ptC.z
+			For Local i=0 To poly.Count()-1
+				glVertex3f poly.Point[i].x,poly.Point[i].y,poly.Point[i].z
 			Next
 			triangles:+poly.Count()-2
 			glEnd
