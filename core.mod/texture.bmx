@@ -68,7 +68,7 @@ Type TTexture
 				Return Null
 			EndIf
 		Else
-			pixmap=[LoadPixmap(url)]
+			pixmap=[LoadPixmap(config.GetStream(url))]
 			If pixmap[0]=Null 
 				If url ModuleLog "Invalid texture url passed. ("+url.ToString()+")" Else ModuleLog "Invalid texture url passed. ("+url.ToString()+")"
 				Return Null

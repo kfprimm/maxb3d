@@ -1,6 +1,8 @@
 
 Strict
 
+Import BRL.Stream
+Import BRL.FileSystem
 Import BRL.LinkedList
 
 Const WORLDLIST_ENTITY    = 0
@@ -29,6 +31,8 @@ Type TWorldConfig
 	Field Wireframe,Dither
 	
 	Field TextureFilters$[][]
+
+	Field ResourcePath$[], TmpResourcePath$
 	
 	Field List:TList[WORLDLIST_ARRAYSIZE]
 	Field CollisionType:TList[MAX_COLLISION_TYPES]
@@ -49,6 +53,23 @@ Type TWorldConfig
 	
 	Method AddObject:TLink(obj:Object,index)	
 		Return List[index].AddLast(obj)
+	End Method
+	
+	Method GetStream:Object(url:Object)
+		Local stream:TStream=ReadStream(url)
+		If stream Return stream
+		If String(url)
+			Local uri$=String(url),file$=StripDir(uri)
+			For Local path$=EachIn ResourcePath+[TmpResourcePath]
+				If path="" Continue
+				stream=ReadStream(CasedFileName(path+"/"+file))
+				If stream Return stream
+			Next
+			stream=ReadStream(CasedFileName(file))
+			If stream Return stream
+			Return url
+		EndIf 
+		Return url
 	End Method
 End Type
 

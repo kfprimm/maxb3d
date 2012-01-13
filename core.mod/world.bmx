@@ -20,8 +20,6 @@ Public
 
 Type TWorld
 	Field _config:TWorldConfig=New TWorldConfig
-
-	Field _resource_path$[],_tmp_res_path$
 	Field _collisiondriver:TCollisionDriver
 	
 	Method New()
@@ -33,8 +31,8 @@ Type TWorld
 	End Method
 	
 	Method AddResourcePath(path$)
-		_resource_path=_resource_path[.._resource_path.length+1]
-		_resource_path[_resource_path.length-1]=path
+		_config.ResourcePath=_config.ResourcePath[.._config.ResourcePath.length+1]
+		_config.ResourcePath[_config.ResourcePath.length-1]=path
 	End Method
 	
 	Method ClearTextureFilters()
@@ -173,25 +171,9 @@ Type TWorld
 		
 		Return picks		
 	End Method
-	
-	Method GetStream:Object(url:Object)
-		Local stream:TStream=ReadStream(url)
-		If stream Return stream
-		If String(url)
-			Local uri$=String(url),file$=StripDir(uri)
-			For Local path$=EachIn _resource_path+[_tmp_res_path]
-				stream=ReadStream(CasedFileName(path+"/"+file))
-				If stream Return stream
-			Next
-			stream=ReadStream(CasedFileName(file))
-			If stream Return stream
-			Return url
-		EndIf 
-		Return url
-	End Method
-	
+		
 	Method AddTexture:TTexture(url:Object,flags=TEXTURE_DEFAULT)
-		If Not Int[](url) And Not TPixmap(url) url = GetStream(url)
+		If Not Int[](url) And Not TPixmap(url) url = _config.GetStream(url)
 		Return New TTexture.Init(_config,url,flags)
 	End Method
 	
@@ -215,13 +197,13 @@ Type TWorld
 	
 	Method AddMesh:TMesh(url:Object,parent:TEntity=Null)
 		Local mesh:TMesh=New TMesh
-		If String(url) _tmp_res_path=ExtractDir(String(url))
-		If Not TMeshLoader.Load(_config,mesh,GetStream(url))
-			_tmp_res_path=""
+		If String(url) _config.TmpResourcePath=ExtractDir(String(url))
+		If Not TMeshLoader.Load(_config,mesh,_config.GetStream(url))
+			_config.TmpResourcePath = ""
 			If url ModuleLog "Unable to load mesh url. ("+url.ToString()+")" Else ModuleLog "Unable to load mesh url. (null)"
 			Return Null
 		EndIf
-		_tmp_res_path=""
+		_config.TmpResourcePath = ""
 		Return TMesh(mesh.Init(_config, parent))
 	End Method
 	
@@ -395,6 +377,7 @@ Type TWorld
 			driver.BeginEntityRender entity
 			If mesh
 				For Local surface:TSurface=EachIn mesh._surfaces	
+					If surface._brush._a=0 Continue
 					Local animation_surface:TSurface,merge_data
 					If mesh._animator
 						If mesh._animator._current
@@ -402,8 +385,7 @@ Type TWorld
 							merge_data=mesh._animator.GetMergeData()
 						EndIf
 					EndIf
-					If surface._brush._a=0 Continue					
-					Local resource:TSurfaceRes=driver.MergeSurfaceRes(surface,animation_surface,merge_data)				'driver.UpdateSurfaceRes(surface)
+					Local resource:TSurfaceRes=driver.MergeSurfaceRes(surface,animation_surface,merge_data)
 					brush=surface._brush.Merge(mesh._brush)
 					driver.SetBrush brush,surface.HasAlpha() Or brush.HasAlpha(),_config
 					info.Triangles:+driver.RenderSurface(resource,brush)
