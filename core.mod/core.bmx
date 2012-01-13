@@ -2,7 +2,7 @@
 Strict
 
 Rem
-	bbdoc: MaxB3D core system.
+	bbdoc: MaxB3D core system
 End Rem
 Module MaxB3D.Core
 ModuleInfo "Author: Kevin Primm"

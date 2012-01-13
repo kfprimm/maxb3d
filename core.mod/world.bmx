@@ -20,6 +20,7 @@ Public
 
 Type TWorld
 	Field _config:TWorldConfig=New TWorldConfig
+
 	Field _resource_path$[],_tmp_res_path$
 	Field _collisiondriver:TCollisionDriver
 	
@@ -254,6 +255,10 @@ Type TWorld
 		Return TBSPModel(bsp.Init(_config, parent))
 	End Method
 	
+	Method AddCustomEntity:TCustomEntity(entity:TCustomEntity,parent:TEntity=Null)
+		Return TCustomEntity(entity.Init(_config, parent))
+	End Method
+	
 	Method Render:TRenderInfo(tween#=1.0)
 		Local driver:TMaxB3DDriver=TMaxB3DDriver(GetGraphicsDriver())
 
@@ -379,7 +384,12 @@ Type TWorld
 		If Not list.IsEmpty() info.Entities=list.Count()
 		For Local entity:TEntity=EachIn list
 			Local mesh:TMesh=TMesh(entity),flat:TFlat=TFlat(entity),terrain:TTerrain=TTerrain(entity)
-			Local sprite:TSprite=TSprite(entity),bsp:TBSPModel=TBSPModel(entity),custom:TCustomEntity=TCustomEntity(entity)
+			Local sprite:TSprite=TSprite(entity),bsp:TBSPModel=TBSPModel(entity)
+			Local custom:TCustomEntity=TCustomEntity(entity), renderer:TCustomRenderer
+			If custom
+				renderer = TCustomRenderer(custom.Renderer(driver.Abbr()))
+				If renderer = Null Continue
+			EndIf
 			Local brush:TBrush=entity._brush
 			If brush._a=0 Continue
 			driver.BeginEntityRender entity
@@ -414,7 +424,7 @@ Type TWorld
 					Local tree:TBSPTree=bsp.GetRenderTree(camera.GetEye())
 					info.Triangles:+driver.RenderBSPTree(tree)
 				ElseIf custom
-					info.Triangles:+custom.Renderer(driver.Abbr()).Render(custom)
+					info.Triangles:+renderer.Render(custom, driver)
 				EndIf	
 			EndIf
 			driver.EndEntityRender entity		

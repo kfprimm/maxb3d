@@ -142,3 +142,7 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 		Next
 	End Method
 End Type
+
+Type TCustomRenderer
+	Method Render(entity:TEntity, driver:TMaxB3DDriver) Abstract
+End Type
