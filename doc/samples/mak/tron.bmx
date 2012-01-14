@@ -22,7 +22,7 @@ SetEntityAlpha grid_plane,.6
 SetEntityFX grid_plane,FX_FULLBRIGHT
 
 'Local mirror:TMirror=CreateMirror()
-rem
+Rem
 Local pivot=CreatePivot()
 
 p=CreatePivot( p )
