@@ -125,8 +125,6 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			_d3ddev.SetRenderState D3DRS_NORMALIZENORMALS,True
 			
 			_d3ddev.SetRenderState D3DRS_COLORVERTEX, True
-			_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE,D3DMCS_MATERIAL
-			_d3ddev.SetRenderState D3DRS_AMBIENTMATERIALSOURCE,D3DMCS_MATERIAL 
 						
 			'_d3ddev.SetRenderState D3DRS_ALPHAREF, 1
 			'_d3ddev.SetRenderState D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL
@@ -143,9 +141,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		Local viewport[]=[camera._viewx,camera._viewy,camera._viewwidth-camera._viewx,camera._viewheight-camera._viewy]
 		_d3ddev.SetScissorRect viewport
 		_d3ddev.Clear(1,viewport,clearflags,D3DCOLOR_XRGB(camera._brush._r*255,camera._brush._g*255,camera._brush._b*255),1.0,0)
-		
-		_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(config.AmbientRed,config.AmbientGreen,config.AmbientBlue)
-		
+				
 		Select camera._fogmode
 		Case FOGMODE_LINEAR
 			_d3ddev.SetRenderState D3DRS_FOGENABLE,True
@@ -204,17 +200,19 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			_d3ddev.SetRenderState D3DRS_SRCBLEND,D3DBLEND_SRCALPHA
 			_d3ddev.SetRenderState D3DRS_DESTBLEND,D3DBLEND_ONE
 		End Select
-		
+
 		If brush._fx&FX_FULLBRIGHT
-			_d3ddev.SetRenderState D3DRS_LIGHTING,False
+			_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(255,255,255)
 		Else
-			_d3ddev.SetRenderState D3DRS_LIGHTING,True
+			_d3ddev.SetRenderState D3DRS_AMBIENT,D3DCOLOR_RGB(config.AmbientRed,config.AmbientGreen,config.AmbientBlue)
 		EndIf
 		
 		If brush._fx&FX_VERTEXCOLOR
-			_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR1
+			_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE,D3DMCS_COLOR1
+			_d3ddev.SetRenderState D3DRS_AMBIENTMATERIALSOURCE,D3DMCS_COLOR1
 		Else
-			_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL
+			_d3ddev.SetRenderState D3DRS_DIFFUSEMATERIALSOURCE,D3DMCS_MATERIAL
+			_d3ddev.SetRenderState D3DRS_AMBIENTMATERIALSOURCE,D3DMCS_MATERIAL 
 		EndIf
 		
 		If brush._fx&FX_FLATSHADED
