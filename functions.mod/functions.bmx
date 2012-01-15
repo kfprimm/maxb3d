@@ -643,6 +643,18 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function GetEntityPickMode(entity:TEntity, mode Var, obscurer Var)
+	Return entity.GetPickMode(mode, obscurer)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function SetEntityPickMode(entity:TEntity, mode, obscurer = True)
+	Return entity.SetPickMode(mode, obscurer)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function GetEntityCullRadius#(entity:TEntity)
 	Return entity.GetCullRadius()
 End Function
