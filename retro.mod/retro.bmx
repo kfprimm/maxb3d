@@ -42,7 +42,7 @@ Function Graphics3D(width, height, depth = 32, mode = 0)
 		depth = 32
 	Case 2
 		depth = 0
-	End select
+	End Select
 	Graphics width,height,depth
 End Function
 Rem
@@ -61,10 +61,10 @@ Rem
 # ClearCollisions
 # Collisions
 End Rem
-Function UpdateWorld(speed#)
-	_currentworld.Update(speed, speed)
+Function UpdateWorld(speed# = 1.0)
+	_currentworld.Update(speed)
 End Function
-Function RenderWorld(tween#)
+Function RenderWorld(tween# = 1.0)
 	_renderinfo = _currentworld.Render(tween)
 End Function
 Rem
@@ -73,7 +73,7 @@ Rem
 # LoaderMatrix
 End Rem
 Function TrisRendered()
-	return _renderinfo.triangles
+	Return _renderinfo.triangles
 End Function
 
 Rem

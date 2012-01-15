@@ -26,8 +26,8 @@ End Function
 Rem
 	bbdoc: Advances all animations and updates collision/physics.
 End Rem
-Function UpdateWorld(anim_speed#=1.0,collision_speed#=1.0)
-	Return CurrentWorld().Update(anim_speed,collision_speed)
+Function UpdateWorld(speed#=1.0)
+	Return CurrentWorld().Update(speed)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -77,8 +77,8 @@ Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
 Function WorldPick:TPick[](src:Object, target:Object, sort = False)
-	return CurrentWorld().Pick(src,target, sort)
-End function
+	Return CurrentWorld().Pick(src,target, sort)
+End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
