@@ -8,7 +8,7 @@ HideMouse()
 SeedRnd MilliSecs()
 
 Local sphere:TMesh = CreateSphere()
-'SetEntityPickMode sphere, PICKMODE_SPHERE
+SetEntityPickMode sphere, PICKMODE_SPHERE
 
 For Local k = 0 To 99
 	Local model:TEntity = CopyEntity(sphere)

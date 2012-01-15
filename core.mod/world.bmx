@@ -75,13 +75,13 @@ Type TWorld
 		_config.Dither=enable
 	End Method
 	
-	Method PickTarget(target#[],x# Var,y# Var,z# Var,radius#)
+	Method PickTarget(src:Object,target#[],ax# Var,ay# Var,az# Var,bx# Var,by# Var,bz# Var,radius#)
 		If target.length = 1
 		
 		ElseIf target.length = 2
-			'Local camera:TCamera = TCamera(src)
-			'camera.Unproject target[0], target[1], 0, ax, ay, az
-			'camera.Unproject target[0], target[1], 1, bx, by, bz
+			Local camera:TCamera = TCamera(src)
+			camera.Unproject target[0], target[1], 0, ax, ay, az
+			camera.Unproject target[0], target[1], 1, bx, by, bz
 		Else
 		
 		EndIf
@@ -93,21 +93,7 @@ Type TWorld
 	Method Pick:TPick[](src:Object, target:Object, sort = False)
 		Local ax#,ay#,az#,bx#,by#,bz#,radius#=0.0
 		TEntity.GetTargetPosition src,ax,ay,az
-		
-		Local a#,b#,c#,d#,count,s# Ptr
-		If Int[](target)
-			s = Varptr a
-			For Local i = 0 To Int[](target).length-1
-				
-			Next			
-		ElseIf Float[](target)
-			
-		Else
-			TEntity.GetTargetPosition target,bx,by,bz
-			bx = bx - ax
-			by = by - by
-			bz = bz - bz
-		EndIf
+		PickTarget src,Float[](target),ax,ay,az,bx,by,bz,radius
 		
 		Global c_vec_a:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
 		Global c_vec_b:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
