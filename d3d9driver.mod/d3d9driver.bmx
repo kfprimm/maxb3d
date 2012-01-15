@@ -152,7 +152,7 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 		End Select
 		
 		Local oldnear# = camera._near ' Ugh, hack. Need to investigate cause.
-		camera._near :- 0.396250010 
+		camera._near = Max(camera._near - 0.396250010, .01)
 		camera.UpdateMatrices()
 		camera._near = oldnear
 		
