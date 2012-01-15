@@ -48,6 +48,14 @@ Type TTexture
 	Field _width=-1,_height=-1,_frame:TTextureFrame[]
 	Field _name$
 	
+	Field _linklist:TList = New TList
+	
+	Method Free()
+		For Local link:TLink = EachIn _linklist
+			RemoveLink link
+		Next
+	End Method
+	
 	Method Init:TTexture(config:TWorldConfig,url:Object,flags)
 		Local pixmap:TPixmap[]
 		
