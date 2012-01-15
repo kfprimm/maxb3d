@@ -27,6 +27,7 @@ Import BRL.TGALoader
 Private
 Global _currentworld:TWorld
 Global _renderinfo:TRenderInfo = New TRenderInfo
+Global tform_x#, tform_y#, tform_z#
 
 Public
 
@@ -45,48 +46,46 @@ Function Graphics3D(width, height, depth = 32, mode = 0)
 	End Select
 	Graphics width,height,depth
 End Function
-Rem
-# Dither
-# WBuffer
-# AntiAlias
-End Rem
+' Dither
+' WBuffer
+' AntiAlias
 Function Wireframe(enable)
 	_currentworld.SetWireFrame enable
 End Function
-'# HWMultiTex
+' HWMultiTex
 Function AmbientLight(red, green, blue)
 	_currentworld.SetAmbientLight red, green, blue
 End Function
-Rem
-# ClearCollisions
-# Collisions
-End Rem
+' ClearCollisions
+' Collisions
 Function UpdateWorld(speed# = 1.0)
 	_currentworld.Update(speed)
 End Function
 Function RenderWorld(tween# = 1.0)
 	_renderinfo = _currentworld.Render(tween)
 End Function
-Rem
-# CaptureWorld
-# ClearWorld
-# LoaderMatrix
-End Rem
+' CaptureWorld
+' ClearWorld
+' LoaderMatrix
 Function TrisRendered()
 	Return _renderinfo.triangles
 End Function
 
-Rem
-# CreateTexture
-# LoadTexture
-# LoadAnimTexture
-# FreeTexture
-# TextureBlend
-# TextureCoords
-# ScaleTexture
-# PositionTexture
-# RotateTexture
-End Rem
+' CreateTexture
+Function LoadTexture:TTexture(url:Object,flags=TEXTURE_COLOR)
+	Return CurrentWorld().AddTexture(url,flags)
+End Function
+' LoadAnimTexture
+Function FreeTexture(texture:TTexture)
+	Return texture.Free()
+End FUnction
+' TextureBlend
+Function TextureCoords(texture:TTexture, coords)
+	Return texture.SetCoords(coords)
+End Function
+' ScaleTexture
+' PositionTexture
+' RotateTexture
 Function TextureWidth(texture:TTexture)
 	Local width,height
 	texture.GetSize width,height
@@ -97,20 +96,16 @@ Function TextureHeight(texture:TTexture)
 	texture.GetSize width,height
 	Return height
 End Function
-Rem
-# TextureName
-# GetBrushTexture
-End Rem
+' TextureName
+' GetBrushTexture
 Function ClearTextureFilters()
 	Return _currentworld.ClearTextureFilters()
 End Function
 Function TextureFilter(text$, flags)
 	Return _currentworld.AddTextureFilter(text, flags)
 End Function
-Rem
-# SetCubeFace
-# SetCubeMode
-End Rem
+' SetCubeFace
+' SetCubeMode
 
 Function CreateBrush:TBrush(red=255,green=255,blue=255)
 	Return _currentworld.AddBrush([red,green,blue])
@@ -138,88 +133,153 @@ Function BrushBlend(brush:TBrush,fx)
 End Function
 
 Rem
-# LoadBrush
-# FreeBrush
-# GetEntityBrush
-# GetSurfaceBrush
+' LoadBrush
+' FreeBrush
+' GetEntityBrush
+' GetSurfaceBrush
 
-# CreateMesh
-# LoadMesh
-# LoadAnimMesh
-# CreateCube
-# CreateSphere
-# CreateCylinder
-# CreateCone
-# CopyMesh
-# AddMesh
-# FlipMesh
-# PaintMesh
-# LightMesh
-# FitMesh
-# ScaleMesh
-# RotateMesh
-# PositionMesh
-# UpdateNormals
-# MeshesIntersect
-# MeshWidth
-# MeshHeight
-# MeshDepth
-# CountSurfaces
-# GetSurface
+' CreateMesh
+' LoadMesh
+' LoadAnimMesh
+' CreateCube
+' CreateSphere
+' CreateCylinder
+' CreateCone
+' CopyMesh
+' AddMesh
+' FlipMesh
+' PaintMesh
+' LightMesh
+' FitMesh
+' ScaleMesh
+' RotateMesh
+' PositionMesh
+' UpdateNormals
+' MeshesIntersect
+' MeshWidth
+' MeshHeight
+' MeshDepth
+End Rem
+Function CountSurfaces(mesh:TMesh)
+	Return mesh.CountSurfaces()
+End Function
+Function GetSurface:TSurface(mesh:TMesh,index)
+	Return mesh.GetSurface(index-1)
+End Function
+Rem
 
-# CreateSurface
-# PaintSurface
-# ClearSurface
-# FindSurface
-# AddVertex
-# AddTriangle
-# VertexCoords
-# VertexNormal
-# VertexColor
-# VertexTexCoords
-# CountVertices
-# CountTriangles
-# VertexX
-# VertexY
-# VertexZ
-# VertexNX
-# VertexNY
-# VertexNZ
-# VertexRed
-# VertexGreen
-# VertexBlue
-# VertexAlpha
-# VertexU
-# VertexV
-# VertexW
-# TriangleVertex
+' CreateSurface
+' PaintSurface
+' ClearSurface
+' FindSurface
+' AddVertex
+' AddTriangle
+' VertexCoords
+' VertexNormal
+' VertexColor
+' VertexTexCoords
+End Rem
+Function CountVertices(surface:TSurface)
+	Return surface.CountVertices()
+End Function
+Function CountTriangles(surface:TSurface)
+	Return surface.CountTriangles()
+End Function
+Function VertexX#(surface:TSurface, index)
+	Local x#,y#,z#
+	surface.GetCoords index,x,y,z
+	Return x
+End Function
+Function VertexY#(surface:TSurface, index)
+	Local x#,y#,z#
+	surface.GetCoords index,x,y,z
+	Return y
+End Function
+Function VertexZ#(surface:TSurface, index)
+	Local x#,y#,z#
+	surface.GetCoords index,x,y,z
+	Return z
+End Function
+Function VertexNX#(surface:TSurface, index)
+	Local nx#,ny#,nz#
+	surface.GetNormal index,nx,ny,nz
+	Return nx
+End Function
+Function VertexNY#(surface:TSurface, index)
+	Local nx#,ny#,nz#
+	surface.GetNormal index,nx,ny,nz
+	Return ny
+End Function
+Function VertexNZ#(surface:TSurface, index)
+	Local nx#,ny#,nz#
+	surface.GetNormal index,nx,ny,nz
+	Return nz
+End Function
+Function VertexRed(surface:TSurface, index)
+	Local red,green,blue,alpha#
+	surface.GetColor index,red,green,blue,alpha
+	Return red
+End Function
+Function VertexGreen(surface:TSurface, index)
+	Local red,green,blue,alpha#
+	surface.GetColor index,red,green,blue,alpha
+	Return green
+End Function
+Function VertexBlue(surface:TSurface, index)
+	Local red,green,blue,alpha#
+	surface.GetColor index,red,green,blue,alpha
+	Return blue
+End Function
+Function VertexAlpha#(surface:TSurface, index)
+	Local red,green,blue,alpha#
+	surface.GetColor index,red,green,blue,alpha
+	Return alpha
+End Function
+Function VertexU(surface:TSurface, index, set = 0)
+	Local u#,v#
+	surface.GetTexCoords index,u,v,set
+	Return u
+End Function
+Function VertexV(surface:TSurface, index, set = 0)
+	Local u#,v#
+	surface.GetTexCoords index,u,v,set
+	Return v
+End Function
+Function VertexW(surface:TSurface, index)
+	Throw "Support for 3d tex coords not implemented!"
+End Function
+Function TriangleVertex(surface:TSurface, index, corner)
+	Return surface._triangle[index*3+corner]
+End Function
 
-# CreateCamera
-# CameraProjMode
-# CameraFogMode
-# CameraFogRange
-# CameraFogColor
-# CameraViewport
-# CameraClsMode
-# CameraClsColor
-# CameraRange
-# CameraZoom
-# CameraPick
-# PickedX
-# PickedY
-# PickedZ
-# PickedNX
-# PickedNY
-# PickedNZ
-# PickedTime
-# PickedEntity
-# PickedSurface
-# PickedTriangle
-# CameraProject
-# ProjectedX
-# ProjectedY
-# ProjectedZ
-# EntityInView
+Rem
+
+' CreateCamera
+' CameraProjMode
+' CameraFogMode
+' CameraFogRange
+' CameraFogColor
+' CameraViewport
+' CameraClsMode
+' CameraClsColor
+' CameraRange
+' CameraZoom
+' CameraPick
+' PickedX
+' PickedY
+' PickedZ
+' PickedNX
+' PickedNY
+' PickedNZ
+' PickedTime
+' PickedEntity
+' PickedSurface
+' PickedTriangle
+' CameraProject
+' ProjectedX
+' ProjectedY
+' ProjectedZ
+' EntityInView
 
 End Rem
 
@@ -241,61 +301,61 @@ Function CreatePivot:TPivot(parent:TEntity=Null)
 End Function
 
 Rem
-# CreateSprite
-# LoadSprite
-# RotateSprite
-# ScaleSprite
-# HandleSprite
-# SpriteViewMode
+' CreateSprite
+' LoadSprite
+' RotateSprite
+' ScaleSprite
+' HandleSprite
+' SpriteViewMode
 
-# LoadMD2
-# AnimateMD2
-# MD2AnimTime
-# MD2AnimLength
-# MD2Animating
+' LoadMD2
+' AnimateMD2
+' MD2AnimTime
+' MD2AnimLength
+' MD2Animating
 
-# LoadBSP
-# BSPAmbientLight
-# BSPLighting
+' LoadBSP
+' BSPAmbientLight
+' BSPLighting
 
-# CreatePlane
+' CreatePlane
 
-# CreateMirror
+' CreateMirror
 
-# CreateTerrain
-# LoadTerrain
-# TerrainSize
-# TerrainDetail
-# TerrainShading
-# TerrainHeight
-# ModifyTerrain
-# TerrainX
-# TerrainY
-# TerrainZ
+' CreateTerrain
+' LoadTerrain
+' TerrainSize
+' TerrainDetail
+' TerrainShading
+' TerrainHeight
+' ModifyTerrain
+' TerrainX
+' TerrainY
+' TerrainZ
 
-# CreateListener
-# Load3DSound
-# EmitSound
+' CreateListener
+' Load3DSound
+' EmitSound
 
-# ScaleEntity
-# PositionEntity
-# MoveEntity
-# TranslateEntity
-# RotateEntity
-# TurnEntity
-# PointEntity
-# AlignToVector
+' ScaleEntity
+' PositionEntity
+' MoveEntity
+' TranslateEntity
+' RotateEntity
+' TurnEntity
+' PointEntity
+' AlignToVector
 
-# LoadAnimSeq
-# SetAnimKey
-# AddAnimSeq
-# ExtractAnimSeq
-# Animate
-# SetAnimTime
-# AnimSeq
-# AnimLength
-# AnimTime
-# Animating
+' LoadAnimSeq
+' SetAnimKey
+' AddAnimSeq
+' ExtractAnimSeq
+' Animate
+' SetAnimTime
+' AnimSeq
+' AnimLength
+' AnimTime
+' Animating
 End Rem
 
 Function FreeEntity(entity:TEntity)
@@ -322,7 +382,7 @@ End Function
 Function EntityFX(entity:TEntity, fx)
 	Return entity.SetFX(fx)
 End Function
-'# EntityAutoFade
+' EntityAutoFade
 Function PaintEntity(entity:TEntity, brush:TBrush)
 	Return entity.SetBrush(brush)
 End Function
@@ -360,62 +420,77 @@ Function EntityZ#(entity:TEntity, glob = False)
 	entity.GetPosition x,y,z,glob
 	Return z
 End Function
-Rem
-# EntityRoll
-# EntityYaw
-# EntityPitch
-# EntityClass
-# EntityName
-# CountChildren
-# GetChild
-# FindChild
-# EntityPick
-# LinePick
-# EntityVisible
-# EntityDistance
-# DeltaYaw
-# DeltaPitch
-# TFormPoint
-# TFormVector
-# TFormNormal
-# TFormedX
-# TFormedY
-# TFormedZ
-# GetMatElement
+' EntityRoll
+' EntityYaw
+' EntityPitch
+' EntityClass
+' EntityName
+' CountChildren
+' GetChild
+' FindChild
+' EntityPick
+' LinePick
+' EntityVisible
+' EntityDistance
+' DeltaYaw
+' DeltaPitch
 
-# ResetEntity
-# EntityRadius
-# EntityBox
-# EntityType
-# EntityPickMode
-# EntityCollided
-# CountCollisions
-# CollisionX
-# CollisionY
-# CollisionZ
-# CollisionNX
-# CollisionNY
-# CollisionNZ
-# CollisionTime
-# CollisionEntity
-# CollisionSurface
-# CollisionTriangle
-End Rem
+
+Function TFormPoint(x#,y#,z#,src:TEntity,dest:TEntity)
+	Local matrix:TMatrix = src.GetMatrix()
+	matrix.TransformVec3 x,y,z
+	tform_x = x
+	tform_y = y
+	tform_z = z
+End Function
+' TFormVector
+' TFormNormal
+Function TFormedX#()
+	Return tform_x
+End Function
+Function TFormedY#()
+	Return tform_y
+End Function
+Function TFormedZ#()
+	Return tform_z
+End Function
+
+' GetMatElement
+
+' ResetEntity
+' EntityRadius
+' EntityBox
+' EntityType
+' EntityPickMode
+' EntityCollided
+' CountCollisions
+' CollisionX
+' CollisionY
+' CollisionZ
+' CollisionNX
+' CollisionNY
+' CollisionNZ
+' CollisionTime
+' CollisionEntity
+' CollisionSurface
+' CollisionTriangle
 Function GetEntityType(entity:TEntity)
 	Return entity.GetType()
 End Function
 
-Rem
-# VectorYaw
-# VectorPitch
+' VectorYaw
+' VectorPitch
 
-# CountGfxModes3D
-# GfxMode3D
-# GfxMode3DExists
-# GfxDriver3D
-# GfxDriverCaps3D
-# Windowed3D
-# HWTexUnits
-End Rem
+' CountGfxModes3D
+' GfxMode3D
+' GfxMode3DExists
+' GfxDriver3D
+' GfxDriverCaps3D
+' Windowed3D
+' HWTexUnits
+
+Function ClsColor(red,green,blue)	
+	Return SetClsColor(red,green,blue)
+End Function
 
 SetWorld CreateWorld()
