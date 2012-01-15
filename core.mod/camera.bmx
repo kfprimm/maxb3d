@@ -174,10 +174,10 @@ Type TCamera Extends TEntity
 	End Method
 	
 	Method Unproject(wx#,wy#,wz#,x# Var,y# Var,z# Var)
-		Local matrix:TMatrix=_projection.Multiply(_modelview).Inverse()
+		Local matrix:TMatrix=_projection.Multiply(_modelview.Inverse())
 		
-		x=(wx-_viewport[0])*2/_viewport[2] - 1.0
-		y=(wy-_viewport[1])*2/_viewport[3] - 1.0
+		x=((wx-_viewport[0])/_viewport[2])*2 - 1.0
+		y=((wy-_viewport[1])/_viewport[3])*2 - 1.0
 		z=2*wz-1.0
 		Local w#=1.0
 				
