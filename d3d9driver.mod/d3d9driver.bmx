@@ -344,8 +344,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	
 	Method RenderSprite(sprite:TSprite)	
 		Global _data#[]=[ -1.0, 1.0,0.0, 0.0,0.0,1.0, 0.0,0.0, ..
+											-1.0,-1.0,0.0, 0.0,0.0,1.0, 0.0,1.0, ..
 		                   1.0, 1.0,0.0, 0.0,0.0,1.0, 1.0,0.0, ..
-		                  -1.0,-1.0,0.0, 0.0,0.0,1.0, 0.0,1.0, ..
 		                   1.0,-1.0,0.0, 0.0,0.0,1.0, 1.0,1.0     ]
 		
 		_d3ddev.SetVertexDeclaration Null
