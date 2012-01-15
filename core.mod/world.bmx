@@ -173,6 +173,7 @@ Type TWorld
 	End Method
 		
 	Method AddTexture:TTexture(url:Object,flags=TEXTURE_DEFAULT)
+		If TTexture(url) Return TTexture(url)
 		If Not Int[](url) And Not TPixmap(url) url = _config.GetStream(url)
 		Return New TTexture.Init(_config,url,flags)
 	End Method
@@ -213,7 +214,7 @@ Type TWorld
 	
 	Method AddSprite:TSprite(url:Object,flags=TEXTURE_DEFAULT,parent:TEntity=Null)
 		Local sprite:TSprite=New TSprite 
-		sprite.SetTexture AddTexture(url,flags)
+		If url sprite.SetTexture AddTexture(url,flags)
 		Return TSprite(sprite.Init(_config, parent))
 	End Method
 	
@@ -316,15 +317,17 @@ Type TWorld
 		Return RenderEntities(list,driver,camera)		
 	End Method
 
-	Method Update(anim_speed#,collision_speed#)
-		_collisiondriver.Update _config,collision_speed
+	Method Update(speed#)
+		_config.UpdateSpeed = speed#
+		RunHooks _config.UpdateHook, _config
+		_collisiondriver.Update _config,speed
 		For Local mesh:TMesh=EachIn _config.List[WORLDLIST_MESH]
 			Local animator:TAnimator=mesh._animator
 			If animator=Null Continue
 			Local seq:TAnimSeq=animator._current
 			If seq
 				If animator._mode>0		
-					animator._frame:+(anim_speed*animator._speed)
+					animator._frame:+(speed*animator._speed)
 					If animator._frame>seq._end Or animator._frame<seq._start
 						Select animator._mode
 						Case ANIMATION_LOOP

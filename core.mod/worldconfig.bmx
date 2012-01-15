@@ -4,6 +4,7 @@ Strict
 Import BRL.Stream
 Import BRL.FileSystem
 Import BRL.LinkedList
+Import BRL.Hook
 
 Const WORLDLIST_ENTITY    = 0
 Const WORLDLIST_CAMERA    = 1
@@ -33,6 +34,8 @@ Type TWorldConfig
 	Field TextureFilters$[][]
 
 	Field ResourcePath$[], TmpResourcePath$
+	
+	Field UpdateHook= AllocHookId(), UpdateSpeed#
 	
 	Field List:TList[WORLDLIST_ARRAYSIZE]
 	Field CollisionType:TList[MAX_COLLISION_TYPES]
