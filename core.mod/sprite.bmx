@@ -15,6 +15,12 @@ Type TSprite Extends TEntity
 	
 	Field _view_matrix:TMatrix=New TMatrix
 	
+	Method Init:TSprite(config:TWorldConfig,parent:TEntity)
+		Super.Init(config, parent)
+		SetViewMode VIEWMODE_FIXED
+		Return Self
+	End Method
+	
 	Method Lists[]()
 		Return Super.Lists()+[WORLDLIST_SPRITE, WORLDLIST_RENDER]
 	End Method

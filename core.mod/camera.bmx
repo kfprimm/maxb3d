@@ -26,7 +26,7 @@ Type TCamera Extends TEntity
 	Field _viewport[4]
 	Field _frustum:TFrustum
 	
-	Method Init:TEntity(config:TWorldConfig,parent:TEntity)
+	Method Init:TCamera(config:TWorldConfig,parent:TEntity)
 		Super.Init(config, parent)
 		SetMode CAMMODE_PERSP
 		SetFogMode FOGMODE_NONE
