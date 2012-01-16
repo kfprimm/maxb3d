@@ -12,9 +12,12 @@ SetEntityPosition camera,0,0,-5
 Local cube:TMesh = CreateCube()
 SetEntityFX cube,FX_VERTEXCOLOR|FX_FULLBRIGHT
 
-Local surface:TSurface = GetMeshSurface(cube,0)
-For Local i = 0 To CountSurfaceVertices(surface)-1
-	SetSurfaceColor surface,i,Rand(0,200),Rand(0,255),Rand(0,255),1
+For Local surface:TSurface = EachIn cube
+	Local vertices, triangles
+	GetSurfaceCounts surface,vertices,triangles
+	For Local i = 0 To triangles-1
+		SetSurfaceColor surface,i,Rand(0,200),Rand(0,255),Rand(0,255),1
+	Next
 Next
 
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()

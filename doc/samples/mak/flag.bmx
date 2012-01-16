@@ -35,7 +35,9 @@ TurnEntity light,45,45,0
 
 While Not KeyHit(KEY_ESCAPE) And Not AppTerminate()
 	Local ph#=MilliSecs()/4
-	For Local k=0 To CountSurfaceVertices(surf)-1
+	Local vertices, triangles
+	GetSurfaceCounts surf,vertices,triangles
+	For Local k=0 To vertices-1
 		Local x#,y#,z#
 		GetSurfaceCoords surf,k,x,y,z
 		z=Sin(ph+x*300)*DEPTH

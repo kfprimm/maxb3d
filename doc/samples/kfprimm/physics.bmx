@@ -57,7 +57,7 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 		SetEntityColor cube_mesh,Rand(255),Rand(255),Rand(255)
 	EndIf
 	
-	If run_physics UpdateWorld ,4
+	If run_physics UpdateWorld 4
 	Local info:TRenderInfo=RenderWorld()
 	DoMax2D
 	DrawText "FPS: "+info.FPS,0,0
