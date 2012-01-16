@@ -184,21 +184,20 @@ Type TMesh Extends TAnimEntity
 			surface.Flip()
 		Next
 	End Method
-	
-	Method CountTriangles()
-		Local count
+
+	Method Unweld()
 		For Local surface:TSurface=EachIn _surfaces
-			count:+surface._trianglecnt
+			surface.Unweld()
 		Next
-		Return count
 	End Method
 	
-	Method CountVertices()
-		Local count
+	Method GetCounts(vertices Var, triangles Var)
+		vertices = 0
+		triangles = 0
 		For Local surface:TSurface=EachIn _surfaces
-			count:+surface._vertexcnt
+			triangles:+surface._trianglecnt
+			vertices:+surface._vertexcnt
 		Next
-		Return count
 	End Method
 	
 	Method UpdateNormals(smoothing=True)

@@ -55,7 +55,7 @@ Type TMeshLoaderOBJ Extends TMeshLoader
 					verts[j,2]=vni
 				Next
 				Local vcnt,tcnt,tris=i.length-2
-				surface.GetSize vcnt,tcnt
+				surface.GetCounts vcnt,tcnt
 				surface.Resize vcnt+tris*3,tcnt+tris
 				
 				Local i0=0,i1=1,i2=2

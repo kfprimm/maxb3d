@@ -773,6 +773,12 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function UnweldMesh(mesh:TMesh)
+	Return mesh.Unweld()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function GetMeshSize(mesh:TMesh,width# Var,height# Var,depth# Var)
 	Return mesh.GetSize(width,height,depth)
 End Function
@@ -787,6 +793,12 @@ Rem
 End Rem
 Function FlipMesh(mesh:TMesh)
 	Return mesh.Flip()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetMeshCounts(mesh:TMesh, vertices Var, triangles Var)
+	Return mesh.GetCounts(vertices, triangles)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
@@ -939,18 +951,6 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function CountSurfaceVertices(surface:TSurface)
-	Return surface.CountVertices()
-End Function
-Rem
-	bbdoc: Needs documentation. #TODO
-End Rem
-Function CountSurfaceTriangles(surface:TSurface)
-	Return surface.CountTriangles()
-End Function
-Rem
-	bbdoc: Needs documentation. #TODO
-End Rem
 Function UpdateSurfaceNormals(surface:TSurface,smoothing=True)
 	Return surface.UpdateNormals(smoothing)
 End Function
@@ -959,6 +959,24 @@ Rem
 End Rem
 Function ResizeSurface(surface:TSurface,vertex_count,triangle_count)
 	Return surface.Resize(vertex_count,triangle_count)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function GetSurfaceCounts(surface:TSurface, vertices Var, triangles Var)
+	Return surface.GetCounts(vertices, triangles)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function FlipSurface(surface:TSurface)
+	Return surface.Flip()
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function UnweldSurface(surface:TSurface)
+	Return surface.Unweld()
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO

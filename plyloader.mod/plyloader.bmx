@@ -37,7 +37,7 @@ Type TMeshLoaderPLY Extends TMeshLoader
 			Local verts[]=indices.ListAsInt(i),tris=verts.length-2
 			Local vcnt,tcnt
 			
-			surface.GetSize vcnt,tcnt
+			surface.GetCounts vcnt,tcnt
 			surface.Resize vcnt+tris*3,tcnt+tris
 			
 			For Local t=0 To tris-1

@@ -63,7 +63,7 @@ Type TSurface
 		EndIf
 	End Method
 	
-	Method GetSize(vertices Var,triangles Var)
+	Method GetCounts(vertices Var,triangles Var)
 		vertices=_vertexcnt
 		triangles=_trianglecnt
 	End Method
@@ -168,6 +168,31 @@ Type TSurface
 		_reset:|2|8
 	End Method
 	
+	Method Unweld()	
+		Local pos#[] = _vertexpos[..], clr#[] = _vertexclr[..]	
+		Local tex#[][] = New Float[][_texcoordsize]
+		For Local i = 0 To _texcoordsize-1
+			tex[i] = _vertextex[i][..]
+		Next
+		Local tri[] = _triangle[..]
+		
+		Resize(_trianglecnt*3,_trianglecnt)
+				
+		For Local i = 0 To _trianglecnt-1
+			For Local j = 0 To 2
+				Local v = tri[i*3+j]
+				SetCoords i*3+j,pos[v*3+0],pos[v*3+1],pos[v*3+2]
+				SetColor i*3+j,clr[v*4+0],clr[v*4+1],clr[v*4+2],clr[v*4+3]
+				For Local t = 0 To tex.length-1
+					SetTexCoords i*3+j,tex[t][v*2+0],tex[t][v*2+1],t
+				Next
+			Next
+			SetTriangle i,i*3+0,i*3+1,i*3+2
+		Next
+
+		UpdateNormals
+	End Method
+	
 	Method Transform(matrix:TMatrix)
 		For Local i=0 To _vertexcnt-1
 			matrix.TransformVec3 _vertexpos[i*3+0],_vertexpos[i*3+1],_vertexpos[i*3+2]
@@ -263,7 +288,7 @@ Type TSurface
 	Method Interpolate:TSurface(other:TSurface,diff#,output:TSurface=Null)
 		If output = Null
 			Local vcnt,tcnt
-			GetSize vcnt,tcnt
+			GetCounts vcnt,tcnt
 			output = New TSurface
 			output.Resize(vcnt,tcnt)
 		EndIf
