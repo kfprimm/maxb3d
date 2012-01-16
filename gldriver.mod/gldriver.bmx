@@ -178,8 +178,8 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glLoadMatrixf camera._modelview.ToPtr()
 
 		' Temporary hack
-		glGetFloatv GL_PROJECTION_MATRIX,camera._projection._m		
-		camera._frustum=TFrustum.Extract(camera._modelview,camera._projection)
+		'glGetFloatv GL_PROJECTION_MATRIX,camera._projection._m		
+		'camera._frustum=TFrustum.Extract(camera._modelview,camera._projection)
 	End Method	
 	
 	Method SetLight(light:TLight,index)

@@ -155,36 +155,32 @@ Type TCamera Extends TEntity
 		TEntity.GetTargetPosition target,x,y,z
 		
 		If offset
-		  x :+ offset[0]
-		  y :+ offset[1]
-		  z :+ offset[2]
+			x :+ offset[0]
+			y :+ offset[1]
+			z :+ offset[2]
 		EndIf
 		
 		Local w#=1.0
-	   _modelview.TransformVec4 x,y,z,w
-	   _projection.TransformVec4 x,y,z,w
-	   If w=0 Return False
-	   x:/w;y:/w;z:/w
-	    
-	   x=x*0.5+0.5;y=-y*0.5+0.5;z=z*0.5+0.5;
-	
-	   x=x*_viewport[2]+_viewport[0]
-	   y=y*_viewport[3]+_viewport[1]
+		_modelview.TransformVec4 x,y,z,w
+		_projection.TransformVec4 x,y,z,w
+		If w=0 Return False
+		x:/w;y:/w;z:/w
+
+		x=x*0.5+0.5;y=-y*0.5+0.5;z=z*0.5+0.5;
+
+		x=x*_viewport[2]+_viewport[0]
+		y=y*_viewport[3]+_viewport[1]
 		Return True
 	End Method
 	
 	Method Unproject(wx#,wy#,wz#,x# Var,y# Var,z# Var)
-		Local matrix:TMatrix=_projection.Multiply(_modelview.Inverse())
-		
-		x=((wx-_viewport[0])/_viewport[2])*2 - 1.0
-		y=((wy-_viewport[1])/_viewport[3])*2 - 1.0
-		z=2*wz-1.0
+		x=((wx-_viewport[0])*2/_viewport[2]) - 1
+		y=((wy-_viewport[1])*2/_viewport[3]) - 1
+		z=wz*2-1
 		Local w#=1.0
-				
-		matrix.TransformVec4 x,y,z,w
+		_projection.Multiply(_modelview).Inverse().TransformVec4 x,y,z,w
 		If w=0 Return False
-		
-		x:/w;y:/w;z:/w
+		x:/w;y:/-w;z:/-w
 		Return True
 	End Method
 	

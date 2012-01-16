@@ -9,7 +9,7 @@ Local light:TLight=CreateLight()
 
 Local camera:TCamera=CreateCamera()
 
-Local cube1:TMesh=CreateCube(),cube2:TMesh=CreateCube()
+Local cube1:TMesh=CreateSphere(32),cube2:TMesh=CreateSphere(32)
 
 Local sx#,sy#,sz#,ex#,ey#,ez#
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
