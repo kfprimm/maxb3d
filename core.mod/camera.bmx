@@ -160,28 +160,11 @@ Type TCamera Extends TEntity
 			z :+ offset[2]
 		EndIf
 		
-		Local w#=1.0
-		_modelview.TransformVec4 x,y,z,w
-		_projection.TransformVec4 x,y,z,w
-		If w=0 Return False
-		x:/w;y:/w;z:/w
-
-		x=x*0.5+0.5;y=-y*0.5+0.5;z=z*0.5+0.5;
-
-		x=x*_viewport[2]+_viewport[0]
-		y=y*_viewport[3]+_viewport[1]
-		Return True
+		Return TMatrix.Project(_modelview,_projection,_viewport,x,y,z)
 	End Method
 	
 	Method Unproject(wx#,wy#,wz#,x# Var,y# Var,z# Var)
-		x=((wx-_viewport[0])*2/_viewport[2]) - 1
-		y=((wy-_viewport[1])*2/_viewport[3]) - 1
-		z=wz*2-1
-		Local w#=1.0
-		_projection.Multiply(_modelview).Inverse().TransformVec4 x,y,z,w
-		If w=0 Return False
-		x:/w;y:/-w;z:/-w
-		Return True
+		Return TMatrix.Unproject(_modelview,_projection,_viewport,wx,wy,wz,x,y,z)
 	End Method
 	
 	Method InView#(target:Object)
