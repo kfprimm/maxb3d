@@ -8,6 +8,15 @@ Type TAnimEntity Extends TEntity
 	Field _animator:TAnimator
 	Field _animseq:TAnimSeq[]
 	
+	Method CopyData:TEntity(entity:TEntity)
+		Local anim:TAnimEntity = TAnimEntity(entity)
+		
+		_animator = anim._animator
+		_animseq = anim._animseq[..]
+		
+		Return Super.CopyData(entity)
+	End Method
+	
 	Method SetAnim(seq:TAnimSeq,mode=ANIMATION_LOOP,speed#=1.0)
 		_animator._current=seq
 		_animator._mode=mode

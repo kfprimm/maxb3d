@@ -1,7 +1,7 @@
 
 .PHONY: all clean media *.mod/doc modules docs samples doc/samples/*/*.bmx *.mod/doc/*.bmx doc/samples/*
 
-MEDIA_EXTS = bmp jpg tga png md2 x b3d 3ds 
+MEDIA_EXTS = bmp jpg tga png md2 x b3d 3ds bbm
 B3DPATH = ~/.wine/dosdevices/c:/Program\ Files/Blitz3D
 
 all: modules docs samples
@@ -12,7 +12,7 @@ clean:
 
 media: doc/media
 	cp -a $(B3DPATH)/help/commands/3d_examples/media doc
-	for ext in $(MEDIA_EXTS); do cp -u $(B3DPATH)/samples/*/*/*.$$ext doc/media; cp -u $(B3DPATH)/samples/*/*/*/*.$$ext doc/media; done
+	for ext in $(MEDIA_EXTS); do cp -u $(B3DPATH)/samples/*/*/*.$$ext doc/media; cp -u $(B3DPATH)/samples/*/*/*/*.$$ext doc/media; done; true
 
 doc/media:
 	mkdir doc/media
