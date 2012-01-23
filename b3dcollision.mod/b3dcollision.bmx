@@ -61,7 +61,7 @@ Type TB3DCollisionDriver Extends TCollisionDriver
 								C_UpdateVecObject(c_vec_k,-entity2._matrix._m[2,0],-entity2._matrix._m[2,1],entity2._matrix._m[2,2])
 						
 								C_UpdateMatrixObject(c_mat,c_vec_i,c_vec_j,c_vec_k)
-								C_UpdateVecObject(c_vec_v,entity2._matrix._m[3,0],entity2._matrix._m[3,1],-entity2._matrix._m[3,2])
+								C_UpdateVecObject(c_vec_v,entity2._matrix._m[3,0],entity2._matrix._m[3,1],entity2._matrix._m[3,2])
 								C_UpdateTFormObject(c_tform,c_mat,c_vec_v)
 			
 								If col_pair.methd<>COLLISION_METHOD_POLYGON
