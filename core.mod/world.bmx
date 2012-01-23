@@ -80,8 +80,8 @@ Type TWorld
 		
 		ElseIf target.length = 2
 			Local camera:TCamera = TCamera(src)
-			camera.Unproject target[0], target[1], 0, ax, ay, az
-			camera.Unproject target[0], target[1], 1, bx, by, bz
+			camera.Unproject target[0], target[1], 1, ax, ay, az
+			camera.Unproject target[0], target[1], 0, bx, by, bz
 		Else
 		
 		EndIf
@@ -90,7 +90,7 @@ Type TWorld
 	'EntityPick ( entity,range# )
 	'CameraPick ( camera,viewport_x#,viewport_y# )
 	'LinePick ( x#,y#,z#,dx#,dy#,dz#[,radius#] )
-	Method Pick:TPick[](src:Object, target:Object, sort = False)
+	Method Picks:TPick[](src:Object, target:Object, sort = False)
 		Local ax#,ay#,az#,bx#,by#,bz#,radius#=0.0
 		TEntity.GetTargetPosition src,ax,ay,az
 		PickTarget src,Float[](target),ax,ay,az,bx,by,bz,radius
@@ -110,12 +110,13 @@ Type TWorld
 		Global c_vec_v:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
 		Global c_tform:Byte Ptr=C_CreateTFormObject(c_mat,c_vec_v)
 		
-		C_UpdateLineObject(c_line,ax,ay,az,bx-ax,by-ay,bz-az)	
+		C_UpdateLineObject(c_line,ax,ay,az,bx-ax,by-ay,bz-az)
 		
 		Local c_col:Byte Ptr=C_CreateCollisionObject(), picks:TPick[]
 		
 		For Local entity:TEntity=EachIn _config.List[WORLDLIST_ENTITY]		
 			If entity._pickmode=PICKMODE_OFF Or Not entity.GetVisible() Then Continue
+			If entity._pickmode=PICKMODE_POLYGON And TMesh(entity)=Null Continue
 			
 			Local matrix:TMatrix = entity._matrix
 			C_UpdateVecObject(c_vec_i,matrix._m[0,0],matrix._m[0,1],-matrix._m[0,2])
@@ -126,27 +127,26 @@ Type TWorld
 			C_UpdateVecObject(c_vec_v,matrix._m[3,0],matrix._m[3,1],matrix._m[3,2])
 			C_UpdateTFormObject(c_tform,c_mat,c_vec_v)
 		
-			If entity._pickmode<>PICKMODE_POLYGON C_UpdateCollisionInfoObject(c_col_info,entity._radiusx,entity._boxx,entity._boxy,entity._boxz,entity._boxx+entity._boxwidth,entity._boxy+entity._boxheight,entity._boxz+entity._boxdepth)
-		
 			Local tree:Byte Ptr=Null
-			If TMesh(entity)<>Null
-				tree=TMesh(entity).TreeCheck()
-			ElseIf entity._pickmode = PICKMODE_POLYGON
-				Continue
+			If entity._pickmode<>PICKMODE_POLYGON
+				C_UpdateCollisionInfoObject(c_col_info,entity._radiusx,entity._boxx,entity._boxy,entity._boxz,entity._boxx+entity._boxwidth,entity._boxy+entity._boxheight,entity._boxz+entity._boxdepth)
+			Else
+				If TMesh(entity)<>Null tree=TMesh(entity).TreeCheck()		
 			EndIf
-		
+
 			If C_Pick(c_col_info,c_line,radius,c_col,c_tform,tree,entity._pickmode)
 				Local info:TPick = New TPick
+				info.entity = entity
 				info.x  = C_CollisionX()
-				info.y  = C_CollisionX()
-				info.z  = C_CollisionX()
+				info.y  = C_CollisionY()
+				info.z  = C_CollisionZ()
 				
 				info.nx = C_CollisionNX()
 				info.ny = C_CollisionNY()
 				info.nz = C_CollisionNZ()
-				
+			
 				info.time = C_CollisionTime()
-				If TMesh(entity)<>Null info.surface = TMesh(entity)._surfaces[C_CollisionSurface()]
+				If TMesh(entity)<>Null And entity._pickmode = PICKMODE_POLYGON info.surface = TMesh(entity)._surfaces[C_CollisionSurface() - 1]
 				info.triangle=C_CollisionTriangle()
 				
 				picks :+ [info]
@@ -156,6 +156,11 @@ Type TWorld
 		C_DeleteCollisionObject(c_col)
 		
 		Return picks		
+	End Method
+	
+	Method Pick:TPick(src:Object, target:Object)
+		Local picks:TPick[] = Picks(src, target, True)
+		If picks.length > 0 Return picks[0]
 	End Method
 		
 	Method AddTexture:TTexture(url:Object,flags=TEXTURE_DEFAULT)

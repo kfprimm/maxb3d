@@ -76,8 +76,14 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function WorldPick:TPick[](src:Object, target:Object, sort = False)
-	Return CurrentWorld().Pick(src,target, sort)
+Function WorldPick:TPick(src:Object, target:Object)
+	Return CurrentWorld().Pick(src,target)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
+Function WorldPicks:TPick[](src:Object, target:Object, sort = False)
+	Return CurrentWorld().Picks(src,target, sort)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
