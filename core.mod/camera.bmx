@@ -21,10 +21,9 @@ Type TCamera Extends TEntity
 	Field _clsmode,_near#,_far#
 	Field _zoom#
 	
-	Field _modelview:TMatrix=New TMatrix
-	Field _projection:TMatrix=New TMatrix
-	Field _viewport[4]
-	Field _frustum:TFrustum
+	Field _modelview:TMatrix=New TMatrix, _projection:TMatrix=New TMatrix
+	Field _viewport[4], _frustum:TFrustum
+	Field _update = True
 	
 	Method Init:TCamera(config:TWorldConfig,parent:TEntity)
 		Super.Init(config, parent)
@@ -148,9 +147,12 @@ Type TCamera Extends TEntity
 		_projection = TMatrix.Scale(1,1,-1).Multiply(TMatrix.PerspectiveFovRH(ATan((1.0/(_zoom*ratio)))*2.0,ratio,_near,_far))
 
 		_frustum=TFrustum.Extract(_modelview, _projection)
+		
+		_update = False
 	End Method
 	
 	Method Project(target:Object,x# Var,y# Var, offset#[] = Null)
+		If _update UpdateMatrices()
 		Local z#
 		TEntity.GetTargetPosition target,x,y,z
 		
@@ -164,7 +166,8 @@ Type TCamera Extends TEntity
 	End Method
 	
 	Method Unproject(wx#,wy#,wz#,x# Var,y# Var,z# Var)
-		Return TMatrix.Unproject(_modelview,_projection,_viewport,wx,wy,wz,x,y,z)
+		If _update UpdateMatrices()
+		Return TMatrix.Unproject(_modelview,_projection,_viewport,wx,_viewport[3]-wy,wz,x,y,z)
 	End Method
 	
 	Method InView#(target:Object)
