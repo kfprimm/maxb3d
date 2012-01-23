@@ -242,25 +242,30 @@ Type TMesh Extends TAnimEntity
 			For Local surface:TSurface=EachIn _surfaces
 				count:+1				
 				Local triangles[]=surface._triangle[..]
-				Local vertices:Float[]=surface._vertexpos[..]
+				Local vertices#[]=surface._vertexpos[..]
 										
 				If surface._trianglecnt<>0 And surface._vertexcnt<>0
 					For Local i=0 To surface._trianglecnt-1
 						triangles[i*3+0]:+vertextotal
 						triangles[i*3+1]:+vertextotal
 						triangles[i*3+2]:+vertextotal
-					Next
-				
-					For Local i=0 To surface._trianglecnt-1
+						
 						Local old=triangles[i*3+0]
 						triangles[i*3+0]=triangles[i*3+2]
 						triangles[i*3+2]=old
 					Next
 					
+					Rem
+
+					
 					For Local i=0 To surface._vertexcnt-1
 						vertices[i*3+2]=-vertices[i*3+2]
 					Next
-		
+
+					End Rem
+					
+
+					
 					C_AddSurface(info,surface._trianglecnt,surface._vertexcnt,triangles,vertices,count)										
 					vertextotal:+surface._vertexcnt				
 				EndIf	
