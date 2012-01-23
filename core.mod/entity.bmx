@@ -426,6 +426,10 @@ Type TEntity
 		radius=GetCullRadius()
 	End Method
 	
+	Method IntersectsLine:TVector(ptA:TVector, ptB:TVector)
+		Return Null
+	End Method
+	
 	Method GetPickMode(mode Var, obscurer Var)
 		mode = _pickmode
 		obscurer = _obscurer
