@@ -53,30 +53,28 @@ SetEntityColor nose,0,255,0
 SetEntityScale nose,.5,.5,.5
 SetEntityPosition nose,0,0,1.5
 
-Rem
-sphere=CreateSphere()
-EntityShininess sphere,.5
-EntityType sphere,T_DUDE
+Local sphere:TMesh=CreateSphere()
+SetEntityShine sphere,.5
+SetEntityType sphere,T_DUDE
 
-an#=0
-an_step#=360.0/n_dudes
+Local list:TList = CreateList()
 
-For k=1 To n_dudes
-	d.Dude=New Dude
-	d\entity=CopyEntity( sphere )
-	EntityColor d\entity,Rnd(255),Rnd(255),Rnd(255)
-	TurnEntity d\entity,0,an,0
-	MoveEntity d\entity,0,2,37
-	ResetEntity d\entity
-	d\speed=Rnd( .4,.49 )
+Local an#=0, an_step#=360.0/DUDE_COUNT
+For Local k=1 To DUDE_COUNT
+	Local d:TDude=New TDude
+	d.mesh=TMesh(CopyEntity( sphere ))
+	SetEntityColor d.mesh,Rnd(255),Rnd(255),Rnd(255)
+	TurnEntity d.mesh,0,an,0
+	MoveEntity d.mesh,0,2,37
+	''ResetEntity d.mesh
+	d.speed=Rnd( .4,.49 )
+	
+	ListAddLast list, d
+	
 	an=an+an_step
 Next
 
 FreeEntity sphere
-
-ok=True	
-
-End Rem
 
 While Not KeyHit(KEY_ESCAPE) And Not AppTerminate()
 	If KeyDown(KEY_LEFT) TurnEntity player,0,5,0
@@ -86,15 +84,14 @@ While Not KeyHit(KEY_ESCAPE) And Not AppTerminate()
 	If KeyDown(KEY_A) TranslateEntity player,0,.2,0
 	If KeyDown(KEY_Z) TranslateEntity player,0,-.2,0
 	
-	Rem
-	For d.Dude=Each Dude
-		If EntityDistance( player,d\entity )>2
-			PointEntity d\entity,player
-			If KeyDown(15) TurnEntity d\entity,0,180,0
+	For Local d:TDude=EachIn list
+		If GetEntityDistance( player,d.mesh )>2
+			PointEntity d.mesh,player
+			If KeyDown(KEY_TAB) TurnEntity d.mesh,0,180,0
 		EndIf
-		MoveEntity d\entity,0,0,d\speed
+		MoveEntity d.mesh,0,0,d.speed
 	Next
-	End Rem
+
 	UpdateWorld
 	RenderWorld
 	

@@ -37,7 +37,7 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	If KeyDown(KEY_Z) zoom :/ 1.1
 	SetCameraZoom camera, zoom
 	
-	Local x = MouseX(), y = MouseY()	
+	Local x# = MouseX(), y# = MouseY()	
 	
 	If y<32 TurnEntity camera,-2,0,0
 	If y>GraphicsHeight()-32 TurnEntity camera,2,0,0
@@ -46,9 +46,9 @@ While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	If x>GraphicsWidth()-32 TurnEntity camera,0,-2,0
 	
 	Local picks:TPick[] = WorldPick(camera, [x, y])
-	If picks.length > 0
-		SetEntityColor camera, 255,0,0
-	EndIf
+	For Local pick:TPick = EachIn picks
+		SetEntityColor pick.entity, 255,0,0
+	Next
 	Rem
 	e=CameraPick( camera,x,y )
 
