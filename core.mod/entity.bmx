@@ -7,10 +7,10 @@ Import "brush.bmx"
 Import "collision.bmx"
 Import "worldconfig.bmx"
 
-Const PICKMODE_OFF		= 1
-Const PICKMODE_SPHERE	= 2
-Const PICKMODE_POLYGON	= 3
-Const PICKMODE_BOX		= 4
+Const PICKMODE_OFF			= 0
+Const PICKMODE_SPHERE		= 1
+Const PICKMODE_POLYGON	= 2
+Const PICKMODE_BOX			= 3
 
 Type TEntity
 	Field _config:TWorldConfig
@@ -69,8 +69,14 @@ Type TEntity
 	End Method
 	
 	Method CopyData:TEntity(entity:TEntity)
+		_config = entity._config
+		Local pickmode, obscurer
+		entity.GetPickMode pickmode,obscurer
+		
 		SetBrush entity.GetBrush()
 		SetName entity.GetName()
+		SetPickMode pickmode, obscurer
+		SetType entity.GetType()
 		Return Self
 	End Method
 	
