@@ -14,6 +14,7 @@ Import Prime.BSP
 Type TMeshLoaderBSP Extends TMeshLoader
 	Method Run(config:TWorldConfig,mesh:TMesh,stream:TStream,url:Object)
 		Local tree:TBSPTree=TBSPTree(url)
+		If TBSPModel(url) tree = TBSPModel(url)._tree
 		If tree=Null Return False
 		
 		Local surface:TSurface=mesh.AddSurface()
