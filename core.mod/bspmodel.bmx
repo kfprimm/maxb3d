@@ -31,4 +31,14 @@ Type TBSPModel Extends TEntity
 	Method SetTree(tree:TBSPTree)
 		_tree=tree
 	End Method
+	
+	
+	
+	Method Insert(list:TList,keep,cur)
+		Return _tree.Insert(list,keep,cur)
+	End Method
+	
+	Method Reduce()
+		Return _tree.Reduce()
+	End Method
 End Type

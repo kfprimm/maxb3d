@@ -1217,6 +1217,12 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
+Function CreateBSPModel:TBSPModel(parent:TEntity=Null)
+	Return CurrentWorld().AddBSPModel(New TBSPTree,parent)
+End Function
+Rem
+	bbdoc: Needs documentation. #TODO
+End Rem
 Function LoadBSPModel:TBSPModel(url:Object,parent:TEntity=Null)
 	Return CurrentWorld().AddBSPModel(url,parent)
 End Function
