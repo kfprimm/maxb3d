@@ -121,7 +121,8 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 
 	Method MergeSurfaceRes:TSurfaceRes(base:TSurface,animation:TSurface,data) Abstract
 		
-	Method ScaleViewports()
+	Method ScaleViewports() ' Broken. Needs fixing.
+		Rem 
 		For Local config:TWorldConfig = EachIn _configs
 			For Local camera:TCamera=EachIn config.List[WORLDLIST_CAMERA]
 				Local x,y,width,height
@@ -140,6 +141,7 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 				camera.SetViewport x,y,width,height
 			Next
 		Next
+		End Rem
 	End Method
 End Type
 

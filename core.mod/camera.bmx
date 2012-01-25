@@ -144,7 +144,12 @@ Type TCamera Extends TEntity
 		_modelview = _matrix.Inverse()
 		
 		Local ratio#=(Float(_viewwidth)/_viewheight)
-		_projection = TMatrix.Scale(1,1,-1).Multiply(TMatrix.PerspectiveFovRH(ATan((1.0/(_zoom*ratio)))*2.0,ratio,_near,_far))
+		Select _projmode
+		Case CAMMODE_PERSP
+			_projection = TMatrix.Scale(1,1,-1).Multiply(TMatrix.PerspectiveFovRH(ATan((1.0/(_zoom*ratio)))*2.0,ratio,_near,_far))
+		Case CAMMODE_ORTHO
+			_projection = TMatrix.Scale(1,1,-1).Multiply(TMatrix.OrthoRH(_viewwidth,_viewheight,_near,_far))		
+		End Select
 
 		_frustum=TFrustum.Extract(_modelview, _projection)
 		

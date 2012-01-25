@@ -27,6 +27,9 @@ Type TWorld
 		SetCollisionDriver TCollisionDriver._default
 		AddTextureFilter "", TEXTURE_COLOR|TEXTURE_MIPMAP
 		
+		_config.Width  = GraphicsWidth()
+		_config.Height = GraphicsHeight()
+		
 		TMaxB3DDriver._configs :+ [_config]
 	End Method
 	
