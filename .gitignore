@@ -1,5 +1,7 @@
 *.x86.a
 *.x86.i
+*.ppc.a
+*.ppc.i
 *.debug
 *.exe
 *.bak
@@ -12,3 +14,4 @@ doc/samples/*/media
 doc/sample-*
 doc/function-*
 *.mod/doc/media
+.DS_Store
