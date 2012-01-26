@@ -8,7 +8,9 @@ Module MaxB3D.Newton
 ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
-' Seperated to bypass a "feature" that would otherwise result in a linking error...ugh.
+?Not MacOS
+
+' Separated to bypass a "feature" that would otherwise result in a linking error...ugh.
 Import "driver.bmx" 
 
 Rem
@@ -18,3 +20,5 @@ Function NewtonCollisionDriver:TNewtonCollisionDriver()
 	Global _driver:TNewtonCollisionDriver=New TNewtonCollisionDriver
 	Return _driver
 End Function
+
+?
