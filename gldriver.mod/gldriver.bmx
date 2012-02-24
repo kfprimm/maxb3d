@@ -518,6 +518,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			glBegin GL_POLYGON
 			glNormal3f poly.Plane.x,poly.Plane.y,poly.Plane.z
 			For Local i=0 To poly.Count()-1
+				glTexCoord2f (poly.Plane.x-poly.Center.x)*poly.Point[i].x+(poly.Plane.y-poly.Center.y)*poly.Point[i].y+(poly.Plane.z-poly.Center.z)*poly.Point[i].z, (poly.Plane.x-poly.Center.x)*poly.Point[i].x+(poly.Plane.y-poly.Center.y)*poly.Point[i].y+(poly.Plane.z-poly.Center.z)*poly.Point[i].z
 				glVertex3f poly.Point[i].x,poly.Point[i].y,poly.Point[i].z
 			Next
 			triangles:+poly.Count()-2

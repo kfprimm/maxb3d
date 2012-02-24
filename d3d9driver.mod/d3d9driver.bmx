@@ -392,8 +392,8 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 			Local data#[trianglecnt*24],dataptr:Float Ptr=data
 			For Local i=0 To trianglecnt-1
 				Local ptB:TVector=poly.Point[i+1],ptC:TVector=poly.Point[i+2]
-				data[i*24+00]=ptA.x;data[i*24+01]=ptA.y;data[i*24+02]=ptA.z;data[i*24+03]=poly.Plane.x;data[i*24+04]=poly.Plane.y;	data[i*24+05]=poly.Plane.z;data[i*24+06]=0.0;data[i*24+07]=0.0
-				data[i*24+08]=ptB.x;data[i*24+09]=ptB.y;data[i*24+10]=ptB.z;data[i*24+11]=poly.Plane.x;data[i*24+12]=poly.Plane.y;	data[i*24+13]=poly.Plane.z;data[i*24+14]=0.0;data[i*24+15]=0.0
+				data[i*24+00]=ptA.x;data[i*24+01]=ptA.y;data[i*24+02]=ptA.z;data[i*24+03]=poly.Plane.x;data[i*24+04]=poly.Plane.y;data[i*24+05]=poly.Plane.z;data[i*24+06]=0.0;data[i*24+07]=0.0
+				data[i*24+08]=ptB.x;data[i*24+09]=ptB.y;data[i*24+10]=ptB.z;data[i*24+11]=poly.Plane.x;data[i*24+12]=poly.Plane.y;data[i*24+13]=poly.Plane.z;data[i*24+14]=0.0;data[i*24+15]=0.0
 				data[i*24+16]=ptC.x;data[i*24+17]=ptC.y;data[i*24+18]=ptC.z;data[i*24+19]=poly.Plane.x;data[i*24+20]=poly.Plane.y;data[i*24+21]=poly.Plane.z;data[i*24+22]=0.0;data[i*24+23]=0.0
 			Next
 			_d3ddev.DrawPrimitiveUP D3DPT_TRIANGLELIST,trianglecnt,data,8*4

@@ -185,6 +185,7 @@ Type TCamera Extends TEntity
 		Else
 			Return 0
 		EndIf
+		If radius < 0 Return True
 		Return _frustum.IntersectsPoint(x,y,z,radius)
 	End Method
 End Type

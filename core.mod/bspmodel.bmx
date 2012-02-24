@@ -32,8 +32,6 @@ Type TBSPModel Extends TEntity
 		_tree=tree
 	End Method
 	
-	
-	
 	Method Insert(list:TList,keep,cur)
 		Return _tree.Insert(list,keep,cur)
 	End Method
@@ -41,4 +39,9 @@ Type TBSPModel Extends TEntity
 	Method Reduce()
 		Return _tree.Reduce()
 	End Method
+	
+	Method GetCullRadius#()
+		Return -1
+	End Method
 End Type
+
