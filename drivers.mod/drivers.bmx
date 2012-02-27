@@ -13,5 +13,6 @@ Import MaxB3D.B3DCollision
 Import MaxB3D.Primitives
 Import MaxB3D.GLDriver
 Import MaxB3D.D3D9Driver
+Import MaxB3D.D3D11Driver
 Import MaxB3D.Functions
 
