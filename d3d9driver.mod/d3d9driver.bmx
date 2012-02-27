@@ -9,8 +9,8 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
-Import Prime.D3D9Max2DEx
-Import Prime.DirectXEx
+Import GFX.D3D9Max2DEx
+Import GFX.DirectXEx
 
 ?Win32
 

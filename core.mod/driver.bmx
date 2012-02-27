@@ -2,7 +2,7 @@
 Strict
 
 Import BRL.Max2D
-Import Prime.Max2DEx
+Import GFX.Max2DEx
 Import "light.bmx"
 Import "camera.bmx"
 Import "mesh.bmx"
@@ -67,12 +67,28 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 		EndIf
 	End Method
 	
+	Method CreateBatchImage:TBatchImage(image:TImage,color=False,rotation=False,scale=False,uv=False,frames=False)
+		Return TMax2DExDriver(_parent).CreateBatchImage(image,color,rotation,scale,uv,frames)
+	End Method
+		
+	Method PlotPoints(points#[])
+		Return TMax2DExDriver(_parent).PlotPoints(points)
+	End Method
+	
+	Method DrawLines(lines#[],linked)
+		Return TMax2DExDriver(_parent).DrawLines(lines,linked)
+	End Method
+	
+	Method DrawImageTiled(image:TImage,x#=0,y#=0,frame=0)
+		Return TMax2DExDriver(_parent).DrawImageTiled(image,x,y,frame)
+	End Method
+	
 	Method MakeBuffer:TBuffer(src:Object,width,height,flags) Abstract
 	
 	Method TextureBuffer:TBuffer(texture:TTexture,frame=0,flags=BUFFER_COLOR)
 		Return MakeBuffer(texture._frame[frame],texture._width,texture._height,flags)
 	End Method
-	
+		
 	Method SetBuffer(buffer:TBuffer)
 		For Local config:TWorldConfig = EachIn _configs
 			config.Width=buffer._width
@@ -84,7 +100,7 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 	Method BackBuffer:TBuffer()
 		Return TMax2DExDriver(_parent).BackBuffer()
 	End Method
-
+	
 	Method GetCaps:TCaps() Abstract
 	
 	Method SetMax2D(enable) Abstract

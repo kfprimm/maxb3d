@@ -9,7 +9,7 @@ ModuleInfo "Author: Kevin Primm"
 ModuleInfo "License: MIT"
 
 Import MaxB3D.Core
-Import Prime.GLMax2DEx
+Import GFX.GLMax2DEx
 
 Private
 Function ModuleLog(message$)

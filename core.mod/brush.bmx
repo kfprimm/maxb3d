@@ -1,7 +1,7 @@
 
 Strict
 
-Import Prime.Max2DEx
+Import GFX.Max2DEx
 Import Prime.Enumerator
 Import "texture.bmx"
 
