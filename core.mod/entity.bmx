@@ -241,6 +241,10 @@ Type TEntity
 		SetMatrix matrix.Multiply(_matrix),glob
 	End Method
 	
+	Method TransformPoint(x# Var,y# Var,z# Var)
+		Return _matrix.TransformVec3(x,y,z)
+	End Method
+	
 	Method Turn(pitch#,yaw#,roll#,glob=False)
 		_rx:+pitch;_ry:+yaw;_rz:+roll
 		RefreshMatrix()
