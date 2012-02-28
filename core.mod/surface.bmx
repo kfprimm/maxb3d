@@ -189,8 +189,6 @@ Type TSurface
 			Next
 			SetTriangle i,i*3+0,i*3+1,i*3+2
 		Next
-
-		UpdateNormals
 	End Method
 	
 	Method Transform(matrix:TMatrix)
@@ -230,7 +228,7 @@ Type TSurface
 				vertex_triangles[v1]:+[i]
 				vertex_triangles[v2]:+[i]
 				
-				Local a:TVector=New TVector,b:TVector=New TVector,c:TVector=New TVector
+				Local a:TVector=Vec3(0,0,0),b:TVector=Vec3(0,0,0),c:TVector=Vec3(0,0,0)
 				GetCoords v0,a.x,a.y,a.z
 				GetCoords v1,b.x,b.y,b.z
 				GetCoords v2,c.x,c.y,c.z
@@ -244,11 +242,25 @@ Type TSurface
 				For Local t=0 To vertex_triangles[i].length-1
 					normal=normal.Add(face_normal[vertex_triangles[i][t]])		
 				Next
-				normal.Normalize()				
 				SetNormal i,-normal.x,-normal.y,-normal.z
 			Next		
 		EndIf
 		_reset:|2
+	End Method
+	
+	Method GetTriangleNormal(index,nx# Var,ny# Var,nz# Var)
+		Local v0,v1,v2
+		GetTriangle index,v0,v1,v2
+		
+		Local a:TVector=Vec3(0,0,0),b:TVector=Vec3(0,0,0),c:TVector=Vec3(0,0,0)
+		GetCoords v0,a.x,a.y,a.z
+		GetCoords v1,b.x,b.y,b.z
+		GetCoords v2,c.x,c.y,c.z
+				
+		Local n:TVector=New TVector.FromTriangle(a,b,c)	
+		nx = n.x
+		ny = n.y
+		nz = n.z
 	End Method
 	
 	Method SetTriangleNormal(index,nx#,ny#,nz#)
