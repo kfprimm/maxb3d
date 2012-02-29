@@ -118,7 +118,7 @@ Type TWorld
 	
 	Method Pick:TPick(src:Object, target:Object)
 		Local picks:TPick[] = Picks(src, target, True)
-		If picks.length > 0 Return picks[0]
+		If picks.length > 0 Return picks[picks.length - 1]
 	End Method
 		
 	Method AddTexture:TTexture(url:Object,flags=TEXTURE_DEFAULT)
