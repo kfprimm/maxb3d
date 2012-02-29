@@ -37,7 +37,7 @@ Type TEntity
 	
 	Field _alphaorder#
 	
-	Field _linklist:TList=CreateList()
+	Field _linklist:TList=CreateList()	
 	
 	Method Init:TEntity(config:TWorldConfig,parent:TEntity)
 		_config = config
@@ -492,7 +492,75 @@ Type TEntity
 	Method ObjectEnumerator:Object()
 		Return TChildrenEnumerator.Create(_childlist)
 	End Method
+
+	Global c_vec_a:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+	Global c_vec_b:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+	Global c_vec_radius:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+	Global c_col_info:Byte Ptr=C_CreateCollisionInfoObject(c_vec_a,c_vec_b,c_vec_radius)
+	
+	Global c_line:Byte Ptr=C_CreateLineObject(0.0,0.0,0.0,0.0,0.0,0.0)
+	
+	Global c_vec_i:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+	Global c_vec_j:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+	Global c_vec_k:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+	
+	Global c_mat:Byte Ptr=C_CreateMatrixObject(c_vec_i,c_vec_j,c_vec_k)
+	Global c_vec_v:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
+	Global c_tform:Byte Ptr=C_CreateTFormObject(c_mat,c_vec_v)	
+	
+	Method PickTree:Byte Ptr()
+		Return Null
+	End Method
+		
+	Method Pick:TRawPick(mode,ax#,ay#,az#,bx#,by#,bz#,radius#=0.0)
+		C_UpdateLineObject(c_line,ax,ay,az,bx-ax,by-ay,bz-az)
+
+		C_UpdateVecObject(c_vec_i,_matrix._m[0,0],_matrix._m[0,1],-_matrix._m[0,2])
+		C_UpdateVecObject(c_vec_j,_matrix._m[1,0],_matrix._m[1,1],-_matrix._m[1,2])
+		C_UpdateVecObject(c_vec_k,-_matrix._m[2,0],-_matrix._m[2,1],_matrix._m[2,2])
+	
+		C_UpdateMatrixObject(c_mat,c_vec_i,c_vec_j,c_vec_k)
+		C_UpdateVecObject(c_vec_v,_matrix._m[3,0],_matrix._m[3,1],_matrix._m[3,2])
+		C_UpdateTFormObject(c_tform,c_mat,c_vec_v)
+	
+		Global c_col:Byte Ptr
+		If c_col C_DeleteCollisionObject(c_col)
+		c_col = C_CreateCollisionObject()
+
+		Local tree:Byte Ptr=Null
+		If mode<>PICKMODE_POLYGON
+			C_UpdateCollisionInfoObject(c_col_info,_radiusx,_boxx,_boxy,_boxz,_boxx+_boxwidth,_boxy+_boxheight,_boxz+_boxdepth)
+		Else
+			tree = PickTree() 		
+		EndIf
+		
+		If C_Pick(c_col_info,c_line,radius,c_col,c_tform,tree,mode)
+			Local info:TRawPick = New TRawPick
+			info.entity = Self
+			info.x  = C_CollisionX()
+			info.y  = C_CollisionY()
+			info.z  = C_CollisionZ()
+			
+			info.nx = C_CollisionNX()
+			info.ny = C_CollisionNY()
+			info.nz = C_CollisionNZ()
+			
+			info.time = C_CollisionTime()
+			info.surface=C_CollisionSurface() - 1
+			info.triangle=C_CollisionTriangle()
+			Return info
+		EndIf
+	End Method
 End Type
+
+Type TRawPick
+	Field x#,y#,z
+	Field nx#,ny#,nz#
+	Field time#
+	Field entity:TEntity, surface
+	Field triangle
+End Type
+
 
 Type TChildrenEnumerator
 	Field _children:TEntity[],_index=-1

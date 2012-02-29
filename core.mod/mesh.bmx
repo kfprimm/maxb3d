@@ -230,7 +230,7 @@ Type TMesh Extends TAnimEntity
 		Next
 	End Method
 	
-	Method TreeCheck:Byte Ptr()
+	Method PickTree:Byte Ptr()
 		If _resettree=True
 			If _tree<>Null C_DeleteColTree(_tree);_tree=Null
 			_resettree=False				
@@ -295,7 +295,7 @@ Type TMesh Extends TAnimEntity
 		Local rx#=radius*sx,ry#=radius*sy,rz#=radius*sz
 		radius=Max(Max(rx,ry),rz)
 	End Method
-	
+		
 	Method ObjectEnumerator:TObjectArrayEnumerator()
 		Return New TObjectArrayEnumerator.Create(_surfaces)
 	End Method

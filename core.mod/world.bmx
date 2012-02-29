@@ -97,66 +97,21 @@ Type TWorld
 		Local ax#,ay#,az#,bx#,by#,bz#,radius#=0.0
 		TEntity.GetTargetPosition src,ax,ay,az
 		PickTarget src,Float[](target),ax,ay,az,bx,by,bz,radius
-		
-		Global c_vec_a:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
-		Global c_vec_b:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
-		Global c_vec_radius:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
-		Global c_col_info:Byte Ptr=C_CreateCollisionInfoObject(c_vec_a,c_vec_b,c_vec_radius)
-
-		Global c_line:Byte Ptr=C_CreateLineObject(0.0,0.0,0.0,0.0,0.0,0.0)
-
-		Global c_vec_i:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
-		Global c_vec_j:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
-		Global c_vec_k:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
-
-		Global c_mat:Byte Ptr=C_CreateMatrixObject(c_vec_i,c_vec_j,c_vec_k)
-		Global c_vec_v:Byte Ptr=C_CreateVecObject(0.0,0.0,0.0)
-		Global c_tform:Byte Ptr=C_CreateTFormObject(c_mat,c_vec_v)
-		
-		C_UpdateLineObject(c_line,ax,ay,az,bx-ax,by-ay,bz-az)
-		
-		Local c_col:Byte Ptr=C_CreateCollisionObject(), picks:TPick[]
-		
+			
+		Local picks:TPick[]		
 		For Local entity:TEntity=EachIn _config.List[WORLDLIST_ENTITY]		
 			If entity._pickmode=PICKMODE_OFF Or Not entity.GetVisible() Then Continue
 			If entity._pickmode=PICKMODE_POLYGON And TMesh(entity)=Null Continue
 			
 			Local matrix:TMatrix = entity._matrix
-			C_UpdateVecObject(c_vec_i,matrix._m[0,0],matrix._m[0,1],-matrix._m[0,2])
-			C_UpdateVecObject(c_vec_j,matrix._m[1,0],matrix._m[1,1],-matrix._m[1,2])
-			C_UpdateVecObject(c_vec_k,-matrix._m[2,0],-matrix._m[2,1],matrix._m[2,2])
-		
-			C_UpdateMatrixObject(c_mat,c_vec_i,c_vec_j,c_vec_k)
-			C_UpdateVecObject(c_vec_v,matrix._m[3,0],matrix._m[3,1],matrix._m[3,2])
-			C_UpdateTFormObject(c_tform,c_mat,c_vec_v)
-		
-			Local tree:Byte Ptr=Null
-			If entity._pickmode<>PICKMODE_POLYGON
-				C_UpdateCollisionInfoObject(c_col_info,entity._radiusx,entity._boxx,entity._boxy,entity._boxz,entity._boxx+entity._boxwidth,entity._boxy+entity._boxheight,entity._boxz+entity._boxdepth)
-			Else
-				If TMesh(entity)<>Null tree=TMesh(entity).TreeCheck()		
-			EndIf
-
-			If C_Pick(c_col_info,c_line,radius,c_col,c_tform,tree,entity._pickmode)
-				Local info:TPick = New TPick
-				info.entity = entity
-				info.x  = C_CollisionX()
-				info.y  = C_CollisionY()
-				info.z  = C_CollisionZ()
-				
-				info.nx = C_CollisionNX()
-				info.ny = C_CollisionNY()
-				info.nz = C_CollisionNZ()
 			
-				info.time = C_CollisionTime()
-				If TMesh(entity)<>Null And entity._pickmode = PICKMODE_POLYGON info.surface = TMesh(entity)._surfaces[C_CollisionSurface() - 1]
-				info.triangle=C_CollisionTriangle()
-				
+			Local raw:TRawPick = entity.Pick(entity._pickmode,ax,ay,az,bx-ax,by-ay,bz-az,radius)
+			If raw
+				Local info:TPick = New TPick.FromRaw(raw)
+				If TMesh(entity)<>Null And entity._pickmode = PICKMODE_POLYGON info.surface = TMesh(entity)._surfaces[raw.surface]				
 				picks :+ [info]
 			EndIf		
 		Next
-		
-		C_DeleteCollisionObject(c_col)
 		
 		Return picks		
 	End Method
