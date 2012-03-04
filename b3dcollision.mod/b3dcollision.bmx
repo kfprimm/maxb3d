@@ -69,7 +69,7 @@ Type TB3DCollisionDriver Extends TCollisionDriver
 								EndIf
 					
 								Local tree:Byte Ptr
-								If TMesh(entity2)<>Null tree=TMesh(entity2).TreeCheck()
+								If TMesh(entity2)<>Null tree=TMesh(entity2).PickTree()
 			
 								hit=C_CollisionDetect(c_col_info,c_coll,c_tform,tree,col_pair.methd)
 			

@@ -257,7 +257,7 @@ Type TSurface
 		GetCoords v1,b.x,b.y,b.z
 		GetCoords v2,c.x,c.y,c.z
 				
-		Local n:TVector=New TVector.FromTriangle(a,b,c)	
+		Local n:TVector=New TVector.FromTriangle(a,b,c).Normalize()
 		nx = n.x
 		ny = n.y
 		nz = n.z
