@@ -15,11 +15,11 @@ Type TNewtonCollisionDriver Extends TCollisionDriver
 	
 	Method Init()
 		_world = NewtonCreate()
-		NewtonSetPlatformArchitecture _world, 0
+		' NewtonSetPlatformArchitecture _world, 0
 
 		Local minSize#[] = [-500.0, -500.0, -500.0]
 		Local maxSize#[] = [ 500.0,  500.0,  500.0]
-		NewtonSetWorldSize _world, minSize, maxSize		
+		'NewtonSetWorldSize _world, minSize, maxSize		
 	
 		NewtonSetSolverModel _world, 1
 	End Method
@@ -38,15 +38,15 @@ Type TNewtonCollisionDriver Extends TCollisionDriver
 			Local collision:Byte Ptr
 			Select body._shape
 			Case BODY_SPHERE,BODY_NONE
-				collision=NewtonCreateSphere(_world,body._radiusx,body._radiusy,body._radiusx,0,Null)
+				collision=NewtonCreateCapsule(_world,body._radiusx,body._radiusy,0,Null)
 			Case BODY_BOX
 				'Local offset:TMatrix=TMatrix.Translation((body._boxwidth/2.0)-body._boxx,(body._boxheight/2.0)-body._boxy,(body._boxdepth/2.0)-body._boxz)
 				collision=NewtonCreateBox(_world,body._boxwidth,body._boxheight,body._boxdepth,0,Null)
 			End Select			
 
-			If data._ptr NewtonDestroyBody(_world,data._ptr)
+			If data._ptr NewtonDestroyBody(data._ptr)
 
-			data._ptr=NewtonCreateBody(_world,collision,body._matrix.ToPtr())
+			data._ptr=NewtonCreateDynamicBody(_world,collision,body._matrix.ToPtr())
 			NewtonBodySetUserData data._ptr, Byte Ptr(body) - 8
 			
 			If body._mass>0
@@ -60,7 +60,7 @@ Type TNewtonCollisionDriver Extends TCollisionDriver
 			NewtonBodySetForceAndTorqueCallback data._ptr, ForceAndTorqueCallback
 			NewtonBodySetTransformCallback data._ptr, TransformCallback			
 
-			NewtonReleaseCollision _world,collision
+			'NewtonReleaseCollision _world,collision
 			body._update=False
 		Next
   	NewtonUpdate _world,speed
