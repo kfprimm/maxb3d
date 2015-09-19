@@ -387,7 +387,7 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 			glClientActiveTextureARB GL_TEXTURE0+i
 			
 			Local texture:TTexture=brush._texture[i]
-			If texture=Null 
+			If texture=Null Or res._vbo[4+texture._coords] = 0
 				glDisableClientState GL_TEXTURE_COORD_ARRAY
 				Continue
 			EndIf
