@@ -4,6 +4,7 @@
 *.ppc.i
 *.debug
 *.exe
+*.app/
 *.bak
 *.html
 .*.bmx

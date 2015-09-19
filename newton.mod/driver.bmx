@@ -63,23 +63,25 @@ Type TNewtonCollisionDriver Extends TCollisionDriver
 			'NewtonReleaseCollision _world,collision
 			body._update=False
 		Next
-  	NewtonUpdate _world,speed
+  		NewtonUpdate _world,speed
 	End Method
 	
 	Function TransformCallback(body:Byte Ptr,matrix_data:Float Ptr,thread_index)
+		GCResume
 		Local entity:TBody = TBody(_byte_ptr_to_object(NewtonBodyGetUserData(body)))
 		entity.SetMatrix TMatrix.FromPtr(matrix_data)
 		entity._update=False
 	End Function
 	
 	Function ForceAndTorqueCallback(body:Byte Ptr,timestep#,thread_index)
+		GCResume
 		Local ixx#,iyy#,izz#,mass#
 		NewtonBodyGetMassMatrix body,Varptr mass,Varptr ixx,Varptr iyy,Varptr izz
 		NewtonBodySetForce body,[0.0,mass*-9.8,0.0]
 	End Function
 	
 	Function DestroyCallback(body:Byte Ptr)
-		
+		GCResume
 	End Function
 End Type
 
