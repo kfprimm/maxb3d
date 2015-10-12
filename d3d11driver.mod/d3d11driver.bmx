@@ -42,7 +42,7 @@ Type TD3D11MaxB3DDriver Extends TMaxB3DDriver
 	
 	Method RenderSurface(surface:TSurfaceRes,brush:TBrush)
 	End Method
-	Method RenderFlat(plane:TFlat)
+	Method RenderPlane(plane:TInfinitePlane)
 	End Method
 	Method RenderSprite(sprite:TSprite)
 	End Method

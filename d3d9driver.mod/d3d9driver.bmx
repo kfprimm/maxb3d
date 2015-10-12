@@ -360,9 +360,9 @@ Type TD3D9MaxB3DDriver Extends TMaxB3DDriver
 	Method EndEntityRender(entity:TEntity)
 	End Method
 	
-	Method RenderFlat(flat:TFlat)
+	Method RenderPlane(plane:TInfinitePlane)
 		Local x#,y#,z#
-		flat.GetScale x,y,z,True
+		plane.GetScale x,y,z,True
 
 		Global _data#[]=[ -1.0,0.0, 1.0, 0.0,1.0,0.0, 0.0,0.0, ..
 		                   1.0,0.0, 1.0, 0.0,1.0,0.0,   x,0.0, ..

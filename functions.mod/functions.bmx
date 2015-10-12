@@ -895,12 +895,12 @@ Function CreatePivot:TPivot(parent:TEntity=Null)
 	Return CurrentWorld().AddPivot(parent)
 End Function
 
-'Flats (plane)
+'Planes
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function CreateFlat:TFlat(parent:TEntity=Null)
-	Return CurrentWorld().AddFlat(parent)
+Function CreateInfinitePlane:TInfinitePlane(parent:TEntity=Null)
+	Return CurrentWorld().AddPlane(parent)
 End Function
 
 'Sprite

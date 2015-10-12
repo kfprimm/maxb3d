@@ -157,8 +157,8 @@ Type TWorld
 		Return TMesh(mesh.Init(_config, parent))
 	End Method
 	
-	Method AddFlat:TFlat(parent:TEntity=Null)
-		Return TFlat(New TFlat.Init(_config, parent))
+	Method AddPlane:TInfinitePlane(parent:TEntity=Null)
+		Return TInfinitePlane(New TInfinitePlane.Init(_config, parent))
 	End Method
 	
 	Method AddSprite:TSprite(url:Object,flags=TEXTURE_DEFAULT,parent:TEntity=Null)
@@ -317,7 +317,7 @@ Type TWorld
 		info.Entities=0
 		If Not list.IsEmpty() info.Entities=list.Count()
 		For Local entity:TEntity=EachIn list
-			Local mesh:TMesh=TMesh(entity),flat:TFlat=TFlat(entity),terrain:TTerrain=TTerrain(entity)
+			Local mesh:TMesh=TMesh(entity),plane:TInfinitePlane=TInfinitePlane(entity),terrain:TTerrain=TTerrain(entity)
 			Local sprite:TSprite=TSprite(entity),bsp:TBSPModel=TBSPModel(entity)
 			Local custom:TCustomEntity=TCustomEntity(entity), renderer:TCustomRenderer
 			If custom
@@ -344,8 +344,8 @@ Type TWorld
 				Next
 			Else
 				driver.SetBrush brush, brush.HasAlpha(),_config
-				If flat					
-					info.Triangles:+driver.RenderFlat(flat)
+				If plane					
+					info.Triangles:+driver.RenderPlane(plane)
 				ElseIf sprite				
 					driver.RenderSprite(sprite)
 					info.Triangles:+4+(4*(brush._fx&FX_NOCULLING<>0))

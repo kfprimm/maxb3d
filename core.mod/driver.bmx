@@ -6,7 +6,7 @@ Import GFX.Max2DEx
 Import "light.bmx"
 Import "camera.bmx"
 Import "mesh.bmx"
-Import "flat.bmx"
+Import "plane.bmx"
 Import "sprite.bmx"
 Import "terrain.bmx"
 Import "bspmodel.bmx"
@@ -127,7 +127,7 @@ Type TMaxB3DDriver Extends TMax2DExDriver
 	Method EndEntityRender(entity:TEntity) Abstract
 	
 	Method RenderSurface(surface:TSurfaceRes,brush:TBrush) Abstract
-	Method RenderFlat(plane:TFlat) Abstract	
+	Method RenderPlane(plane:TInfinitePlane) Abstract	
 	Method RenderSprite(sprite:TSprite) Abstract
 	Method RenderTerrain(terrain:TTerrain) Abstract
 	Method RenderBSPTree(tree:TBSPTree) Abstract

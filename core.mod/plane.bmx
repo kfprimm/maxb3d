@@ -3,13 +3,13 @@ Strict
 
 Import "entity.bmx"
 
-Type TFlat Extends TEntity 
+Type TInfinitePlane Extends TEntity 
 	Method Lists[]()
-		Return [WORLDLIST_FLAT, WORLDLIST_RENDER]
+		Return [WORLDLIST_PLANE, WORLDLIST_RENDER]
 	End Method
 	
-	Method Copy:TFlat(parent:TEntity=Null)
-		Return TFlat(Super.Copy_(parent))
+	Method Copy:TInfinitePlane(parent:TEntity=Null)
+		Return TInfinitePlane(Super.Copy_(parent))
 	End Method
 	
 	Method GetCullRadius#()

@@ -433,9 +433,9 @@ Type TGLMaxB3DDriver Extends TMaxB3DDriver
 		glPopMatrix
 	End Method
 	
-	Method RenderFlat(flat:TFlat)
+	Method RenderPlane(plane:TInfinitePlane)
 		Local x#,y#,z#
-		flat.GetScale x,y,z,True
+		plane.GetScale x,y,z,True
 		
 		glBegin GL_QUADS
 			glNormal3f 0,1,0

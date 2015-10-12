@@ -11,10 +11,10 @@ SetEntityPosition camera,0,1,0
 Local light:TLight=CreateLight()
 SetEntityRotation light,90,0,0
 
-Local flat:TFlat=CreateFlat()
-SetEntityScale flat,1000,1,1000
+Local plane:TInfinitePlane=CreateInfinitePlane()
+SetEntityScale plane,1000,1,1000
 Local texture:TTexture=LoadTexture("media/mossyground.bmp")
-SetEntityTexture flat,texture
+SetEntityTexture plane,texture
 
 While Not KeyDown(KEY_ESCAPE) And Not AppTerminate()
 	If KeyDown(KEY_LEFT) TurnEntity camera,0,-1,0
