@@ -175,7 +175,7 @@ Type TCamera Extends TEntity
 		Return TMatrix.Unproject(_modelview,_projection,_viewport,wx,_viewport[3]-wy,wz,x,y,z)
 	End Method
 	
-	Method InView#(target:Object)
+	Method HasView#(target:Object)
 		Local x#,y#,z#,radius#
 		Local entity:TEntity=TEntity(target),point#[]=Float[](target)
 		If entity

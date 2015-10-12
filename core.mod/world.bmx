@@ -230,7 +230,7 @@ Type TWorld
 		Local list:TList=CreateList()
 		For Local entity:TEntity=EachIn _config.List[WORLDLIST_RENDER]
 			If entity.GetVisible()=False Or entity._brush._a=0 Continue
-			If camera.InView(entity)
+			If camera.HasView(entity)
 				Local link:TLink=list._head
 				If entity._order > 0
 					Repeat

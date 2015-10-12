@@ -347,8 +347,8 @@ End Function
 Rem
 	bbdoc: Needs documentation. #TODO
 End Rem
-Function CameraInView#(camera:TCamera,target:Object)
-	Return camera.InView(target)
+Function CameraHasView#(camera:TCamera,target:Object)
+	Return camera.HasView(target)
 End Function
 Rem
 	bbdoc: Needs documentation. #TODO
